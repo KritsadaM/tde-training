@@ -2,6 +2,9 @@
 (() => {
   "use strict";
 
+  /* the "?v=..." stamped on this script's URL (see tools/stamp_assets.py), passed on to the worker */
+  const ASSET_V = (document.currentScript && new URL(document.currentScript.src).search) || "";
+
   /* hooks filled in by the builders and by setupNavigation() */
   const TDEUI = (window.TDEUI = { sync() {}, refreshNav() {}, selectExample: null, openExercise: null, selectGlossary: null });
 
@@ -82,7 +85,7 @@
     const pending = new Map();
 
     function start() {
-      worker = new Worker("assets/py-worker.js");
+      worker = new Worker("assets/py-worker.js" + ASSET_V);
       ready = new Promise((resolve, reject) => {
         worker.onmessage = (e) => {
           const m = e.data;

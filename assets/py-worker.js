@@ -4,7 +4,7 @@ importScripts("https://cdn.jsdelivr.net/pyodide/v0.29.5/full/pyodide.js");
 
 const ready = (async () => {
   const py = await loadPyodide();
-  const harness = await (await fetch(new URL("harness.py", self.location.href))).text();
+  const harness = await (await fetch(new URL("harness.py" + self.location.search, self.location.href))).text();
   py.runPython(harness);
   postMessage({ type: "ready" });
   return py;

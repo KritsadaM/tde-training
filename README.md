@@ -83,6 +83,16 @@ A collapsible **left sidebar** (a drawer on phones) groups the course as **categ
 * **Adding a page:** add a `<section class="block view" id="my-page">` in `index.html` (keep the order in the file the same as the order in `CATEGORIES`), then add its id and label to `CATEGORIES` / `PAGE_LABELS`.
 * Do not use the CSS class `sub` for anything new: the hero subtitle already uses it. Sub-pages use `subpage`.
 
+## Before you commit (cache-busting)
+
+GitHub Pages serves every file with a 10-minute cache. Without a version in the asset URLs, a browser can show the *new* page with an *old* `style.css` / `app.js`, which looks broken (this actually happened once). So after changing anything in `assets/`, run:
+
+```bash
+python3 tools/stamp_assets.py
+```
+
+It writes a content hash into the `?v=` of the three asset links in `index.html` (the web worker and harness get the same version from `app.js`). CI fails with a reminder if you forget (`python3 tools/stamp_assets.py --check`).
+
 ## Project layout
 
 ```
@@ -93,6 +103,7 @@ assets/content.js     diagram details, code examples, exercises (edit this to ad
 assets/harness.py     pytest-compatible runner used in the browser
 assets/py-worker.js   Web Worker that hosts Pyodide
 tools/check_exercises.py   self-check for all content (see below)
+tools/stamp_assets.py      cache-busting stamp for the asset URLs (run before committing)
 ```
 
 ## Adding or changing content

@@ -27,3 +27,7 @@ jobs:
     - name: Run exercise self-check
       run: |
         python3 tools/check_exercises.py
+
+    - name: Check asset cache-busting version
+      run: |
+        python3 tools/stamp_assets.py --check
