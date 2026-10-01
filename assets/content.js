@@ -2439,6 +2439,146 @@ def test_empty_baseline_matches_anything():
     assert diff_config({}, {"a": 1}, strict=True) == ["a: unexpected"]
 `,
   },
+
+  /* --------------------------------------------------------------------- 14 */
+  {
+    id: "guardband-burnin",
+    level: "Medium",
+    kind: "implement",
+    title: "Guardbands and burn-in time",
+    summary: "Tighten limits by the measurement uncertainty, and size a burn-in.",
+    brief: `<p>Two calculations a TDE does when a measurement is not perfect and when early failures must be screened out. Implement four functions.</p>
+      <ul>
+        <li><code>guardbanded_limits(lsl, usl, uncertainty, guard=1.0)</code> returns <code>(test_low, test_high)</code> = <code>(lsl + guard &times; uncertainty, usl &minus; guard &times; uncertainty)</code>. <code>ValueError</code> if <code>lsl &gt;= usl</code>, if <code>uncertainty</code> or <code>guard</code> is negative, or if the guardbanded window is empty (<code>test_low &gt;= test_high</code>).</li>
+        <li><code>classify_guardbanded(value, lsl, usl, uncertainty, guard=1.0)</code>: <code>"FAIL"</code> outside the spec limits, <code>"PASS"</code> inside the guardbanded limits (edges included), otherwise <code>"RETEST"</code> (inside the spec but too close to an edge to trust).</li>
+        <li><code>acceleration_factor(ea_ev, t_use_c, t_stress_c)</code>, the Arrhenius model: <code>AF = exp( Ea / k &times; (1/T_use &minus; 1/T_stress) )</code>, with temperatures in <b>kelvin</b> (add 273.15) and <code>k = 8.617e-5</code> eV/K. <code>ValueError</code> if <code>ea_ev</code> is not positive, or the stress temperature is not higher than the use temperature.</li>
+        <li><code>burnin_hours(use_hours, af)</code>: hours at stress that simulate <code>use_hours</code> of normal use (<code>use_hours / af</code>). <code>ValueError</code> if <code>use_hours</code> is negative or <code>af</code> is not positive.</li>
+      </ul>
+      <p class="note">Example: Ea = 0.7 eV, use at 55 &deg;C, stress at 85 &deg;C gives AF &asymp; 7.95, so 1,000 hours of use is simulated by about 126 hours at 85 &deg;C. This is a simplified single-mechanism model for training. Real burn-in plans come from reliability data and the component ratings.</p>`,
+    starter: String.raw`import math
+
+K_EV = 8.617e-5   # Boltzmann constant in eV/K
+
+def guardbanded_limits(lsl, usl, uncertainty, guard=1.0):
+    raise NotImplementedError
+
+def classify_guardbanded(value, lsl, usl, uncertainty, guard=1.0):
+    raise NotImplementedError
+
+def acceleration_factor(ea_ev, t_use_c, t_stress_c):
+    raise NotImplementedError
+
+def burnin_hours(use_hours, af):
+    raise NotImplementedError
+`,
+    hints: [
+      "<code>classify_guardbanded</code> can call <code>guardbanded_limits</code> first (so bad input is rejected the same way), then compare the value with the spec limits and then with the test limits.",
+      "Convert to kelvin before taking <code>1/T</code>: <code>t_use_c + 273.15</code>. Then <code>math.exp(ea_ev / K_EV * (1 / t_use_k - 1 / t_stress_k))</code>.",
+      "Keep each <code>ValueError</code> check in its own <code>if</code> with a clear message. They are easy to test separately.",
+    ],
+    solution: String.raw`import math
+
+K_EV = 8.617e-5   # Boltzmann constant in eV/K
+
+def guardbanded_limits(lsl, usl, uncertainty, guard=1.0):
+    if lsl >= usl:
+        raise ValueError("lsl must be below usl")
+    if uncertainty < 0 or guard < 0:
+        raise ValueError("uncertainty and guard must not be negative")
+    low = lsl + guard * uncertainty
+    high = usl - guard * uncertainty
+    if low >= high:
+        raise ValueError("guardband too wide for this window")
+    return low, high
+
+def classify_guardbanded(value, lsl, usl, uncertainty, guard=1.0):
+    low, high = guardbanded_limits(lsl, usl, uncertainty, guard)
+    if value < lsl or value > usl:
+        return "FAIL"
+    if low <= value <= high:
+        return "PASS"
+    return "RETEST"
+
+def acceleration_factor(ea_ev, t_use_c, t_stress_c):
+    if ea_ev <= 0:
+        raise ValueError("activation energy must be positive")
+    if t_stress_c <= t_use_c:
+        raise ValueError("stress must be hotter than use")
+    use_k, stress_k = t_use_c + 273.15, t_stress_c + 273.15
+    return math.exp(ea_ev / K_EV * (1 / use_k - 1 / stress_k))
+
+def burnin_hours(use_hours, af):
+    if use_hours < 0 or af <= 0:
+        raise ValueError("use_hours must be >= 0 and af must be positive")
+    return use_hours / af
+`,
+    tests: String.raw`import pytest
+
+# integers (millivolts) keep the edge cases exact
+LSL, USL, U = 3135, 3465, 10
+
+def test_guardbanded_limits_move_in_by_the_uncertainty():
+    assert guardbanded_limits(LSL, USL, U) == (3145, 3455)
+
+def test_guard_factor_scales_the_band():
+    assert guardbanded_limits(LSL, USL, U, guard=2) == (3155, 3445)
+
+def test_zero_uncertainty_leaves_the_spec_limits():
+    assert guardbanded_limits(LSL, USL, 0) == (3135, 3465)
+
+@pytest.mark.parametrize("args", [(5, 5, 1), (6, 5, 1), (0, 10, -1), (0, 10, 1, -1)])
+def test_guardbanded_limits_reject_bad_input(args):
+    with pytest.raises(ValueError):
+        guardbanded_limits(*args)
+
+def test_a_band_that_eats_the_whole_window_is_rejected():
+    with pytest.raises(ValueError):
+        guardbanded_limits(0, 10, 5)          # 5 .. 5 is empty
+    with pytest.raises(ValueError):
+        guardbanded_limits(0, 10, 6)
+
+@pytest.mark.parametrize("value, expected", [
+    (3300, "PASS"),
+    (3145, "PASS"), (3455, "PASS"),            # on the test limits
+    (3144, "RETEST"), (3456, "RETEST"),        # inside spec, too close to the edge
+    (3135, "RETEST"), (3465, "RETEST"),        # on the spec limits
+    (3134, "FAIL"), (3466, "FAIL"),
+])
+def test_classification(value, expected):
+    assert classify_guardbanded(value, LSL, USL, U) == expected
+
+def test_classification_uses_the_same_validation():
+    with pytest.raises(ValueError):
+        classify_guardbanded(5, 0, 10, 6)
+
+def test_the_worked_acceleration_factor():
+    assert acceleration_factor(0.7, 55, 85) == pytest.approx(7.95, rel=2e-3)
+
+def test_higher_activation_energy_accelerates_more():
+    assert acceleration_factor(1.0, 55, 85) > acceleration_factor(0.5, 55, 85)
+
+def test_a_hotter_stress_accelerates_more():
+    assert acceleration_factor(0.7, 55, 105) > acceleration_factor(0.7, 55, 85)
+
+@pytest.mark.parametrize("args", [(0.7, 85, 85), (0.7, 85, 55), (0, 55, 85), (-0.1, 55, 85)])
+def test_acceleration_factor_rejects_bad_input(args):
+    with pytest.raises(ValueError):
+        acceleration_factor(*args)
+
+def test_burnin_hours():
+    assert burnin_hours(1000, 7.95) == pytest.approx(125.8, rel=1e-3)
+    assert burnin_hours(0, 5) == 0
+
+def test_the_two_burnin_functions_work_together():
+    af = acceleration_factor(0.7, 55, 85)
+    assert burnin_hours(1000, af) == pytest.approx(125.7, rel=5e-3)
+
+@pytest.mark.parametrize("args", [(-1, 5), (100, 0), (100, -2)])
+def test_burnin_hours_rejects_bad_input(args):
+    with pytest.raises(ValueError):
+        burnin_hours(*args)
+`,
+  },
 ];
 
 /* ------------------------------------------------------------------ glossary */
@@ -2513,6 +2653,12 @@ TDE.GLOSSARY = [
       ["BIST", "Built-In Self-Test", "A test that the product runs on itself, started by the tester."],
       ["ESS", "Environmental Stress Screening", "Heat, cold or power cycling to make early-life failures show up in the factory. Burn-in is one form."],
       ["PCOLA / SOQ", "Presence, Correctness, Orientation, Live, Alignment / Shorts, Opens, Quality", "A checklist of defect classes used to judge test coverage."],
+      ["TAP", "Test Access Port", "The 4 or 5 pins of the JTAG interface (TCK, TMS, TDI, TDO and optionally TRST)."],
+      ["BSDL", "Boundary Scan Description Language", "A file from the chip vendor that describes a device's boundary-scan cells and pins. Needed to generate boundary-scan tests."],
+      ["SVF", "Serial Vector Format", "A text format for JTAG operations, often used to program devices through the TAP."],
+      ["HALT / HASS", "Highly Accelerated Life Test / Highly Accelerated Stress Screen", "Stress methods that go beyond normal conditions to find design weaknesses (HALT) or screen production units (HASS)."],
+      ["AF", "Acceleration Factor", "How many hours of normal use one hour of stress represents in a given model, for example Arrhenius."],
+      ["Ea", "Activation energy", "In the Arrhenius model, how strongly a failure mechanism speeds up with temperature. Typically given in eV."],
       ["TUR", "Test Uncertainty Ratio", "Tolerance of what you measure divided by the measurement uncertainty. A common rule of thumb is 4:1 or better."],
       ["NTF", "No Trouble Found", "A unit failed the tester but no fault was found afterwards. A sign of false fails."],
       ["TP", "Test Point", "A pad or pin placed on the board so a probe can reach a net."],

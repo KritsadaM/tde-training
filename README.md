@@ -71,6 +71,7 @@ There are two exercise kinds:
 | 11 | Easy | implement | `usable_capacity_kw`, `redundancy_ok`, `bbu_runtime_s`: N+1 power shelf and battery ride-through |
 | 12 | Medium | implement | `testers_needed`, `cost_per_unit`, `breakeven_units`: size a test line and price the test |
 | 13 | Medium | implement | `diff_config`: compare a node's readings with its golden configuration |
+| 14 | Medium | implement | `guardbanded_limits`, `classify_guardbanded`, `acceleration_factor`, `burnin_hours`: guardbands and Arrhenius burn-in |
 
 ## Navigation
 

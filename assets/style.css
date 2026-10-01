@@ -438,3 +438,13 @@ main, footer { transition: margin-left .2s ease; }
 .calc-out > div.hl { background: var(--accent-soft); }
 .calc-out > div.hl b { color: var(--accent); }
 .subpage pre.code { margin: 8px 0 14px; }
+
+/* ---------------------------------------------------------------- coverage matrix */
+.cov-tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 12px; }
+table.cov th, table.cov td { padding: 8px 10px; }
+table.cov tbody th { font-weight: 600; white-space: nowrap; }
+table.cov tr.gap td:last-child b { color: var(--hard); }
+button.cell { width: 42px; height: 34px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); color: var(--muted); font: 700 1rem var(--font); cursor: pointer; }
+button.cell:hover { border-color: var(--accent); }
+button.cell.lv1 { background: var(--medium-bg); color: var(--medium); border-color: transparent; }
+button.cell.lv2 { background: var(--accent); color: var(--accent-ink); border-color: transparent; }

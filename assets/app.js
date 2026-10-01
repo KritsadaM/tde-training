@@ -536,6 +536,96 @@
     breakeven();
   }
 
+  /* ------------------------------------------------------------ strategy tools */
+  function buildTools() {
+    if (!$("#cov-table")) return;
+    const num = (id) => parseFloat($(`#${id}`).value);
+    const set = (id, text) => { $(`#${id}`).textContent = text; };
+    const fmt = (n, d = 0) => n.toLocaleString("en-US", { maximumFractionDigits: d, minimumFractionDigits: d });
+    const sig = (n) => String(Number(n.toPrecision(6)));
+
+    /* --- coverage matrix: 0 none, 1 partial, 2 full */
+    const DEFECTS = ["Presence", "Correctness", "Orientation", "Live", "Alignment", "Shorts", "Opens", "Quality"];
+    const STAGES = ["AOI", "ICT", "JTAG", "FCT", "Burn-in"];
+    const PRESETS = {
+      typical: [[2, 2, 0, 1, 0], [1, 2, 0, 1, 0], [1, 1, 0, 1, 0], [0, 1, 1, 2, 1], [2, 0, 0, 0, 0], [1, 2, 1, 1, 0], [1, 2, 1, 1, 0], [1, 0, 0, 1, 1]],
+      dense: [[2, 0, 0, 1, 0], [1, 0, 0, 1, 0], [1, 0, 0, 1, 0], [0, 0, 1, 2, 1], [2, 0, 0, 0, 0], [1, 0, 1, 1, 0], [1, 0, 1, 1, 0], [1, 0, 0, 1, 1]],
+      clear: DEFECTS.map(() => STAGES.map(() => 0)),
+    };
+    let grid = store.get("tde.coverage", null);
+    if (!Array.isArray(grid) || grid.length !== DEFECTS.length || grid.some((r) => !Array.isArray(r) || r.length !== STAGES.length)) grid = PRESETS.typical.map((r) => [...r]);
+    const SYMBOL = ["–", "½", "✓"], WORD = ["none", "partial", "full"];
+    const table = $("#cov-table");
+
+    function renderCoverage() {
+      const classCov = grid.map((row) => Math.max(...row) / 2);
+      table.replaceChildren(
+        el("thead", {}, el("tr", {}, el("th", { scope: "col" }, "Defect class"), STAGES.map((s) => el("th", { scope: "col", class: "c" }, s)), el("th", { scope: "col", class: "c" }, "Covered"))),
+        el("tbody", {}, DEFECTS.map((d, r) => el("tr", { class: classCov[r] < 1 ? "gap" : "" },
+          el("th", { scope: "row" }, d),
+          STAGES.map((s, c) => {
+            const b = el("button", { type: "button", class: `cell lv${grid[r][c]}`, "aria-label": `${d} at ${s}: ${WORD[grid[r][c]]}. Click to change.` }, SYMBOL[grid[r][c]]);
+            b.addEventListener("click", () => { grid[r][c] = (grid[r][c] + 1) % 3; store.set("tde.coverage", grid); renderCoverage(); });
+            return el("td", { class: "c" }, b);
+          }),
+          el("td", { class: "c" }, el("b", {}, `${fmt(classCov[r] * 100)}%`)))))
+      );
+      const gaps = DEFECTS.filter((_, r) => classCov[r] < 1);
+      set("cov-score", `${fmt((classCov.reduce((a, b) => a + b, 0) / DEFECTS.length) * 100)}%`);
+      set("cov-gaps", String(gaps.length));
+      set("cov-gaplist", gaps.length ? gaps.map((g) => `${g} (${fmt(classCov[DEFECTS.indexOf(g)] * 100)}%)`).join(", ") : "No gaps in this matrix.");
+    }
+    $$("[data-preset]").forEach((b) => b.addEventListener("click", () => { grid = PRESETS[b.dataset.preset].map((r) => [...r]); store.set("tde.coverage", grid); renderCoverage(); }));
+    renderCoverage();
+
+    /* --- guardband */
+    function guardband() {
+      const lsl = num("gb-lsl"), usl = num("gb-usl"), u = num("gb-u"), g = num("gb-guard"), x = num("gb-reading");
+      const out = ["gb-limits", "gb-verdict", "gb-lost", "gb-tur"];
+      const bad = !(usl > lsl) || !(u >= 0) || !(g >= 0);
+      if (bad) { out.forEach((id) => set(id, "–")); set("gb-why", "Check the limits and the uncertainty."); return; }
+      const lo = lsl + g * u, hi = usl - g * u;
+      set("gb-tur", u > 0 ? `${fmt((usl - lsl) / 2 / u, 1)} : 1` : "∞");
+      set("gb-lost", `${fmt(((2 * g * u) / (usl - lsl)) * 100, 1)}%`);
+      if (!(lo < hi)) { set("gb-limits", "none"); set("gb-verdict", "–"); set("gb-why", "The guardband is wider than the window."); return; }
+      set("gb-limits", `${sig(lo)} to ${sig(hi)}`);
+      if (Number.isNaN(x)) { set("gb-verdict", "–"); set("gb-why", ""); return; }
+      const verdict = x < lsl || x > usl ? "FAIL" : x >= lo && x <= hi ? "PASS" : "RETEST";
+      set("gb-verdict", verdict);
+      set("gb-why", verdict === "FAIL" ? "outside the spec limits" : verdict === "PASS" ? "inside the test limits" : "inside the spec, too close to an edge");
+    }
+    ["gb-lsl", "gb-usl", "gb-u", "gb-guard", "gb-reading"].forEach((id) => $(`#${id}`).addEventListener("input", guardband));
+    guardband();
+
+    /* --- burn-in (Arrhenius) */
+    function burnin() {
+      const ea = num("bi-ea"), use = num("bi-use"), stress = num("bi-stress"), hours = num("bi-hours");
+      if (!(ea > 0) || !(stress > use) || !(hours >= 0) || use <= -273.15) {
+        ["bi-af", "bi-time"].forEach((id) => set(id, "–")); set("bi-time2", "Stress must be hotter than use, and Ea above 0."); return;
+      }
+      const af = Math.exp((ea / 8.617e-5) * (1 / (use + 273.15) - 1 / (stress + 273.15)));
+      set("bi-af", `${fmt(af, af < 10 ? 2 : 1)}×`);
+      set("bi-time", `${fmt(hours / af, 1)} h`);
+      set("bi-time2", `simulates ${fmt(hours)} h of use at ${fmt(use)} °C`);
+    }
+    ["bi-ea", "bi-use", "bi-stress", "bi-hours"].forEach((id) => $(`#${id}`).addEventListener("input", burnin));
+    burnin();
+
+    /* --- fixture force and pin life */
+    function fixture() {
+      const pins = num("fx-pins"), f = num("fx-force"), area = num("fx-area"), life = num("fx-life"), tests = num("fx-tests");
+      if (!(pins >= 1 && f >= 0 && area > 0 && life > 0 && tests > 0)) { ["fx-total", "fx-kpa", "fx-days"].forEach((id) => set(id, "–")); return; }
+      const total = pins * f, kpa = total / (area / 10000) / 1000;
+      set("fx-total", `${fmt(total, 0)} N`);
+      set("fx-kgf", `about ${fmt(total / 9.80665, 1)} kgf`);
+      set("fx-kpa", `${fmt(kpa, 1)} kPa`);
+      set("fx-vac", kpa > 101 ? "more than the atmosphere can give: use a press" : kpa > 60 ? "high for vacuum alone: consider a press" : "within what vacuum can typically hold");
+      set("fx-days", fmt(life / tests));
+    }
+    ["fx-pins", "fx-force", "fx-area", "fx-life", "fx-tests"].forEach((id) => $(`#${id}`).addEventListener("input", fixture));
+    fixture();
+  }
+
   /* ------------------------------------------------------------ theme + nav */
   function setupTheme() {
     const root = document.documentElement;
@@ -559,12 +649,12 @@
   const CATEGORIES = [
     { id: "start", title: "Start", pages: ["top"] },
     { id: "job", title: "The job", pages: ["role", "models", "lifecycle"] },
-    { id: "systems", title: "Test systems", pages: ["diagrams", "deep-dive", "sequencer", "planning"] },
+    { id: "systems", title: "Test systems", pages: ["diagrams", "deep-dive", "sequencer", "planning", "tools"] },
     { id: "ocp", title: "OCP rack and cooling", pages: ["ocp", "cooling", "servertest"] },
     { id: "practice", title: "Learn by doing", pages: ["examples", "practice"] },
     { id: "ref", title: "Reference", pages: ["glossary"] },
   ];
-  const PAGE_LABELS = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", ocp: "OCP rack", cooling: "Cooling", sequencer: "Test sequencer", planning: "Capacity and cost", servertest: "Node test", examples: "Examples", practice: "Practice", glossary: "Glossary" };
+  const PAGE_LABELS = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", ocp: "OCP rack", cooling: "Cooling", sequencer: "Test sequencer", planning: "Capacity and cost", tools: "Strategy tools", servertest: "Node test", examples: "Examples", practice: "Practice", glossary: "Glossary" };
 
   function setupNavigation() {
     const html = document.documentElement;
@@ -851,6 +941,7 @@
     buildGlossary();
     buildCooling();
     buildPlanning();
+    buildTools();
     progress.paint();
     setupNavigation();
   });

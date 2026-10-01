@@ -7,9 +7,9 @@
   <title>TDE Training – Test Development Engineer</title>
   <meta name="description" content="Interactive training for Test Development Engineers in electronics manufacturing: CM and JDM programs, NPI and sustaining, tester hardware and software, diagrams, Python examples and hands-on exercises that run in your browser.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c7a6f'/%3E%3Cpath d='M8 17l5 5 11-12' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="assets/style.css?v=10dbe6f83a">
-  <script src="assets/content.js?v=10dbe6f83a" defer></script>
-  <script src="assets/app.js?v=10dbe6f83a" defer></script>
+  <link rel="stylesheet" href="assets/style.css?v=cab0fe1f9c">
+  <script src="assets/content.js?v=cab0fe1f9c" defer></script>
+  <script src="assets/app.js?v=cab0fe1f9c" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -25,7 +25,7 @@
   <div class="container">
     <button class="icon-btn" id="sb-toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide navigation"><span aria-hidden="true">☰</span></button>
     <a class="brand" href="#top"><span class="logo">TDE</span> Training</a>
-    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/13</span></span>
+    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/14</span></span>
     <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">☾</button>
   </div>
   <div id="progress-bar" aria-hidden="true"></div>
@@ -52,7 +52,7 @@
     <ul class="stats">
       <li><b>8</b><span>interactive diagrams</span></li>
       <li><b>12</b><span>code examples</span></li>
-      <li><b>13</b><span>graded exercises</span></li>
+      <li><b>14</b><span>graded exercises</span></li>
       <li><b>0</b><span>installs needed</span></li>
     </ul>
 
@@ -62,15 +62,16 @@
       <a class="card link" href="#models"><span class="num">2</span><h4>CM vs JDM</h4><p>The two program types and where the TDE joins each.</p></a>
       <a class="card link" href="#lifecycle"><span class="num">3</span><h4>NPI to sustaining</h4><p>The life of a tester, from proposal to maintenance.</p></a>
       <a class="card link" href="#diagrams"><span class="num">4</span><h4>Diagrams</h4><p>Test stages on the line and the anatomy of a tester.</p></a>
-      <a class="card link" href="#deep-dive"><span class="num">5</span><h4>Deep dive</h4><p>Strategy, hardware, software, DFT, programming, platforms, documents, safety.</p></a>
+      <a class="card link" href="#deep-dive"><span class="num">5</span><h4>Deep dive</h4><p>Strategy, hardware, fixtures, JTAG, software, retest policy, safety and more.</p></a>
       <a class="card link" href="#sequencer"><span class="num">6</span><h4>Test sequencer</h4><p>What a sequencer does, how to write steps, and a first-week plan for ISS3.</p></a>
       <a class="card link" href="#planning"><span class="num">7</span><h4>Capacity and cost</h4><p>How many testers, what a test costs, with calculators.</p></a>
-      <a class="card link" href="#ocp"><span class="num">8</span><h4>OCP rack</h4><p>Open Rack basics, power, safety, test stands, troubleshooting and a 30-day plan.</p></a>
-      <a class="card link" href="#cooling"><span class="num">9</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
-      <a class="card link" href="#servertest"><span class="num">10</span><h4>Node test</h4><p>Testing server nodes: flow, tools, BMC and Redfish, golden configuration.</p></a>
-      <a class="card link" href="#examples"><span class="num">11</span><h4>Examples</h4><p>Twelve Python examples. Eight run in your browser.</p></a>
-      <a class="card link" href="#practice"><span class="num">12</span><h4>Practice</h4><p>Thirteen graded exercises with hints and solutions.</p></a>
-      <a class="card link" href="#glossary"><span class="num">13</span><h4>Glossary</h4><p>170+ acronyms grouped by topic, with search.</p></a>
+      <a class="card link" href="#tools"><span class="num">8</span><h4>Strategy tools</h4><p>Coverage matrix, guardbands, burn-in time and fixture force.</p></a>
+      <a class="card link" href="#ocp"><span class="num">9</span><h4>OCP rack</h4><p>Open Rack basics, power, safety, test stands, troubleshooting and a 30-day plan.</p></a>
+      <a class="card link" href="#cooling"><span class="num">10</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
+      <a class="card link" href="#servertest"><span class="num">11</span><h4>Node test</h4><p>Testing server nodes: flow, tools, BMC and Redfish, golden configuration.</p></a>
+      <a class="card link" href="#examples"><span class="num">12</span><h4>Examples</h4><p>Twelve Python examples. Eight run in your browser.</p></a>
+      <a class="card link" href="#practice"><span class="num">13</span><h4>Practice</h4><p>Fourteen graded exercises with hints and solutions.</p></a>
+      <a class="card link" href="#glossary"><span class="num">14</span><h4>Glossary</h4><p>175+ acronyms grouped by topic, with search.</p></a>
     </div>
   </div>
 </section>
@@ -163,7 +164,7 @@
       </div>
     </div>
 
-    <div class="note"><p><b>Lost in acronyms?</b> The <a href="#glossary">Glossary</a> groups 170+ of them by topic: company, MFG, test, quality, software, hardware, interfaces, server and node test, OCP rack and cooling, IT and safety. It is searchable.</p></div>
+    <div class="note"><p><b>Lost in acronyms?</b> The <a href="#glossary">Glossary</a> groups 175+ of them by topic: company, MFG, test, quality, software, hardware, interfaces, server and node test, OCP rack and cooling, IT and safety. It is searchable.</p></div>
   </div>
 </section>
 
@@ -600,6 +601,89 @@
         <p>Everything is versioned, dated and has an owner. If a technician cannot act on a document without calling you, the document is not finished.</p>
       </div>
     </details>
+    <details>
+      <summary>14 · Fixture design in depth <small>contact is where most false fails start</small></summary>
+      <div class="dd">
+        <div class="table-wrap"><table>
+          <thead><tr><th>Fixture type</th><th>How it works</th><th>Good for</th></tr></thead>
+          <tbody>
+            <tr><td><b>Bed-of-nails, vacuum</b></td><td>Vacuum pulls the board down onto spring probes</td><td>High-volume ICT. Even pressure, fast loading</td></tr>
+            <tr><td><b>Bed-of-nails, pneumatic or mechanical press</b></td><td>A lid or plate presses the board onto the probes</td><td>High pin counts, where vacuum alone is not enough</td></tr>
+            <tr><td><b>Clamshell or manual</b></td><td>Operator closes a lid, or plugs in connectors</td><td>Low volume and functional test</td></tr>
+            <tr><td><b>Connector or cable interface</b></td><td>Connects through the product's own connectors, not pads</td><td>Functional test and system test</td></tr>
+            <tr><td><b>Flying probe</b></td><td>Moving probes, no fixture</td><td>Prototypes, NPI, low volume</td></tr>
+          </tbody></table></div>
+        <ul>
+          <li><b>Probes.</b> Spring-loaded probes (pogo pins) come in tip styles for different targets (pads, vias, through-hole leads, connectors) and in size classes matched to the pad pitch. Each has a spring force at working travel and a rated number of cycles. Read the datasheet.</li>
+          <li><b>Alignment and support.</b> Use the board's tooling holes with guide pins, add support pins so the board does not flex or crack, and keep out of tall components.</li>
+          <li><b>Wiring.</b> Keep wires short. Shield or twist sensitive analog nets. Use one clean ground reference. Use several probes in parallel for power nets that carry real current.</li>
+          <li><b>Low-resistance measurement.</b> Use four-wire (Kelvin) connections so probe and wire resistance do not add to the reading.</li>
+          <li><b>Serviceability.</b> Replaceable probe blocks, a fixture ID with a cycle counter, labelled wiring, current drawings. The fixture will be maintained by someone who did not build it.</li>
+          <li><b>Prove it.</b> Check contact resistance across the probes, and run a golden board and a known-bad board before release.</li>
+        </ul>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Symptom</th><th>Likely cause</th><th>Remedy</th></tr></thead>
+          <tbody>
+            <tr><td><b>Random opens</b></td><td>Worn or dirty probe tips, low travel</td><td>Clean or replace probes. Check the cycle count</td></tr>
+            <tr><td><b>Same pad fails again and again</b></td><td>Probe misaligned, flux residue on the pad</td><td>Inspect the probe mark on the pad, re-align</td></tr>
+            <tr><td><b>Power rail droops under load</b></td><td>Too few probes for the current</td><td>Add probes in parallel, shorten the wiring</td></tr>
+            <tr><td><b>Noisy analog readings</b></td><td>Long unshielded wires, ground loop</td><td>Shorten, shield, single-point ground</td></tr>
+            <tr><td><b>Cracked or damaged boards</b></td><td>Too much force, missing support pins</td><td>Reduce force, add supports</td></tr>
+          </tbody></table></div>
+        <p>Use the Fixture force calculator on the <a href="#tools/fixture">Strategy tools</a> page to check the numbers.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>15 · Boundary scan (JTAG) in practice <small>testing connections without probes</small></summary>
+      <div class="dd">
+        <p><b>Boundary scan</b> (IEEE 1149.1, usually called JTAG) puts a small cell at each pin of a compliant chip. Through a 4 or 5 pin Test Access Port (TCK, TMS, TDI, TDO and optionally TRST) the tester can drive and read those pins, even where it cannot touch the board.</p>
+        <div class="cols">
+          <div class="card"><h4>What it finds</h4><ul><li>Opens and shorts on nets between scan-capable devices</li><li>Stuck nets</li><li>With cluster tests, connections to simple non-scan parts</li><li>Programming of flash and other devices through the same port</li></ul></div>
+          <div class="card"><h4>What it does not</h4><ul><li>Component values (resistors, capacitors)</li><li>Analog behaviour</li><li>Anything on devices that have no scan cells</li><li>Timing at full speed, in general</li></ul></div>
+        </div>
+        <ol>
+          <li><b>Check the chain first.</b> Read each device's ID code and compare it with what the BSDL file expects. A broken chain makes every later result meaningless.</li>
+          <li><b>Run the interconnect test.</b> The tool drives patterns and reports the failing nets and pins by name.</li>
+          <li><b>Run cluster and memory tests</b> where they apply.</li>
+          <li><b>Program devices,</b> if the program uses JTAG for that, and verify by reading back.</li>
+        </ol>
+        <p><b>You need:</b> a BSDL file for every scan device, the netlist, an intact chain from TDI to TDO, and access to the TAP signals (a header, test pads or a connector). Ask these in the design review:</p>
+        <ul class="checklist">
+          <li>Are all devices with a TAP in one chain, and in which order?</li>
+          <li>Which devices have no BSDL file?</li>
+          <li>Are TAP signals accessible, and buffered if the chain is long?</li>
+          <li>Is anything holding the chain in reset or disabling it at test time?</li>
+          <li>Which nets does the tool report as covered, and which are not?</li>
+          <li>How long does a full run take, and can programming share the connection?</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>16 · Retest and repair policy <small>never "retest until it passes"</small></summary>
+      <div class="dd">
+        <p>When a unit fails, what happens next decides whether the data stays honest. A written policy stops people from retesting until something passes.</p>
+        <ol>
+          <li><b>Failure.</b> The tester records FAIL (or ERROR) with the step and the measurement.</li>
+          <li><b>One controlled retest,</b> after a defined action (reseat the unit, check the fixture). The retest is recorded as attempt 2, never overwritten.</li>
+          <li><b>Pass on the retest?</b> The first-pass result still counts as a fail in FPY. Log it as a possible fixture or contact issue (NTF) and watch the trend.</li>
+          <li><b>Fail again?</b> Treat it as a real defect. Send it to repair with the failure data.</li>
+          <li><b>Repair.</b> Record the defect code, location and cause. After repair, run the <b>full</b> test again, not only the step that failed.</li>
+          <li><b>Limit the loops.</b> A unit that needs more than a set number of repairs or rework cycles is scrapped or escalated, because every thermal cycle can damage it.</li>
+          <li><b>Feed it back.</b> A weekly Pareto of defect codes goes to the process team and the design team.</li>
+        </ol>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Signal</th><th>What it usually means</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td><b>Many units pass only on retest</b></td><td>Contact, fixture wear, an unstable measurement</td><td>Check the fixture, probes and golden unit, not the product</td></tr>
+            <tr><td><b>Same defect code on many units</b></td><td>A process or design cause</td><td>Send the Pareto to the process team</td></tr>
+            <tr><td><b>High NTF rate</b></td><td>False fails: limits, noise, contact</td><td>Repeatability study, review limits and guardband</td></tr>
+            <tr><td><b>Failures only on one station</b></td><td>The station, not the product</td><td>Swap units between stations, check calibration</td></tr>
+          </tbody></table></div>
+        <p>Practise the numbers behind this in exercise 3 (first-pass yield, final yield, retest rate).</p>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -883,10 +967,96 @@ testers = round up ( needed / one tester gives )</code></pre>
   </div>
 </section>
 
+<!-- ============================================================ STRATEGY TOOLS -->
+<section class="block view" id="tools">
+  <div class="container">
+    <span class="kicker">08 · Strategy tools</span>
+    <h2>Four tools for test strategy decisions</h2>
+    <p class="lead">Small, hands-on tools for questions a TDE answers again and again: what does our strategy cover, how tight should limits be, how long should a burn-in run, and can the fixture hold the board. Change the numbers and watch the answer move. The defaults are illustrations, not specifications.</p>
+
+    <div class="subpage" data-sub="coverage" data-title="Coverage matrix">
+      <h3>Which defects does each stage catch?</h3>
+      <p>Rows are the defect classes of the PCOLA / SOQ model, columns are test stages. Click a cell to cycle <b>none</b> (&ndash;), <b>partial</b> (&frac12;) and <b>full</b> (&check;). A class counts as covered by its <em>best</em> single stage. The empty rows are your risk, and a gap is a reason to add a stage, add access, or accept the risk in writing.</p>
+      <div class="cov-tools">
+        <button class="btn" type="button" data-preset="typical">Typical SMT board</button>
+        <button class="btn" type="button" data-preset="dense">Dense board, no ICT access</button>
+        <button class="btn ghost" type="button" data-preset="clear">Clear</button>
+      </div>
+      <div class="table-wrap"><table class="cov" id="cov-table"></table></div>
+      <div class="card calc"><div class="calc-out">
+        <div class="hl"><span>Overall coverage</span><b id="cov-score">–</b><small>average of the 8 classes</small></div>
+        <div><span>Gaps</span><b id="cov-gaps">–</b><small id="cov-gaplist"></small></div>
+      </div></div>
+      <p class="tag">The two presets are illustrations of how a strategy changes when ICT access disappears. Edit them to match the real product. Partial and full are your judgement, backed by fault-coverage reports when you have them.</p>
+    </div>
+
+    <div class="subpage" data-sub="guardband" data-title="Limits and guardband">
+      <h3>How tight should the test limits be?</h3>
+      <p>A measurement has uncertainty. A reading just inside the spec limit might belong to a unit that is really just outside. <b>Guardbanding</b> tightens the test limit by the uncertainty, so marginal units are retested or rejected instead of escaping. The price is some good units failing. You will code this in exercise 14.</p>
+      <div class="card calc" id="gb-calc">
+        <div class="calc-grid">
+          <label>Lower spec limit (LSL)<input id="gb-lsl" type="number" step="any" value="3.135" inputmode="decimal"></label>
+          <label>Upper spec limit (USL)<input id="gb-usl" type="number" step="any" value="3.465" inputmode="decimal"></label>
+          <label>Measurement uncertainty (same unit)<input id="gb-u" type="number" step="any" min="0" value="0.01" inputmode="decimal"></label>
+          <label>Guard factor (times the uncertainty)<input id="gb-guard" type="number" step="0.5" min="0" value="1" inputmode="decimal"></label>
+          <label>A reading to classify<input id="gb-reading" type="number" step="any" value="3.14" inputmode="decimal"></label>
+        </div>
+        <div class="calc-out">
+          <div class="hl"><span>Test limits</span><b id="gb-limits">–</b><small>what the tester actually uses</small></div>
+          <div><span>Verdict for the reading</span><b id="gb-verdict">–</b><small id="gb-why"></small></div>
+          <div><span>Window given up</span><b id="gb-lost">–</b><small>of the spec window</small></div>
+          <div><span>Uncertainty ratio</span><b id="gb-tur">–</b><small>half the window / uncertainty</small></div>
+        </div>
+      </div>
+      <div class="note"><p><b>The ratio</b> compares the tolerance with the uncertainty. A common rule of thumb is 4:1 or better. Below that, guardbanding eats a large part of the window, and the better fix is a more accurate measurement, not tighter limits. Set limits from <b>measured data</b> as well, and review them with TE and the customer.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="burnin" data-title="Burn-in time">
+      <h3>How long should a burn-in run?</h3>
+      <p>Burn-in (and other environmental stress screening) heats units to make early-life failures happen in the factory. The <b>Arrhenius model</b> estimates how much faster a thermally activated failure mechanism happens at the stress temperature than at the use temperature. You will code this in exercise 14.</p>
+      <pre class="code"><code>AF = exp( Ea / k x ( 1 / T_use - 1 / T_stress ) )       temperatures in kelvin, k = 8.617e-5 eV/K</code></pre>
+      <div class="card calc" id="bi-calc">
+        <div class="calc-grid">
+          <label>Activation energy Ea (eV)<input id="bi-ea" type="number" step="0.05" min="0.05" value="0.7" inputmode="decimal"></label>
+          <label>Use temperature (&deg;C)<input id="bi-use" type="number" step="1" value="55" inputmode="decimal"></label>
+          <label>Stress temperature (&deg;C)<input id="bi-stress" type="number" step="1" value="85" inputmode="decimal"></label>
+          <label>Use hours to simulate<input id="bi-hours" type="number" step="10" min="0" value="1000" inputmode="decimal"></label>
+        </div>
+        <div class="calc-out">
+          <div class="hl"><span>Acceleration factor</span><b id="bi-af">–</b><small>one hour of stress equals this many hours of use</small></div>
+          <div><span>Burn-in time</span><b id="bi-time">–</b><small id="bi-time2"></small></div>
+        </div>
+      </div>
+      <div class="note"><p><b>This is a teaching model.</b> It assumes one failure mechanism and a known Ea. Real programs take Ea and the plan from reliability data, never exceed the temperature ratings of the weakest component, and balance the cost of oven time and floor space against the failures it catches. Not every failure is thermally activated. Ask the reliability engineers.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="fixture" data-title="Fixture force and pin life">
+      <h3>Can the fixture hold the board, and how long do the pins last?</h3>
+      <p>Every probe pushes back on the board. The total force must be held by vacuum or by a press, without bending the board. And every test wears the probes, so their rated life sets the maintenance interval.</p>
+      <div class="card calc" id="fx-calc">
+        <div class="calc-grid">
+          <label>Number of probes<input id="fx-pins" type="number" step="10" min="1" value="600" inputmode="decimal"></label>
+          <label>Force per probe (N, at working travel)<input id="fx-force" type="number" step="0.1" min="0" value="0.8" inputmode="decimal"></label>
+          <label>Board area sealed by the vacuum (cm&sup2;)<input id="fx-area" type="number" step="10" min="1" value="300" inputmode="decimal"></label>
+          <label>Probe rated life (cycles)<input id="fx-life" type="number" step="10000" min="1" value="200000" inputmode="decimal"></label>
+          <label>Tests per fixture per day (including retests)<input id="fx-tests" type="number" step="10" min="1" value="270" inputmode="decimal"></label>
+        </div>
+        <div class="calc-out">
+          <div class="hl"><span>Total probe force</span><b id="fx-total">–</b><small id="fx-kgf"></small></div>
+          <div><span>Vacuum needed</span><b id="fx-kpa">–</b><small id="fx-vac"></small></div>
+          <div><span>Probe life</span><b id="fx-days">–</b><small>days at this test rate</small></div>
+        </div>
+        <p class="tag">Typical spring-probe forces are roughly 0.5 to 2 N at working travel, so read the datasheet. Atmospheric pressure is about 101 kPa, so a vacuum can never exceed that, and practical fixtures deliver only part of it.</p>
+      </div>
+      <div class="note"><p><b>Plan the maintenance, not the failure.</b> Replace probes at a fraction of their rated life (for example 70 to 80%), count the cycles in the station software, and keep spares.</p></div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================================================ 5. OCP RACK -->
 <section class="block view" id="ocp">
   <div class="container">
-    <span class="kicker">08 · OCP rack</span>
+    <span class="kicker">09 · OCP rack</span>
     <h2>The OCP rack: what is different</h2>
     <p class="lead">OCP racks are new to the team, so start here. <b>OCP</b> (Open Compute Project) is a community that publishes open hardware designs for data centres. Its <b>Open Rack</b> changes how a rack is built, powered and cooled, and with it, how a rack is tested.</p>
 
@@ -1168,7 +1338,7 @@ testers = round up ( needed / one tester gives )</code></pre>
 <!-- ============================================================ 6. COOLING -->
 <section class="block view" id="cooling">
   <div class="container">
-    <span class="kicker">09 · Cooling</span>
+    <span class="kicker">10 · Cooling</span>
     <h2>Cooling: fan, water or immersion?</h2>
     <p class="lead">Every watt a rack uses becomes heat that has to go somewhere. As chips get hotter, air runs out of capacity and liquid takes over. This page compares the options, then goes deep on <b>water cooling</b>, the one an OCP rack is most likely to use.</p>
 
@@ -1266,7 +1436,7 @@ testers = round up ( needed / one tester gives )</code></pre>
 <!-- ============================================================ NODE TEST -->
 <section class="block view" id="servertest">
   <div class="container">
-    <span class="kicker">10 · Node test</span>
+    <span class="kicker">11 · Node test</span>
     <h2>Testing a server node</h2>
     <p class="lead">Before a node goes into an OCP rack it is tested on its own. The tests combine what you know about boards (power, firmware, measurements) with how servers are managed (a BMC, Linux tools, Redfish). This page is the map.</p>
 
@@ -1371,7 +1541,7 @@ curl -sk -u "$BMC_USER:$BMC_PASS" "https://$BMC/redfish/v1/UpdateService/Firmwar
 <!-- ============================================================ 6. EXAMPLES -->
 <section class="block view" id="examples">
   <div class="container">
-    <span class="kicker">11 · Programming examples</span>
+    <span class="kicker">12 · Programming examples</span>
     <h2>Tester software, ready to run</h2>
     <p class="lead">Python with a pytest-style API, applied to production test. Eight of the twelve examples are <b>editable and run in your browser</b>: change the code, break it on purpose and see how a failure looks. The read-only ones show real instrument control, a station loop, a release pipeline and a liquid test sequence. If your stations use LabVIEW, TestStand or C#, the structure is the same.</p>
     <p class="runtime-note">The first run downloads the Python runtime (about 10 MB, then cached by your browser).</p>
@@ -1382,8 +1552,8 @@ curl -sk -u "$BMC_USER:$BMC_PASS" "https://$BMC/redfish/v1/UpdateService/Firmwar
 <!-- ============================================================ 7. PRACTICE -->
 <section class="block view" id="practice">
   <div class="container">
-    <span class="kicker">12 · Practice</span>
-    <h2>Prove it: thirteen exercises</h2>
+    <span class="kicker">13 · Practice</span>
+    <h2>Prove it: fourteen exercises</h2>
     <p class="lead">Two kinds of challenge. In <b>Implement</b> exercises you write a function and hidden tests grade it. In <b>Write the tests</b> exercises the code already exists in one correct and several buggy versions, and your tests must tell them apart, because a tester that cannot spot a planted bug will not spot a real one. Progress and code are saved in this browser.</p>
     <div id="practice-root"></div>
   </div>
@@ -1391,7 +1561,7 @@ curl -sk -u "$BMC_USER:$BMC_PASS" "https://$BMC/redfish/v1/UpdateService/Firmwar
 <!-- ============================================================ 8. GLOSSARY -->
 <section class="block view" id="glossary">
   <div class="container">
-    <span class="kicker">13 · Reference</span>
+    <span class="kicker">14 · Reference</span>
     <h2>Glossary of acronyms</h2>
     <p class="lead">The acronyms you will meet, grouped by topic. Search by acronym or by meaning, or pick a topic. Some acronyms mean different things in different fields (for example <b>SPI</b>), so check the group.</p>
     <div class="gl-layout">
