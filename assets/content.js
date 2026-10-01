@@ -539,6 +539,53 @@ def run_station(station, mes):
     intro: "Tester software is a product too. Run the simulator-based tests on every change, and build a checksummed release package from a version tag. That tag is exactly what MFG installs.",
     code: ghaYaml,
   },
+  {
+    id: "golden",
+    title: "9. Golden unit drift & health check",
+    runnable: true,
+    intro: "Before every shift on the production line, the station runs a <b>golden unit</b> (a known-good certified board) to prove that the tester itself has not drifted or become noisy. If the tester's mean shifts or contact resistance fluctuates, the shift stops <em>before</em> any customer boards are falsely rejected.",
+    code: String.raw`import statistics
+import pytest
+
+class StationHealthError(Exception):
+    """Raised when the tester itself drifts out of calibration."""
+
+def verify_golden_unit(readings, expected_nominal, max_drift_pct=1.0, max_sigma=0.015):
+    """Verify tester calibration before starting the shift.
+    readings: measurements on the certified golden unit.
+    expected_nominal: certified nominal value (e.g. 5.000 V).
+    """
+    if len(readings) < 5:
+        raise ValueError("need at least 5 readings to evaluate station health")
+    mean = statistics.mean(readings)
+    stdev = statistics.stdev(readings)
+    drift_pct = abs(mean - expected_nominal) / expected_nominal * 100.0
+
+    if drift_pct > max_drift_pct:
+        raise StationHealthError(f"Tester mean drifted {drift_pct:.2f}% (limit {max_drift_pct}%)")
+    if stdev > max_sigma:
+        raise StationHealthError(f"Excessive measurement noise: sigma={stdev:.4f} (limit {max_sigma})")
+    return {"status": "HEALTHY", "mean": mean, "stdev": stdev, "drift_pct": drift_pct}
+
+def test_healthy_station_at_shift_start():
+    readings = [5.001, 5.000, 4.999, 5.002, 5.000, 4.998, 5.001]
+    res = verify_golden_unit(readings, expected_nominal=5.000)
+    assert res["status"] == "HEALTHY"
+    assert res["drift_pct"] < 0.1
+
+def test_catches_dmm_calibration_drift():
+    # Tester uncalibrated or probe oxidized: shifts by 80 mV on 5V (> 1.5%)
+    drifted = [5.080, 5.082, 5.081, 5.079, 5.080]
+    with pytest.raises(StationHealthError, match="Tester mean drifted"):
+        verify_golden_unit(drifted, expected_nominal=5.000, max_drift_pct=1.0)
+
+def test_catches_noisy_worn_pogo_pins():
+    # Pogo pins worn out: excessive contact resistance variance
+    noisy = [5.00, 5.05, 4.92, 5.08, 4.90, 5.03]
+    with pytest.raises(StationHealthError, match="Excessive measurement noise"):
+        verify_golden_unit(noisy, expected_nominal=5.000, max_sigma=0.015)
+`,
+  },
 ];
 
 /* ----------------------------------------------------------------- exercises */
@@ -1338,5 +1385,306 @@ def test_an_empty_sequence_is_an_error_not_a_pass():
     assert results == []
     assert dut.log == ["on", "off"]
 `,
+  },
+  /* ---------------------------------------------------------------------- 8 */
+  {
+    id: "cpk-eval",
+    level: "Medium",
+    kind: "implement",
+    title: "Process capability (Cpk)",
+    summary: "Evaluate whether a production rail is centered and capable.",
+    brief: `<p>Implement <code>calc_cpk(readings, lsl=None, usl=None, target_cpk=1.33)</code> returning sample statistics and a capability verdict.</p>
+      <ul>
+        <li><code>readings</code> is a list of numeric measurements (at least 2 required, else raise <code>ValueError</code>).</li>
+        <li>At least one of <code>lsl</code> or <code>usl</code> must be given, and <code>lsl &lt; usl</code> if both exist, else raise <code>ValueError</code>.</li>
+        <li>Non-numeric readings raise <code>TypeError</code>. Any <code>nan</code> or infinite reading raises <code>ValueError</code>.</li>
+        <li>Calculate sample mean and sample standard deviation (using $N-1$ divisor).</li>
+        <li>If standard deviation is <code>0</code>: if mean is within limits return <code>cpk = float("inf")</code>, else <code>0.0</code>.</li>
+        <li>For two-sided limits: <code>cpk = min(usl - mean, mean - lsl) / (3.0 * stdev)</code>.</li>
+        <li>For one-sided limits: <code>(usl - mean) / (3.0 * stdev)</code> if only USL, or <code>(mean - lsl) / (3.0 * stdev)</code> if only LSL.</li>
+        <li>Return <code>{"mean": mean, "stdev": stdev, "cpk": cpk, "capable": cpk &gt;= target_cpk}</code>.</li>
+      </ul>`,
+    starter: String.raw`def calc_cpk(readings, lsl=None, usl=None, target_cpk=1.33):
+    raise NotImplementedError
+`,
+    hints: [
+      "Validate the arguments first: length of readings, limits existence and order, and value types.",
+      "Use <code>statistics.mean</code> and <code>statistics.stdev</code> from the standard library for sample statistics.",
+      "Check the <code>sd == 0</code> special case before dividing by zero.",
+    ],
+    solution: String.raw`import math
+import statistics
+
+def calc_cpk(readings, lsl=None, usl=None, target_cpk=1.33):
+    if len(readings) < 2:
+        raise ValueError("at least 2 readings required")
+    if lsl is None and usl is None:
+        raise ValueError("at least one limit required")
+    if lsl is not None and usl is not None and lsl >= usl:
+        raise ValueError("lsl must be less than usl")
+
+    clean = []
+    for r in readings:
+        if not isinstance(r, (int, float)):
+            raise TypeError("readings must be numbers")
+        if math.isnan(r) or math.isinf(r):
+            raise ValueError("invalid reading: nan or inf")
+        clean.append(float(r))
+
+    mean = statistics.mean(clean)
+    sd = statistics.stdev(clean)
+
+    if sd == 0:
+        within = (lsl is None or mean >= lsl) and (usl is None or mean <= usl)
+        cpk = float("inf") if within else 0.0
+    else:
+        if lsl is not None and usl is not None:
+            cpk = min(usl - mean, mean - lsl) / (3.0 * sd)
+        elif usl is not None:
+            cpk = (usl - mean) / (3.0 * sd)
+        else:
+            cpk = (mean - lsl) / (3.0 * sd)
+
+    return {
+        "mean": mean,
+        "stdev": sd,
+        "cpk": cpk,
+        "capable": cpk >= target_cpk,
+    }
+`,
+    tests: String.raw`import pytest
+
+def test_centred_and_capable():
+    readings = [3.29, 3.30, 3.31, 3.30, 3.30]
+    res = calc_cpk(readings, lsl=3.135, usl=3.465, target_cpk=1.33)
+    assert res["mean"] == pytest.approx(3.30)
+    assert res["stdev"] == pytest.approx(0.007071, rel=1e-3)
+    assert res["cpk"] > 1.33
+    assert res["capable"] is True
+
+def test_off_centre_not_capable():
+    readings = [3.44, 3.45, 3.46]
+    res = calc_cpk(readings, lsl=3.135, usl=3.465, target_cpk=1.33)
+    assert res["mean"] == pytest.approx(3.45)
+    assert res["capable"] is False
+    assert res["cpk"] < 1.33
+
+def test_one_sided_limit():
+    readings = [0.1, 0.12, 0.11, 0.09]
+    res = calc_cpk(readings, usl=0.5, target_cpk=1.33)
+    assert res["capable"] is True
+    assert res["cpk"] > 2.0
+
+def test_zero_stdev_within_limits():
+    readings = [3.3, 3.3, 3.3]
+    res = calc_cpk(readings, lsl=3.135, usl=3.465)
+    assert res["cpk"] == float("inf")
+    assert res["capable"] is True
+
+def test_invalid_arguments_raise():
+    with pytest.raises(ValueError):
+        calc_cpk([3.3], lsl=3.0, usl=4.0)
+    with pytest.raises(ValueError):
+        calc_cpk([3.3, 3.4], lsl=None, usl=None)
+    with pytest.raises(ValueError):
+        calc_cpk([3.3, 3.4], lsl=5.0, usl=3.0)
+    with pytest.raises(TypeError):
+        calc_cpk([3.3, "bad"], lsl=1.0, usl=5.0)
+    with pytest.raises(ValueError):
+        calc_cpk([3.3, float("nan")], lsl=3.0, usl=4.0)
+`,
+  },
+];
+
+/* ------------------------------------------------------------------ glossary */
+/* Each entry: [acronym, stands for, in plain words]. Edit freely. */
+TDE.GLOSSARY = [
+  {
+    id: "company", title: "Company and programs",
+    intro: "Business and program terms you hear in meetings and proposals.",
+    items: [
+      ["CM", "Contract Manufacturing", "The customer designs the product and we manufacture it. The TDE develops test for the customer's design."],
+      ["JDM", "Joint Development Manufacturing", "We co-develop the product with the customer, then manufacture it. The TDE joins at the proposal stage."],
+      ["EMS", "Electronics Manufacturing Services", "The industry name for companies that build electronics on behalf of others."],
+      ["OEM", "Original Equipment Manufacturer", "The brand owner whose product we build. Usually \"the customer\"."],
+      ["NPI", "New Product Introduction", "The engineering work and first builds that take a design to mass production. Most of the TDE's work happens here."],
+      ["MP", "Mass Production", "The volume phase after NPI. The tester must now run all day, every day."],
+      ["RFQ", "Request for Quotation", "The customer asks for price and plan. A proposal answers it."],
+      ["SOW", "Statement of Work", "The written scope of what will be delivered and what the customer provides."],
+      ["NRE", "Non-Recurring Engineering", "One-time development cost (for example designing the tester), as opposed to cost per unit."],
+      ["BOM", "Bill of Materials", "The list of every part in a product or in a tester."],
+      ["ECO / ECN", "Engineering Change Order / Notice", "A controlled change to a design or process. Check what it does to the tester before it reaches the line."],
+    ],
+  },
+  {
+    id: "teams", title: "Teams and roles",
+    intro: "Who is who in a program.",
+    items: [
+      ["TDE", "Test Development Engineer", "Designs, builds and delivers the production test solution (hardware and software), then helps sustain it."],
+      ["TE", "Test Engineer", "Defines test requirements and coverage and supports testing. The TDE's closest partner."],
+      ["HPS", "Hardware Platform Solution", "The team that works on the hardware platform in JDM programs. Co-writes proposals with the TDE."],
+      ["MFG", "Manufacturing", "The line and the people who run the tester every day. The TDE's \"customer\" after handover."],
+      ["QA / QE", "Quality Assurance / Quality Engineer", "Owns quality systems, audits and customer quality issues."],
+      ["ME / PE", "Manufacturing Engineer / Process Engineer", "Owns the line process, such as SMT settings, throughput and yield improvement."],
+    ],
+  },
+  {
+    id: "mfg", title: "MFG: the manufacturing line",
+    intro: "Terms from the factory floor.",
+    items: [
+      ["SMT", "Surface Mount Technology", "Placing and soldering components onto the surface of a board."],
+      ["PCB", "Printed Circuit Board", "The bare board that carries the components."],
+      ["PCBA", "Printed Circuit Board Assembly", "A board with its components soldered on. Often the DUT."],
+      ["SPI", "Solder Paste Inspection", "Checks the printed solder paste before parts are placed. Not the SPI bus (see Interfaces)."],
+      ["AOI", "Automated Optical Inspection", "Cameras check for missing, skewed or bridged parts after reflow."],
+      ["AXI", "Automated X-ray Inspection", "X-ray check of joints you cannot see, such as under a BGA."],
+      ["BGA", "Ball Grid Array", "A chip package with solder balls underneath. Hidden joints are hard to probe or inspect."],
+      ["EOL", "End of Line", "The last test stage before packing."],
+      ["FAI", "First Article Inspection", "A detailed check of the first units of a build against the specification."],
+      ["SN", "Serial Number", "The unique ID that ties every test result to one unit."],
+      ["UPH", "Units Per Hour", "Line throughput. The tester's test time must not limit it."],
+      ["WIP", "Work In Progress", "Units that are on the line but not yet finished."],
+      ["SOP", "Standard Operating Procedure", "The written way a task must be done."],
+      ["WI", "Work Instruction", "Step-by-step instructions for an operator at a station."],
+      ["PM", "Preventive Maintenance", "Scheduled upkeep (calibration, pin replacement) so the tester does not fail unexpectedly."],
+      ["RMA", "Return Material Authorization", "The process for a unit that comes back from the customer."],
+    ],
+  },
+  {
+    id: "tde", title: "TDE: test and design for test",
+    intro: "The core vocabulary of production test.",
+    items: [
+      ["DUT", "Device Under Test", "The board or product on the tester."],
+      ["UUT", "Unit Under Test", "Another name for the DUT."],
+      ["DFT", "Design for Test", "Designing the product so it can be tested: test points, access, JTAG, programming headers."],
+      ["DFM", "Design for Manufacturing", "Designing the product so it can be built reliably and cheaply."],
+      ["ATE", "Automated Test Equipment", "A tester that runs the test automatically, under software control."],
+      ["ICT", "In-Circuit Test", "Checks components and connections on the assembled board, usually with a bed-of-nails fixture."],
+      ["FPT", "Flying Probe Test", "Like ICT but with moving probes and no fixture. Slower, good for prototypes and NPI."],
+      ["FCT", "Functional Test", "Powers the board and checks that it works: rails, clocks, interfaces, boot."],
+      ["JTAG", "Joint Test Action Group (IEEE 1149.1)", "Boundary scan: test connections between chips without probing, and program or debug devices."],
+      ["BIST", "Built-In Self-Test", "A test that the product runs on itself, started by the tester."],
+      ["ESS", "Environmental Stress Screening", "Heat, cold or power cycling to make early-life failures show up in the factory. Burn-in is one form."],
+      ["PCOLA / SOQ", "Presence, Correctness, Orientation, Live, Alignment / Shorts, Opens, Quality", "A checklist of defect classes used to judge test coverage."],
+      ["TUR", "Test Uncertainty Ratio", "Tolerance of what you measure divided by the measurement uncertainty. A common rule of thumb is 4:1 or better."],
+      ["NTF", "No Trouble Found", "A unit failed the tester but no fault was found afterwards. A sign of false fails."],
+      ["TP", "Test Point", "A pad or pin placed on the board so a probe can reach a net."],
+    ],
+  },
+  {
+    id: "quality", title: "Quality and yield",
+    intro: "How we judge the tester and the product with numbers.",
+    items: [
+      ["FPY", "First-Pass Yield", "Share of units that pass on the first attempt."],
+      ["RTY", "Rolled Throughput Yield", "FPY of every stage multiplied together."],
+      ["FFR", "False-Fail Rate", "Good units that the tester fails."],
+      ["DPPM", "Defective Parts Per Million", "How many bad units per million reached the customer."],
+      ["DPMO", "Defects Per Million Opportunities", "Defects per million chances for a defect (for example solder joints)."],
+      ["GR&R", "Gauge Repeatability and Reproducibility", "How consistent a measurement system is across repeats, testers and operators."],
+      ["MSA", "Measurement System Analysis", "The study of whether a measurement system is fit for purpose. GR&R is one part of it."],
+      ["SPC", "Statistical Process Control", "Control charts that show when a process or measurement drifts."],
+      ["LSL / USL", "Lower / Upper Specification Limit", "The limits the product must meet."],
+      ["Cpk", "Process Capability Index", "How many 3-sigma widths fit between the mean and the nearest limit. Many programs ask for 1.33 or more."],
+      ["FA", "Failure Analysis", "Finding out exactly why a unit failed."],
+      ["RCA", "Root Cause Analysis", "Digging past the symptom to the real cause."],
+      ["8D", "Eight Disciplines", "A structured problem-solving report format common in customer quality issues."],
+      ["CAPA", "Corrective and Preventive Action", "Fix the problem and stop it happening again."],
+    ],
+  },
+  {
+    id: "software", title: "Software",
+    intro: "Terms for the test software side.",
+    items: [
+      ["SCPI", "Standard Commands for Programmable Instruments", "Text commands such as MEAS:VOLT:DC? that most instruments understand."],
+      ["VISA", "Virtual Instrument Software Architecture", "The software layer used to talk to instruments over USB, LAN or GPIB."],
+      ["API", "Application Programming Interface", "The way one program asks another to do something."],
+      ["SDK", "Software Development Kit", "Libraries and tools from a vendor for building on their product."],
+      ["DLL", "Dynamic-Link Library", "A compiled library (Windows) that LabVIEW or C# programs often call for a vendor's driver."],
+      ["GUI / UI", "Graphical User Interface / User Interface", "What the operator sees and clicks."],
+      ["CLI", "Command-Line Interface", "Using a program by typing commands."],
+      ["IDE", "Integrated Development Environment", "The editor and tools you write code in."],
+      ["CI/CD", "Continuous Integration / Continuous Delivery", "Automatically testing and packaging every change."],
+      ["TDD", "Test-Driven Development", "Writing the test before the code that satisfies it."],
+      ["LabVIEW", "Laboratory Virtual Instrument Engineering Workbench", "A graphical programming environment widely used for test stations."],
+      ["JSON", "JavaScript Object Notation", "A text format for structured data, such as limits files and result records."],
+      ["YAML", "YAML Ain't Markup Language", "A human-friendly text format for configuration."],
+      ["CSV", "Comma-Separated Values", "A simple table in text form."],
+      ["XML", "Extensible Markup Language", "A tagged text format used by many test and report tools."],
+      ["SQL", "Structured Query Language", "The language for asking a database questions."],
+    ],
+  },
+  {
+    id: "hardware", title: "Hardware and instruments",
+    intro: "Equipment and components you meet in a tester.",
+    items: [
+      ["PSU", "Power Supply Unit", "Gives the DUT power, with voltage and current limits."],
+      ["DMM", "Digital Multimeter", "Measures voltage, current and resistance."],
+      ["SMU", "Source Measure Unit", "Sources a voltage or current and measures the result in one instrument."],
+      ["DAQ", "Data Acquisition", "A card or unit that reads many analog and digital signals."],
+      ["DSO", "Digital Storage Oscilloscope", "Shows and measures signals over time."],
+      ["AWG", "Arbitrary Waveform Generator", "Creates test signals of any shape."],
+      ["LCR", "Inductance, Capacitance, Resistance meter", "Measures the value of passive components."],
+      ["e-load", "Electronic Load", "Draws a controlled current from a power source to test it under load."],
+      ["PLC", "Programmable Logic Controller", "An industrial controller, often used for fixture actuation and interlocks."],
+      ["ADC / DAC", "Analog-to-Digital / Digital-to-Analog Converter", "Turns a voltage into a number and back."],
+      ["MCU", "Microcontroller Unit", "A small chip with a processor, memory and I/O. Often runs the DUT's firmware."],
+      ["FPGA", "Field-Programmable Gate Array", "A chip whose logic is defined by a loaded configuration."],
+      ["SoC", "System on Chip", "A single chip with processor, memory and peripherals."],
+      ["GPIO", "General-Purpose Input/Output", "A pin the software can set high or low, or read."],
+      ["PWM", "Pulse-Width Modulation", "A signal whose on-time ratio carries information or controls power."],
+      ["DC / AC", "Direct / Alternating Current", "Steady or oscillating electrical supply and signals."],
+      ["HV", "High Voltage", "Needs extra safety measures at the station."],
+      ["RF", "Radio Frequency", "Wireless signals; testing needs shielded fixtures and special instruments."],
+      ["EMI / EMC", "Electromagnetic Interference / Compatibility", "Unwanted signals that disturb a circuit, and a product's ability to live with them."],
+    ],
+  },
+  {
+    id: "interfaces", title: "Interfaces and buses",
+    intro: "The ways a tester talks to the DUT and to instruments.",
+    items: [
+      ["UART", "Universal Asynchronous Receiver-Transmitter", "A serial port. The DUT console usually runs over it."],
+      ["RS-232 / RS-485", "Recommended Standard 232 / 485", "Electrical standards for serial links. RS-485 handles longer cables and many devices."],
+      ["SPI", "Serial Peripheral Interface", "A fast four-wire chip-to-chip bus. Not Solder Paste Inspection."],
+      ["I2C", "Inter-Integrated Circuit", "A two-wire bus for sensors and small memories."],
+      ["SWD", "Serial Wire Debug", "A two-pin interface to program and debug ARM chips."],
+      ["USB", "Universal Serial Bus", "Common link to instruments and to DUTs."],
+      ["PCIe", "Peripheral Component Interconnect Express", "High-speed bus inside servers and many boards."],
+      ["CAN", "Controller Area Network", "A robust bus used in vehicles and industrial equipment."],
+      ["GPIB", "General Purpose Interface Bus (IEEE 488)", "An older instrument bus that is still found on bench equipment."],
+      ["LAN / Ethernet", "Local Area Network", "Network cable link. Many modern instruments are controlled over it."],
+    ],
+  },
+  {
+    id: "it", title: "IT and factory systems",
+    intro: "The systems around the tester.",
+    items: [
+      ["MES", "Manufacturing Execution System", "Tracks each unit and its results through the line. The tester reads routing from it and uploads results to it."],
+      ["ERP", "Enterprise Resource Planning", "Company-wide system for orders, materials and finance."],
+      ["PLM", "Product Lifecycle Management", "Holds design data, documents and revisions."],
+      ["IP", "Internet Protocol (address)", "The network address of a station or instrument."],
+      ["DHCP", "Dynamic Host Configuration Protocol", "Hands out IP addresses automatically. Instruments often need a fixed one instead."],
+      ["DNS", "Domain Name System", "Turns names into IP addresses."],
+      ["NTP", "Network Time Protocol", "Keeps clocks in sync so test records have trustworthy timestamps."],
+      ["SSH", "Secure Shell", "Encrypted remote login, used to reach a DUT or a station."],
+      ["SFTP", "SSH File Transfer Protocol", "Secure file copy, for logs and software releases."],
+      ["VPN", "Virtual Private Network", "Secure remote access to the company network."],
+      ["VM", "Virtual Machine", "A computer simulated in software, handy for build servers."],
+      ["DB", "Database", "Where results and limits can be stored and queried."],
+      ["SSO", "Single Sign-On", "One login for many company systems."],
+    ],
+  },
+  {
+    id: "safety", title: "Safety and compliance",
+    intro: "Rules that protect people, products and customers.",
+    items: [
+      ["ESD", "Electrostatic Discharge", "A static spark that can damage components. Stations need wrist straps, mats and grounding."],
+      ["EHS", "Environment, Health and Safety", "The function and rules that keep people and the environment safe."],
+      ["PPE", "Personal Protective Equipment", "Gloves, glasses and other protection."],
+      ["LOTO", "Lockout / Tagout", "Making equipment safe and locked before maintenance."],
+      ["E-stop", "Emergency Stop", "The big red button that cuts power at once."],
+      ["RoHS", "Restriction of Hazardous Substances", "Rules limiting certain materials in electronics."],
+      ["IPC", "IPC (electronics industry association)", "Publishes standards such as IPC-A-610, acceptability of assemblies."],
+      ["ISO 9001", "ISO 9001", "A widely used standard for quality management systems."],
+    ],
   },
 ];

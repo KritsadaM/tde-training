@@ -32,8 +32,9 @@
       <a href="#deep-dive">Deep dive</a>
       <a href="#examples">Examples</a>
       <a href="#practice">Practice</a>
+      <a href="#glossary">Glossary</a>
     </nav>
-    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/7</span></span>
+    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/8</span></span>
     <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">☾</button>
   </div>
   <div id="progress-bar" aria-hidden="true"></div>
@@ -52,20 +53,21 @@
     </div>
     <ul class="stats">
       <li><b>4</b><span>interactive diagrams</span></li>
-      <li><b>8</b><span>code examples</span></li>
-      <li><b>7</b><span>graded exercises</span></li>
+      <li><b>9</b><span>code examples</span></li>
+      <li><b>8</b><span>graded exercises</span></li>
       <li><b>0</b><span>installs needed</span></li>
     </ul>
 
     <h2 class="outline-title">Course map</h2>
     <div class="grid g3 outline">
-      <a class="card link" href="#role"><span class="num">1</span><h4>The role</h4><p>What a TDE does, who they work with and the skills involved.</p></a>
+      <a class="card link" href="#role"><span class="num">1</span><h4>The role</h4><p>What a TDE does, 30-60-90 roadmap and skills.</p></a>
       <a class="card link" href="#models"><span class="num">2</span><h4>CM vs JDM</h4><p>The two program types and where the TDE joins each.</p></a>
       <a class="card link" href="#lifecycle"><span class="num">3</span><h4>NPI to sustaining</h4><p>The life of a tester, from proposal to maintenance.</p></a>
       <a class="card link" href="#diagrams"><span class="num">4</span><h4>Diagrams</h4><p>Test stages on the line and the anatomy of a tester.</p></a>
-      <a class="card link" href="#deep-dive"><span class="num">5</span><h4>Deep dive</h4><p>Strategy, hardware, software, measurement, yield, proposals, handover.</p></a>
-      <a class="card link" href="#examples"><span class="num">6</span><h4>Examples</h4><p>Eight Python examples. Five run in your browser.</p></a>
-      <a class="card link" href="#practice"><span class="num">7</span><h4>Practice</h4><p>Seven graded exercises with hints and solutions.</p></a>
+      <a class="card link" href="#deep-dive"><span class="num">5</span><h4>Deep dive</h4><p>Strategy, hardware, software, 4M1E, safety, yield, proposals.</p></a>
+      <a class="card link" href="#examples"><span class="num">6</span><h4>Examples</h4><p>Nine Python examples. Six run in your browser.</p></a>
+      <a class="card link" href="#practice"><span class="num">7</span><h4>Practice</h4><p>Eight graded exercises with hints and solutions.</p></a>
+      <a class="card link" href="#glossary"><span class="num">8</span><h4>Glossary</h4><p>120+ acronyms grouped by topic, with search.</p></a>
     </div>
   </div>
 </section>
@@ -114,28 +116,51 @@
         <ul class="chips"><li>Writing proposals</li><li>Estimating cost and schedule</li><li>Design reviews</li><li>Clear technical writing</li><li>Training operators</li></ul></div>
     </div>
 
-    <details>
-      <summary>Glossary of terms used on this site</summary>
-      <div class="dd">
-        <div class="table-wrap"><table>
-          <tbody>
-            <tr><td><b>CM</b></td><td>Contract Manufacturing: the customer designs, we manufacture (and develop test for their design)</td></tr>
-            <tr><td><b>JDM</b></td><td>Joint Development Manufacturing: we co-develop the product with the customer and manufacture it</td></tr>
-            <tr><td><b>NPI</b></td><td>New Product Introduction: engineering and first builds before mass production</td></tr>
-            <tr><td><b>HPS / TE / MFG</b></td><td>Hardware Platform Solution / Test Engineer / Manufacturing</td></tr>
-            <tr><td><b>DFT</b></td><td>Design for Test: designing the product so it can be tested (access, test points, JTAG)</td></tr>
-            <tr><td><b>DUT</b></td><td>Device Under Test</td></tr>
-            <tr><td><b>SPI / AOI</b></td><td>Solder Paste Inspection / Automated Optical Inspection</td></tr>
-            <tr><td><b>ICT / FCT</b></td><td>In-Circuit Test / Functional Test</td></tr>
-            <tr><td><b>ESS</b></td><td>Environmental Stress Screening (burn-in and similar)</td></tr>
-            <tr><td><b>MES</b></td><td>Manufacturing Execution System: tracks each unit and its results through the line</td></tr>
-            <tr><td><b>FPY / RTY</b></td><td>First-Pass Yield / Rolled Throughput Yield</td></tr>
-            <tr><td><b>GR&amp;R</b></td><td>Gauge Repeatability and Reproducibility: how consistent a measurement system is</td></tr>
-            <tr><td><b>ECO</b></td><td>Engineering Change Order: a controlled change to the design or process</td></tr>
-            <tr><td><b>SCPI / VISA</b></td><td>Standard command language for instruments / the software layer that talks to them</td></tr>
-          </tbody></table></div>
+    <h3>Junior TDE growth roadmap (30-60-90 days & year 1)</h3>
+    <div class="grid g2">
+      <div class="card">
+        <span class="chip easy">Day 1 – 30 · Shopfloor & Safety</span>
+        <h4>Foundations & Station Craft</h4>
+        <ul>
+          <li>Master electrical safety, ESD rules, and hardware E-Stop wiring</li>
+          <li>Learn bench equipment hands-on: DMM, Oscilloscope, DC PSU, Electronic Load</li>
+          <li>Practice fixture maintenance: pogo pin inspection, cleaning, and replacement</li>
+          <li>Read schematics, wiring harness diagrams, and interface board layouts</li>
+        </ul>
       </div>
-    </details>
+      <div class="card">
+        <span class="chip easy">Day 31 – 60 · Software Architecture</span>
+        <h4>Instruments & Clean Sequencing</h4>
+        <ul>
+          <li>Control instruments with SCPI over PyVISA (USB, LAN, Serial, GPIB)</li>
+          <li>Separate test sequence, limits file, and hardware abstraction drivers</li>
+          <li>Write simulator drivers for hardware-in-the-loop unit testing without hardware</li>
+          <li>Guarantee safe state: outputs off in <code>finally</code> blocks on all exceptions</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="chip medium">Day 61 – 90 · NPI & Quality</span>
+        <h4>Line Debugging & Statistical Control</h4>
+        <ul>
+          <li>Triage false fails on the line using the 4M1E framework and golden units</li>
+          <li>Calculate Cpk and evaluate measurement capability across production lots</li>
+          <li>Perform Gage R&R (GR&R) repeatability studies before line sign-off</li>
+          <li>Integrate test records with factory MES to prevent untested units from shipping</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="chip hard">Year 1 · JDM & Optimization</span>
+        <h4>Full Tester Ownership</h4>
+        <ul>
+          <li>Design interface PCBs (schematic, layout, signal routing, and protection)</li>
+          <li>Conduct Design-for-Test (DFT) reviews directly with customer hardware teams</li>
+          <li>Analyze cycle time bottlenecks to increase Units Per Hour (UPH)</li>
+          <li>Co-author customer JDM test proposals with HPS and TE leads</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note"><p><b>Lost in acronyms?</b> The <a href="#glossary">Glossary</a> groups 120+ of them by topic: company, MFG, test, quality, software, hardware, interfaces, IT and safety. It is searchable.</p></div>
   </div>
 </section>
 
@@ -319,7 +344,7 @@
   <div class="container">
     <span class="kicker">05 · Deep dive</span>
     <h2>The craft behind a trusted tester</h2>
-    <p class="lead">Seven topics, from choosing what to test to winning the work. Open any of them.</p>
+    <p class="lead">Nine topics, from choosing what to test to shopfloor safety and line triage. Open any of them.</p>
 
     <details open>
       <summary>1 · Test strategy: stages and defect coverage <small>find each defect at the cheapest stage</small></summary>
@@ -458,6 +483,35 @@
         </ul>
       </div>
     </details>
+
+    <details>
+      <summary>8 · Shopfloor troubleshooting & 4M1E <small>when the tester fails on the line</small></summary>
+      <div class="dd">
+        <p>When false fails spike or a tester halts the production line, junior engineers often rush to edit software or widen test limits. <b>Never widen limits to silence a failure.</b> Follow a systematic 4M1E isolation procedure:</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Category</th><th>Common root causes</th><th>What to check and fix</th></tr></thead>
+          <tbody>
+            <tr><td><b>Machine</b><br>(Tester & Fixture)</td><td>Pogo pins worn or oxidized, loose wiring, relay failure, instrument calibration drift</td><td>Run the Golden Unit. Measure contact resistance (&lt; 50 mΩ). Clean pins with isopropyl alcohol (IPA) or replace worn pin blocks.</td></tr>
+            <tr><td><b>Material</b><br>(DUT & Components)</td><td>PCB warpage, solder flux residue on test pads, new component lot / alternate vendor</td><td>Check test pad indentation under microscope. Inspect unpopulated or skewed parts. Verify if problem follows the board or the slot.</td></tr>
+            <tr><td><b>Method</b><br>(Test & Parameters)</td><td>Insufficient power settling time, limits too tight for process drift, floating inputs</td><td>Add settling delay before analog sampling. Check if rail voltage is measured before inrush current finishes. Review Cpk history.</td></tr>
+            <tr><td><b>Man</b><br>(Operator / Process)</td><td>Board loaded tilted, clamp closed improperly, ESD strap unplugged, barcode scan misread</td><td>Observe operator loading sequence. Verify mechanical guide pins and sensor interlocks. Re-train with Standard Work Instruction (SWI).</td></tr>
+          </tbody></table></div>
+        <p><b>The Golden Rule of Isolation:</b> Swap one variable at a time. If unit fails on Tester A, test it on Tester B. If it passes on Tester B, the problem is <em>Tester A</em>, not the product.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>9 · Hardware safety & electrical golden rules <small>protecting the operator and the DUT</small></summary>
+      <div class="dd">
+        <ul>
+          <li><b>Hardware E-Stop over Software Stop.</b> Emergency Stop (E-Stop) buttons and fixture lid safety switches must break power physically through approved safety relays and contactors. Never rely on a software command (e.g. <code>psu.write("OUTP OFF")</code>) for operator safety.</li>
+          <li><b>Set Compliance (Current Limit) before Power-On.</b> When writing instrument drivers or test sequences, always configure both voltage and current compliance limit <em>before</em> commanding output ON. If a shorted DUT is plugged in, current compliance prevents PCB traces from vaporizing or catching fire.</li>
+          <li><b>Discharge Residual Capacitance.</b> High-capacitance power rails (e.g. 12V bulk input caps) hold energy after power-off. Always engage a bleeding resistor or active discharge circuit before fixture release, otherwise arcing will pit pogo pin tips and degrade contact life.</li>
+          <li><b>Verify Grounding & ESD Protection.</b> All metallic fixture parts and chassis must be bonded to earth ground (&lt; 1 Ω). Test stations must have monitored wrist strap jacks and continuous ESD bench mat grounding.</li>
+          <li><b>Isolation Relays for Programming & Sensitive Nets.</b> Sensitive programming interfaces (SWD, JTAG, I2C) must be disconnected via relays or multiplexers before powering high-voltage functional stages to prevent back-powering MCU pins through internal ESD clamping diodes.</li>
+        </ul>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -466,7 +520,7 @@
   <div class="container">
     <span class="kicker">06 · Programming examples</span>
     <h2>Tester software, ready to run</h2>
-    <p class="lead">Python with a pytest-style API, applied to production test. The first five examples are <b>editable and run in your browser</b>: change the code, break it on purpose and see how a failure looks. The last three show real instrument control, a station loop and a release pipeline. If your stations use LabVIEW, TestStand or C#, the structure is the same.</p>
+    <p class="lead">Python with a pytest-style API, applied to production test. The first six examples are <b>editable and run in your browser</b>: change the code, break it on purpose and see how a failure looks. The last three show real instrument control, a station loop and a release pipeline. If your stations use LabVIEW, TestStand or C#, the structure is the same.</p>
     <p class="runtime-note">The first run downloads the Python runtime (about 10 MB, then cached by your browser).</p>
     <div id="examples-root"></div>
   </div>
@@ -476,9 +530,24 @@
 <section class="block view" id="practice">
   <div class="container">
     <span class="kicker">07 · Practice</span>
-    <h2>Prove it: seven exercises</h2>
+    <h2>Prove it: eight exercises</h2>
     <p class="lead">Two kinds of challenge. In <b>Implement</b> exercises you write a function and hidden tests grade it. In <b>Write the tests</b> exercises the code already exists in one correct and several buggy versions, and your tests must tell them apart, because a tester that cannot spot a planted bug will not spot a real one. Progress and code are saved in this browser.</p>
     <div id="practice-root"></div>
+  </div>
+</section>
+<!-- ============================================================ 8. GLOSSARY -->
+<section class="block view" id="glossary">
+  <div class="container">
+    <span class="kicker">08 · Reference</span>
+    <h2>Glossary of acronyms</h2>
+    <p class="lead">The acronyms you will meet, grouped by topic. Search by acronym or by meaning, or pick a topic. Some acronyms mean different things in different fields (for example <b>SPI</b>), so check the group.</p>
+    <div class="gl-tools">
+      <input id="gl-search" type="search" placeholder="Search, e.g. ICT or yield" aria-label="Search the glossary" autocomplete="off">
+      <div id="gl-filters" class="gl-filters" role="group" aria-label="Filter by topic"></div>
+    </div>
+    <p id="gl-count" class="tag" aria-live="polite"></p>
+    <div id="glossary-root"></div>
+    <p id="gl-empty" class="note" hidden>No match. Try a shorter search or pick All topics.</p>
   </div>
 </section>
 </main>

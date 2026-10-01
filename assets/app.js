@@ -353,6 +353,70 @@
     select(firstKey);
   }
 
+  /* ------------------------------------------------------------ glossary */
+  function buildGlossary() {
+    const root = $("#glossary-root");
+    if (!root || !TDE.GLOSSARY) return;
+    const search = $("#gl-search"), filters = $("#gl-filters"), empty = $("#gl-empty"), count = $("#gl-count");
+    let topic = "all";
+    const total = TDE.GLOSSARY.reduce((n, g) => n + g.items.length, 0);
+
+    const groups = TDE.GLOSSARY.map((g) => {
+      const rows = g.items.map(([acr, full, plain]) => {
+        const tr = el("tr", {}, el("th", { scope: "row" }, acr), el("td", {}, full), el("td", {}, plain));
+        tr.dataset.text = `${acr} ${full} ${plain}`.toLowerCase();
+        tr._cells = [acr, full, plain];
+        return tr;
+      });
+      const heading = el("h3", {}, g.title, el("small", {}));
+      const section = el("section", { class: "gl-group", id: `gl-${g.id}` }, heading, el("p", {}, g.intro),
+        el("div", { class: "table-wrap" }, el("table", {}, el("tbody", {}, rows))));
+      root.append(section);
+      return { g, rows, section, heading };
+    });
+
+    const chip = (id, label) => {
+      const b = el("button", { type: "button", "aria-pressed": id === "all" }, label);
+      b.dataset.topic = id;
+      b.addEventListener("click", () => { topic = id; $$("button", filters).forEach((x) => x.setAttribute("aria-pressed", x === b)); apply(); });
+      filters.append(b);
+    };
+    chip("all", "All topics");
+    TDE.GLOSSARY.forEach((g) => chip(g.id, g.title.split(":")[0]));
+
+    const mark = (text, q) => {
+      if (!q) return esc(text);
+      const i = text.toLowerCase().indexOf(q);
+      return i < 0 ? esc(text) : `${esc(text.slice(0, i))}<mark>${esc(text.slice(i, i + q.length))}</mark>${esc(text.slice(i + q.length))}`;
+    };
+
+    function apply() {
+      const q = search.value.trim().toLowerCase();
+      let shown = 0;
+      for (const { g, rows, section, heading } of groups) {
+        let n = 0;
+        for (const tr of rows) {
+          const hit = (topic === "all" || topic === g.id) && (!q || tr.dataset.text.includes(q));
+          tr.hidden = !hit;
+          if (hit) {
+            n++;
+            const [acr, full, plain] = tr._cells;
+            tr.children[0].innerHTML = mark(acr, q);
+            tr.children[1].innerHTML = mark(full, q);
+            tr.children[2].innerHTML = mark(plain, q);
+          }
+        }
+        section.hidden = n === 0;
+        $("small", heading).textContent = `${n} ${n === 1 ? "term" : "terms"}`;
+        shown += n;
+      }
+      empty.hidden = shown > 0;
+      count.textContent = q || topic !== "all" ? `${shown} of ${total} terms` : `${total} terms in ${groups.length} topics`;
+    }
+    search.addEventListener("input", apply);
+    apply();
+  }
+
   /* ------------------------------------------------------------ theme + nav */
   function setupTheme() {
     const root = document.documentElement;
@@ -373,7 +437,7 @@
   function setupViews() {
     const views = $$("section.view");
     const ids = views.map((v) => v.id);
-    const labels = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", examples: "Examples", practice: "Practice" };
+    const labels = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", examples: "Examples", practice: "Practice", glossary: "Glossary" };
     const links = $$(".nav-links a");
     document.documentElement.classList.add("js-views");
 
@@ -424,6 +488,7 @@
     bindDiagram("svg-tester", "panel-tester", TDE.DIAGRAMS.tester, "drivers");
     buildExamples();
     buildExercises();
+    buildGlossary();
     progress.paint();
     setupViews();
   });

@@ -297,3 +297,21 @@ a.card.link .num { position: absolute; top: 16px; right: 16px; width: 26px; heig
 .pager b { color: var(--accent); }
 .pager .next { margin-left: auto; text-align: right; }
 @media print { .js-views .view { display: block !important; } .pager { display: none; } }
+
+/* ---------------------------------------------------------------- glossary */
+.gl-tools { position: sticky; top: 56px; z-index: 5; background: var(--bg); padding: 12px 0 10px; margin-top: 18px; border-bottom: 1px solid var(--line); }
+@media (max-width: 640px) { .gl-tools { top: 0; position: static; } }
+#gl-search { width: 100%; font: 1rem var(--font); padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+#gl-search:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+.gl-filters { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.gl-filters button { font: 600 .82rem var(--font); padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); cursor: pointer; }
+.gl-filters button:hover { color: var(--ink); border-color: var(--accent); }
+.gl-filters button[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.gl-group { margin-top: 28px; scroll-margin-top: 130px; }
+.gl-group h3 { margin: 0 0 4px; display: flex; align-items: baseline; gap: 10px; }
+.gl-group h3 small { font: 600 .78rem var(--mono); color: var(--muted); }
+.gl-group > p { color: var(--muted); margin: 0 0 10px; font-size: .95rem; }
+.gl-group table th[scope=row] { white-space: nowrap; font-family: var(--mono); font-size: .88rem; color: var(--accent); width: 1%; }
+.gl-group td:nth-child(2) { font-weight: 600; width: 30%; }
+mark { background: color-mix(in srgb, var(--medium-bg) 80%, transparent); color: inherit; border-radius: 3px; padding: 0 1px; }
+@media (max-width: 700px) { .gl-group td:nth-child(2) { width: auto; } }

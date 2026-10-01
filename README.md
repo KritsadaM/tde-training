@@ -7,7 +7,7 @@ Interactive training site for **Test Development Engineers (TDE)** in electronic
 * the life of a tester: proposal, concept, design, fabricate, debug, **NPI**, handover to MFG, **sustaining**
 * interactive diagrams: engagement flows, phases, test stages on the line, anatomy of a tester
 * deep dives: test strategy and coverage, tester hardware, test software, measurement quality, yield, writing a JDM proposal, handover and sustaining
-* eight Python examples and seven graded exercises that run in the browser
+* nine Python examples and eight graded exercises that run in the browser
 
 It is a plain static site (HTML, CSS, JS). There is no build step and nothing to install.
 
@@ -65,6 +65,7 @@ There are two exercise kinds:
 | 5 | Medium | implement | `read_stable`: wait for a rail to settle, with an injected clock |
 | 6 | Medium | write tests | `final_verdict`: FAIL vs ERROR, nothing tested never passes (7 hidden bugs) |
 | 7 | Hard | implement | `run_sequence`: limits, FAIL vs ERROR, stop on fail, always power off |
+| 8 | Medium | implement | `calc_cpk`: sample mean, standard deviation, one/two-sided limits, Cpk threshold |
 
 ## Project layout
 
