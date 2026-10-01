@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>TDE Training – Test Development Engineer</title>
+  <meta name="description" content="Interactive training for Test Development Engineers in electronics manufacturing: CM and JDM programs, NPI and sustaining, tester hardware and software, diagrams, Python examples and hands-on exercises that run in your browser.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c7a6f'/%3E%3Cpath d='M8 17l5 5 11-12' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/content.js" defer></script>
+  <script src="assets/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- shared arrow marker for all diagrams -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="container">
+    <a class="brand" href="#top"><span class="logo">TDE</span> Training</a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#role">Role</a>
+      <a href="#models">CM vs JDM</a>
+      <a href="#lifecycle">NPI to sustaining</a>
+      <a href="#diagrams">Diagrams</a>
+      <a href="#deep-dive">Deep dive</a>
+      <a href="#examples">Examples</a>
+      <a href="#practice">Practice</a>
+    </nav>
+    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/7</span></span>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">☾</button>
+  </div>
+  <div id="progress-bar" aria-hidden="true"></div>
+</header>
+
+<main id="main">
+<!-- ============================================================ HERO -->
+<section class="hero" id="top">
+  <div class="container">
+    <div class="eyebrow">Celestica Thailand · Test Development Engineering</div>
+    <h1>Become a Test Development Engineer</h1>
+    <p class="sub">A TDE designs, builds and delivers the production test solution for a product, hardware and software, from the first customer proposal to the manufacturing line and beyond. Learn how the work fits together, then practise the software side with exercises that run in your browser.</p>
+    <div class="cta">
+      <a class="btn primary" href="#role">Start with the role</a>
+      <a class="btn" href="#practice">Jump to practice</a>
+    </div>
+    <ul class="stats">
+      <li><b>4</b><span>interactive diagrams</span></li>
+      <li><b>8</b><span>code examples</span></li>
+      <li><b>7</b><span>graded exercises</span></li>
+      <li><b>0</b><span>installs needed</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 1. ROLE -->
+<section class="block" id="role">
+  <div class="container">
+    <span class="kicker">01 · The role</span>
+    <h2>What does a TDE do?</h2>
+    <p class="lead">A Test Development Engineer turns a product design into a way of proving, on the factory floor, that <b>every unit is good</b>. That means a tester (fixtures, interface boards, instruments, harnesses) plus the software that drives it, delivered to Manufacturing (MFG) and kept healthy afterwards.</p>
+
+    <div class="grid g3">
+      <div class="card"><div class="ico">◎</div><h4>Design</h4>
+        <ul><li>Test strategy and coverage</li><li>Design-for-test feedback to the product team</li><li>Tester concept, hardware and software design</li></ul></div>
+      <div class="card"><div class="ico">⚙</div><h4>Build</h4>
+        <ul><li>Fabricate the fixture, interface board and tester</li><li>Write the test software</li><li>Debug and prove it with real units</li></ul></div>
+      <div class="card"><div class="ico">⇢</div><h4>Deliver and sustain</h4>
+        <ul><li>Hand over to MFG with training and documents</li><li>Support NPI builds</li><li>Maintain and improve in sustaining</li></ul></div>
+    </div>
+
+    <div class="note"><p><b>It is not software only.</b> A TDE does hardware design, fabricates the tester and delivers it to the manufacturing line, in addition to writing the code that runs on it.</p></div>
+
+    <h3>Who a TDE works with</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Partner</th><th>Typically owns</th><th>How a TDE works with them</th></tr></thead>
+        <tbody>
+          <tr><td><b>Customer</b></td><td>Product requirements, and the design in CM programs</td><td>Gets the design package, agrees coverage and targets, gives design-for-test feedback</td></tr>
+          <tr><td><b>HPS</b><br><small>Hardware Platform Solution</small></td><td>Hardware platform design in JDM programs</td><td>Joint design in JDM: testability goes in from the first board. Co-writes the customer proposal</td></tr>
+          <tr><td><b>TE</b><br><small>Test Engineer</small></td><td>Test requirements, coverage and test plans</td><td>Closest partner. TE says <em>what</em> must be proven, TDE builds the solution that proves it</td></tr>
+          <tr><td><b>MFG</b><br><small>Manufacturing</small></td><td>The line that runs the tester every day</td><td>Receives the tester, learns from their feedback on uptime, false fails and ergonomics</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tag">A typical split. Details differ by program, so confirm with your lead.</p>
+
+    <h3>Skills you will build</h3>
+    <div class="grid g2">
+      <div class="card"><h4>Hardware</h4>
+        <ul class="chips"><li>Reading schematics</li><li>Interface board design</li><li>Fixtures and pogo pins</li><li>Instruments and SCPI</li><li>Power and safety</li><li>Signal integrity basics</li></ul></div>
+      <div class="card"><h4>Software</h4>
+        <ul class="chips"><li>Python / C# / LabVIEW</li><li>Test sequencing</li><li>Instrument drivers</li><li>Serial and network I/O</li><li>Data files and logging</li><li>MES integration</li><li>Git and releases</li></ul></div>
+      <div class="card"><h4>Test craft</h4>
+        <ul class="chips"><li>Defect coverage</li><li>DFT</li><li>Measurement accuracy</li><li>Limits and guardbands</li><li>Cpk and correlation</li><li>Yield analysis</li></ul></div>
+      <div class="card"><h4>Customer and business</h4>
+        <ul class="chips"><li>Writing proposals</li><li>Estimating cost and schedule</li><li>Design reviews</li><li>Clear technical writing</li><li>Training operators</li></ul></div>
+    </div>
+
+    <details>
+      <summary>Glossary of terms used on this site</summary>
+      <div class="dd">
+        <div class="table-wrap"><table>
+          <tbody>
+            <tr><td><b>CM</b></td><td>Contract Manufacturing: the customer designs, we manufacture (and develop test for their design)</td></tr>
+            <tr><td><b>JDM</b></td><td>Joint Development Manufacturing: we co-develop the product with the customer and manufacture it</td></tr>
+            <tr><td><b>NPI</b></td><td>New Product Introduction: engineering and first builds before mass production</td></tr>
+            <tr><td><b>HPS / TE / MFG</b></td><td>Hardware Platform Solution / Test Engineer / Manufacturing</td></tr>
+            <tr><td><b>DFT</b></td><td>Design for Test: designing the product so it can be tested (access, test points, JTAG)</td></tr>
+            <tr><td><b>DUT</b></td><td>Device Under Test</td></tr>
+            <tr><td><b>SPI / AOI</b></td><td>Solder Paste Inspection / Automated Optical Inspection</td></tr>
+            <tr><td><b>ICT / FCT</b></td><td>In-Circuit Test / Functional Test</td></tr>
+            <tr><td><b>ESS</b></td><td>Environmental Stress Screening (burn-in and similar)</td></tr>
+            <tr><td><b>MES</b></td><td>Manufacturing Execution System: tracks each unit and its results through the line</td></tr>
+            <tr><td><b>FPY / RTY</b></td><td>First-Pass Yield / Rolled Throughput Yield</td></tr>
+            <tr><td><b>GR&amp;R</b></td><td>Gauge Repeatability and Reproducibility: how consistent a measurement system is</td></tr>
+            <tr><td><b>ECO</b></td><td>Engineering Change Order: a controlled change to the design or process</td></tr>
+            <tr><td><b>SCPI / VISA</b></td><td>Standard command language for instruments / the software layer that talks to them</td></tr>
+          </tbody></table></div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ============================================================ 2. CM vs JDM -->
+<section class="block" id="models">
+  <div class="container">
+    <span class="kicker">02 · Two kinds of program</span>
+    <h2>CM and JDM: where the TDE joins</h2>
+    <p class="lead">Celestica programs come in two flavours. The product is different, the starting point is different, and so is the TDE's job.</p>
+
+    <div class="grid g2">
+      <div class="card in"><h4>CM · Contract Manufacturing</h4>
+        <p class="tag">The customer designs</p>
+        <ul>
+          <li>Customer owns the product design</li>
+          <li>TDE helps <b>develop software or hardware</b> to test that design</li>
+          <li>Starts in NPI, after design handover</li>
+          <li>Partners: customer engineers, TE, MFG</li>
+          <li>Wins on: speed, tester quality, low cost of test</li>
+        </ul></div>
+      <div class="card"><h4>JDM · Joint Development Manufacturing</h4>
+        <p class="tag">We co-design with the customer</p>
+        <ul>
+          <li>Celestica helps design the product</li>
+          <li>TDE works mainly with <b>HPS and TE</b></li>
+          <li>Starts at the <b>proposal</b> for the customer</li>
+          <li>Proposal shows our technology, our way of working and our special capabilities</li>
+          <li>Wins on: early testability, reusable platforms, one team from design to line</li>
+        </ul></div>
+    </div>
+
+    <h3>The two engagement flows</h3>
+    <p>Click any step. Both flows end with the tester running on the line, then continue into sustaining.</p>
+    <div class="diagram">
+      <div class="diagram-scroll">
+        <svg id="svg-engagement" viewBox="0 0 960 345" role="group" aria-label="Engagement flow for CM and JDM programs">
+          <text class="big" x="20" y="24">CM · Contract Manufacturing: the customer designs</text>
+          <g class="node" data-key="cm-design" style="--tint:6%"><rect class="shape" x="20" y="36" width="160" height="104" rx="12"/><text class="t" x="100" y="70" text-anchor="middle">Customer</text><text class="t" x="100" y="90" text-anchor="middle">design release</text><text class="s" x="100" y="120" text-anchor="middle">Customer owns design</text></g>
+          <g class="node" data-key="cm-review" style="--tint:6%"><rect class="shape" x="210" y="36" width="160" height="104" rx="12"/><text class="t" x="290" y="70" text-anchor="middle">Design review</text><text class="t" x="290" y="90" text-anchor="middle">for test (DFT)</text><text class="s" x="290" y="120" text-anchor="middle">Testability feedback</text></g>
+          <g class="node" data-key="cm-develop" style="--tint:6%"><rect class="shape" x="400" y="36" width="160" height="104" rx="12"/><text class="t" x="480" y="70" text-anchor="middle">Develop the</text><text class="t" x="480" y="90" text-anchor="middle">test solution</text><text class="s" x="480" y="120" text-anchor="middle">Software, hardware</text></g>
+          <g class="node" data-key="cm-build" style="--tint:6%"><rect class="shape" x="590" y="36" width="160" height="104" rx="12"/><text class="t" x="670" y="70" text-anchor="middle">Build and</text><text class="t" x="670" y="90" text-anchor="middle">correlate</text><text class="s" x="670" y="120" text-anchor="middle">Build, debug, prove</text></g>
+          <g class="node" data-key="cm-deliver" style="--tint:6%"><rect class="shape" x="780" y="36" width="160" height="104" rx="12"/><text class="t" x="860" y="70" text-anchor="middle">Deliver</text><text class="t" x="860" y="90" text-anchor="middle">to MFG</text><text class="s" x="860" y="120" text-anchor="middle">NPI builds, handover</text></g>
+          <line class="axis" x1="182" y1="88" x2="208" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="372" y1="88" x2="398" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="562" y1="88" x2="588" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="752" y1="88" x2="778" y2="88" marker-end="url(#arrow)"/>
+
+          <text class="big" x="20" y="184">JDM · Joint Development Manufacturing: we co-design</text>
+          <g class="node" data-key="jdm-need" style="--tint:14%"><rect class="shape" x="20" y="196" width="160" height="104" rx="12"/><text class="t" x="100" y="230" text-anchor="middle">Customer</text><text class="t" x="100" y="250" text-anchor="middle">opportunity</text><text class="s" x="100" y="280" text-anchor="middle">Needs and targets</text></g>
+          <g class="node" data-key="jdm-proposal" style="--tint:14%"><rect class="shape" x="210" y="196" width="160" height="104" rx="12"/><text class="t" x="290" y="230" text-anchor="middle">Proposal</text><text class="t" x="290" y="250" text-anchor="middle">TDE + HPS + TE</text><text class="s" x="290" y="280" text-anchor="middle">Tech and capability</text></g>
+          <g class="node" data-key="jdm-design" style="--tint:14%"><rect class="shape" x="400" y="196" width="160" height="104" rx="12"/><text class="t" x="480" y="230" text-anchor="middle">Joint design:</text><text class="t" x="480" y="250" text-anchor="middle">platform + test</text><text class="s" x="480" y="280" text-anchor="middle">DFT built in</text></g>
+          <g class="node" data-key="jdm-build" style="--tint:14%"><rect class="shape" x="590" y="196" width="160" height="104" rx="12"/><text class="t" x="670" y="230" text-anchor="middle">Build and</text><text class="t" x="670" y="250" text-anchor="middle">correlate</text><text class="s" x="670" y="280" text-anchor="middle">Build, debug, prove</text></g>
+          <g class="node" data-key="jdm-deliver" style="--tint:14%"><rect class="shape" x="780" y="196" width="160" height="104" rx="12"/><text class="t" x="860" y="230" text-anchor="middle">Deliver</text><text class="t" x="860" y="250" text-anchor="middle">to MFG</text><text class="s" x="860" y="280" text-anchor="middle">NPI builds, handover</text></g>
+          <line class="axis" x1="182" y1="248" x2="208" y2="248" marker-end="url(#arrow)"/><line class="axis" x1="372" y1="248" x2="398" y2="248" marker-end="url(#arrow)"/><line class="axis" x1="562" y1="248" x2="588" y2="248" marker-end="url(#arrow)"/><line class="axis" x1="752" y1="248" x2="778" y2="248" marker-end="url(#arrow)"/>
+          <text class="cap" x="480" y="330" text-anchor="middle">Both flows continue into the sustaining phase after the NPI builds</text>
+        </svg>
+      </div>
+      <div class="detail" id="panel-engagement" aria-live="polite"></div>
+    </div>
+
+    <h3>Side by side</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>CM</th><th>JDM</th></tr></thead>
+        <tbody>
+          <tr><td><b>Who designs the product</b></td><td>The customer</td><td>Celestica and the customer together</td></tr>
+          <tr><td><b>Where the TDE starts</b></td><td>Design handover, entering NPI</td><td>Proposal stage, before the design exists</td></tr>
+          <tr><td><b>Main TDE work</b></td><td>Develop software or hardware to test the customer's design</td><td>Proposal, test concept, tester design, with testability designed in</td></tr>
+          <tr><td><b>Closest partners</b></td><td>Customer engineers, TE, MFG</td><td>HPS, TE, customer, MFG</td></tr>
+          <tr><td><b>Biggest lever</b></td><td>Feedback on testability during design review</td><td>Choosing the test approach together with the hardware</td></tr>
+          <tr><td><b>What we sell</b></td><td>Fast, reliable, low-cost test delivery</td><td>Our technology, our way of working and our unique capability</td></tr>
+          <tr><td><b>After NPI</b></td><td colspan="2">Both: help maintain the tester in the sustaining phase</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 3. LIFECYCLE -->
+<section class="block" id="lifecycle">
+  <div class="container">
+    <span class="kicker">03 · NPI to sustaining</span>
+    <h2>The life of a tester</h2>
+    <p class="lead">Most of the TDE's work happens in the <b>NPI phase</b>: getting a new product to a tester that the line can trust. After that we help <b>sustain</b> it for the life of the product.</p>
+
+    <div class="diagram">
+      <div class="diagram-scroll">
+        <svg id="svg-phases" viewBox="0 0 960 250" role="group" aria-label="Phases from proposal to sustaining">
+          <g class="node" data-key="proposal"><polygon class="shape" points="10,30 118,30 132,80 118,130 10,130 24,80"/><text class="t" x="71" y="85" text-anchor="middle">Proposal</text><text class="cap" x="71" y="156" text-anchor="middle">Win the work</text><text class="cap" x="71" y="174" text-anchor="middle">(JDM)</text></g>
+          <g class="node" data-key="concept"><polygon class="shape" points="126,30 234,30 248,80 234,130 126,130 140,80"/><text class="t" x="187" y="76" text-anchor="middle">Concept</text><text class="t" x="187" y="96" text-anchor="middle">and DFT</text><text class="cap" x="187" y="156" text-anchor="middle">Test strategy,</text><text class="cap" x="187" y="174" text-anchor="middle">tester concept</text></g>
+          <g class="node" data-key="design"><polygon class="shape" points="242,30 350,30 364,80 350,130 242,130 256,80"/><text class="t" x="303" y="85" text-anchor="middle">Design</text><text class="cap" x="303" y="156" text-anchor="middle">Hardware and</text><text class="cap" x="303" y="174" text-anchor="middle">software design</text></g>
+          <g class="node" data-key="fabricate"><polygon class="shape" points="358,30 466,30 480,80 466,130 358,130 372,80"/><text class="t" x="419" y="85" text-anchor="middle">Fabricate</text><text class="cap" x="419" y="156" text-anchor="middle">Build fixture</text><text class="cap" x="419" y="174" text-anchor="middle">and tester</text></g>
+          <g class="node" data-key="debug"><polygon class="shape" points="474,30 582,30 596,80 582,130 474,130 488,80"/><text class="t" x="535" y="76" text-anchor="middle">Debug and</text><text class="t" x="535" y="96" text-anchor="middle">correlate</text><text class="cap" x="535" y="156" text-anchor="middle">Golden units,</text><text class="cap" x="535" y="174" text-anchor="middle">prove accuracy</text></g>
+          <g class="node" data-key="npi"><polygon class="shape" points="590,30 698,30 712,80 698,130 590,130 604,80"/><text class="t" x="651" y="76" text-anchor="middle">NPI pilot</text><text class="t" x="651" y="96" text-anchor="middle">builds</text><text class="cap" x="651" y="156" text-anchor="middle">Run on real</text><text class="cap" x="651" y="174" text-anchor="middle">pilot builds</text></g>
+          <g class="node" data-key="handover"><polygon class="shape" points="706,30 814,30 828,80 814,130 706,130 720,80"/><text class="t" x="767" y="76" text-anchor="middle">Handover</text><text class="t" x="767" y="96" text-anchor="middle">to MFG</text><text class="cap" x="767" y="156" text-anchor="middle">Tester + docs</text><text class="cap" x="767" y="174" text-anchor="middle">+ training</text></g>
+          <g class="node" data-key="sustaining" style="--tint:16%"><polygon class="shape" points="832,30 930,30 944,80 930,130 832,130 846,80"/><text class="t" x="888" y="85" text-anchor="middle">Sustain</text><text class="cap" x="888" y="156" text-anchor="middle">Maintain and</text><text class="cap" x="888" y="174" text-anchor="middle">improve</text></g>
+          <path class="axis" d="M10 196 V206 H826 V196"/><text class="big" x="418" y="230" text-anchor="middle">NPI phase · most of our work</text>
+          <path class="axis" d="M834 196 V206 H944 V196"/><text class="big" x="889" y="230" text-anchor="middle">Sustaining</text>
+        </svg>
+      </div>
+      <div class="detail" id="panel-phases" aria-live="polite"></div>
+    </div>
+
+    <h3>What the TDE hands over</h3>
+    <p>A tester is only delivered when the line can run it without you. A complete handover package contains:</p>
+    <div class="card">
+      <ul class="checklist">
+        <li><b>The tester,</b> installed and accepted at the line</li>
+        <li><b>Released software,</b> with a version number and a checksum</li>
+        <li><b>Limits file,</b> versioned and reviewed with TE</li>
+        <li><b>Work instruction</b> for operators</li>
+        <li><b>Training</b> for operators and technicians</li>
+        <li><b>Maintenance and calibration plan,</b> with intervals</li>
+        <li><b>Spare parts list,</b> especially wear items such as pogo pins</li>
+        <li><b>Troubleshooting guide</b> for the common faults</li>
+        <li><b>Correlation and repeatability evidence</b> from the build phase</li>
+        <li><b>Named contacts</b> and a support route for the sustaining phase</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 4. DIAGRAMS -->
+<section class="block" id="diagrams">
+  <div class="container">
+    <span class="kicker">04 · Diagrams</span>
+    <h2>Where test sits, and what a tester is made of</h2>
+    <p class="lead">Two pictures to keep in your head. Click any part for detail.</p>
+
+    <h3>Test stages on the production line</h3>
+    <p>Each stage can see some defects and is blind to others. A good test strategy puts each check at the cheapest stage that can see the defect. Which stages exist depends on the product and the customer.</p>
+    <div class="diagram">
+      <div class="diagram-scroll">
+        <svg id="svg-line" viewBox="0 0 960 318" role="group" aria-label="Production line test stages">
+          <g class="node" data-key="smt" style="--tint:2%"><rect class="shape dashed" x="16" y="56" width="112" height="76" rx="12"/><text class="t" x="72" y="90" text-anchor="middle">SMT /</text><text class="t" x="72" y="110" text-anchor="middle">assembly</text></g>
+          <g class="node" data-key="aoi"><rect class="shape" x="152" y="56" width="112" height="76" rx="12"/><text class="t" x="208" y="90" text-anchor="middle">SPI +</text><text class="t" x="208" y="110" text-anchor="middle">AOI</text></g>
+          <g class="node" data-key="ict" style="--tint:12%"><rect class="shape" x="288" y="56" width="112" height="76" rx="12"/><text class="t" x="344" y="90" text-anchor="middle">ICT /</text><text class="t" x="344" y="110" text-anchor="middle">flying probe</text></g>
+          <g class="node" data-key="fct" style="--tint:12%"><rect class="shape" x="424" y="56" width="112" height="76" rx="12"/><text class="t" x="480" y="90" text-anchor="middle">Functional</text><text class="t" x="480" y="110" text-anchor="middle">test (FCT)</text></g>
+          <g class="node" data-key="burnin" style="--tint:12%"><rect class="shape" x="560" y="56" width="112" height="76" rx="12"/><text class="t" x="616" y="90" text-anchor="middle">Burn-in</text><text class="t" x="616" y="110" text-anchor="middle">/ ESS</text></g>
+          <g class="node" data-key="system" style="--tint:12%"><rect class="shape" x="696" y="56" width="112" height="76" rx="12"/><text class="t" x="752" y="90" text-anchor="middle">System /</text><text class="t" x="752" y="110" text-anchor="middle">final test</text></g>
+          <g class="node" data-key="pack" style="--tint:2%"><rect class="shape dashed" x="832" y="56" width="112" height="76" rx="12"/><text class="t" x="888" y="90" text-anchor="middle">Pack</text><text class="t" x="888" y="110" text-anchor="middle">and ship</text></g>
+          <line class="axis" x1="130" y1="94" x2="150" y2="94" marker-end="url(#arrow)"/><line class="axis" x1="266" y1="94" x2="286" y2="94" marker-end="url(#arrow)"/><line class="axis" x1="402" y1="94" x2="422" y2="94" marker-end="url(#arrow)"/><line class="axis" x1="538" y1="94" x2="558" y2="94" marker-end="url(#arrow)"/><line class="axis" x1="674" y1="94" x2="694" y2="94" marker-end="url(#arrow)"/><line class="axis" x1="810" y1="94" x2="830" y2="94" marker-end="url(#arrow)"/>
+
+          <text class="s" x="72" y="44" text-anchor="middle">process</text><text class="s" x="208" y="44" text-anchor="middle">visual</text><text class="s" x="344" y="44" text-anchor="middle">shorts, opens</text><text class="s" x="480" y="44" text-anchor="middle">does it work?</text><text class="s" x="616" y="44" text-anchor="middle">early life</text><text class="s" x="752" y="44" text-anchor="middle">whole product</text><text class="s" x="888" y="44" text-anchor="middle">records</text>
+
+          <path class="axis" d="M290 154 V164 H806 V154"/>
+          <text class="big" x="548" y="188" text-anchor="middle">Testers a TDE typically designs and delivers</text>
+          <line class="axis" x1="16" y1="250" x2="940" y2="250" marker-end="url(#arrow)"/>
+          <text class="cap" x="478" y="282" text-anchor="middle">The further a defect travels, the more it costs to find and fix</text>
+        </svg>
+      </div>
+      <div class="detail" id="panel-line" aria-live="polite"></div>
+    </div>
+
+    <h3>Anatomy of a production tester</h3>
+    <p>Software on top, hardware below, the product at the bottom. Each layer talks only to its neighbour, which is what lets you simulate, swap and maintain parts independently.</p>
+    <div class="diagram">
+      <div class="diagram-scroll">
+        <svg id="svg-tester" viewBox="0 0 960 456" role="group" aria-label="Production tester layers and surrounding concerns">
+          <text class="big" x="20" y="18">LAYERS · software to hardware</text>
+          <text class="big" x="680" y="18">AROUND THE TESTER</text>
+          <g class="node" data-key="sequence"><rect class="shape" x="20" y="30" width="620" height="66" rx="10"/><text class="t" x="40" y="58">Test sequence (software)</text><text class="s" x="40" y="79">Steps · limits · verdict · operator UI</text></g>
+          <line class="axis" x1="330" y1="98" x2="330" y2="118" marker-end="url(#arrow)"/>
+          <g class="node" data-key="drivers"><rect class="shape" x="20" y="120" width="620" height="66" rx="10"/><text class="t" x="40" y="148">Drivers / abstraction</text><text class="s" x="40" y="169">Instruments · DUT console · I/O · simulators</text></g>
+          <line class="axis" x1="330" y1="188" x2="330" y2="208" marker-end="url(#arrow)"/>
+          <g class="node" data-key="instruments"><rect class="shape" x="20" y="210" width="620" height="66" rx="10"/><text class="t" x="40" y="238">Instruments and controller</text><text class="s" x="40" y="259">PSU · DMM · e-load · scope · switch matrix · PC</text></g>
+          <line class="axis" x1="330" y1="278" x2="330" y2="298" marker-end="url(#arrow)"/>
+          <g class="node" data-key="fixture"><rect class="shape" x="20" y="300" width="620" height="66" rx="10"/><text class="t" x="40" y="328">Fixture and interface</text><text class="s" x="40" y="349">Pogo pins · connectors · interface board · harness</text></g>
+          <line class="axis" x1="330" y1="368" x2="330" y2="390" marker-end="url(#arrow)"/>
+          <g class="node" data-key="dut"><rect class="shape dashed" x="20" y="392" width="620" height="48" rx="10"/><text class="t" x="330" y="422" text-anchor="middle">Device under test (DUT)</text></g>
+
+          <g class="node" data-key="data"><rect class="shape" x="680" y="30" width="260" height="110" rx="10"/><text class="t" x="700" y="62">Data and traceability</text><text class="s" x="700" y="84">serial number · logs</text><text class="s" x="700" y="102">upload to MES</text></g>
+          <g class="node" data-key="safety"><rect class="shape" x="680" y="160" width="260" height="110" rx="10"/><text class="t" x="700" y="192">Safety and operator</text><text class="s" x="700" y="214">e-stop · interlocks · ESD</text><text class="s" x="700" y="232">clear messages</text></g>
+          <g class="node" data-key="calib"><rect class="shape" x="680" y="290" width="260" height="110" rx="10"/><text class="t" x="700" y="322">Calibration and upkeep</text><text class="s" x="700" y="344">calibrate · pin life</text><text class="s" x="700" y="362">golden unit · spares</text></g>
+        </svg>
+      </div>
+      <div class="detail" id="panel-tester" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 5. DEEP DIVE -->
+<section class="block" id="deep-dive">
+  <div class="container">
+    <span class="kicker">05 · Deep dive</span>
+    <h2>The craft behind a trusted tester</h2>
+    <p class="lead">Seven topics, from choosing what to test to winning the work. Open any of them.</p>
+
+    <details open>
+      <summary>1 · Test strategy: stages and defect coverage <small>find each defect at the cheapest stage</small></summary>
+      <div class="dd">
+        <p>The goal is to catch every defect class that matters, as early as possible, within the line's cycle time. No stage sees everything.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Stage</th><th>Sees</th><th>Blind to or limited by</th><th>Typical use</th></tr></thead>
+          <tbody>
+            <tr><td><b>AOI</b></td><td>Missing, skewed, wrong-polarity parts, solder bridges</td><td>Electrical function, hidden joints (BGA)</td><td>After reflow, every board</td></tr>
+            <tr><td><b>ICT (bed-of-nails)</b></td><td>Shorts, opens, wrong values, missing parts</td><td>Needs test points and a fixture; checks parts, not the whole function</td><td>High volume</td></tr>
+            <tr><td><b>Flying probe</b></td><td>Same as ICT, no fixture</td><td>Slow</td><td>Prototypes, NPI, low volume</td></tr>
+            <tr><td><b>Boundary scan (JTAG)</b></td><td>Opens and shorts on digital nets without physical access</td><td>Needs JTAG-capable devices and a chain that works</td><td>Dense digital boards</td></tr>
+            <tr><td><b>FCT</b></td><td>Power rails, clocks, interfaces, firmware boot, key functions</td><td>Weak at pinpointing which part failed</td><td>Nearly every product</td></tr>
+            <tr><td><b>Burn-in / ESS</b></td><td>Early-life failures under stress</td><td>Long time, floor space, cost</td><td>High-reliability products</td></tr>
+            <tr><td><b>System / final</b></td><td>Integrated product, interfaces, configuration</td><td>Slow</td><td>Final stage</td></tr>
+          </tbody></table></div>
+        <p><b>A coverage model: PCOLA / SOQ.</b> List the defect classes: <b>P</b>resence, <b>C</b>orrectness, <b>O</b>rientation, <b>L</b>ive (the part works), <b>A</b>lignment, plus <b>S</b>horts, <b>O</b>pens and <b>Q</b>uality (marginal parts). For each class, mark which stage covers it. The empty cells are your risk.</p>
+        <div class="note"><p><b>Ask for DFT early.</b> Test points, probe access, a JTAG header, programming connectors and a sensible power-up sequence cost almost nothing in the design review. After the board is built they cost a respin.</p></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>2 · Designing and fabricating the tester hardware <small>fixtures, interface boards, instruments</small></summary>
+      <div class="dd">
+        <ul>
+          <li><b>Contact.</b> Pogo-pin type, force and rated life are chosen for the pad size and the number of cycles. Poor contact is the classic cause of false fails. Make pin blocks replaceable and count the cycles.</li>
+          <li><b>Mechanics.</b> Alignment pins, clamping (manual, pneumatic or vacuum), a DUT-present sensor, easy loading for operators. Test it with real, slightly imperfect boards.</li>
+          <li><b>Interface board.</b> Routes fixture signals to instruments and carries any support circuits (loads, level shifters, relays). Keep analog and fast signals short and well grounded.</li>
+          <li><b>Instruments.</b> Pick accuracy much tighter than the limit it checks (a common rule of thumb is 4:1 or better), with enough channels and speed for the cycle time.</li>
+          <li><b>Safety.</b> E-stop, interlocks on guards, current limits before power-on, ESD protection, and a clear safe state.</li>
+          <li><b>Serviceability.</b> Label connectors, add a fixture ID so cycles and calibration can be tracked, keep spares.</li>
+        </ul>
+        <p><b>Typical build flow:</b> design, review with TE and MFG, order parts (start long-lead items early), machine and assemble, bring up, debug with golden units, document.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>3 · Test software for the production line <small>structure that survives years on the line</small></summary>
+      <div class="dd">
+        <ul>
+          <li><b>Separate sequence, limits and drivers.</b> Limits live in a versioned data file. Drivers hide instrument details.</li>
+          <li><b>Simulate hardware.</b> A simulated instrument lets you develop and unit-test the software anywhere, and inject faults on purpose.</li>
+          <li><b>FAIL is not ERROR.</b> FAIL means the unit is bad. ERROR means the tester or process failed and the unit has not been judged. Mixing them up scraps good units or ships bad ones.</li>
+          <li><b>Nothing tested must never pass.</b> An empty or skipped result is an error.</li>
+          <li><b>Always leave a safe state.</b> Outputs off, even after an exception.</li>
+          <li><b>Log everything.</b> Serial number, station, software and limits version, timestamps, every measurement. Local copy first, then MES.</li>
+          <li><b>Wait for conditions, not for time.</b> Poll until the rail is stable instead of a fixed sleep. It is both faster and more reliable.</li>
+          <li><b>Release like a product.</b> Version control, tagged releases, a checksum, a change log.</li>
+        </ul>
+        <div class="cols">
+          <div><div class="label bad">Hard to maintain</div>
+<pre data-hl="python">def test_3v3():
+    psu.write("OUTP ON")
+    time.sleep(2)                       # why 2?
+    v = float(dmm.query("MEAS:VOLT:DC?"))
+    if v > 3.1 and v < 3.5:             # limits buried in code
+        print("PASS")
+    # exception? output stays ON</pre></div>
+          <div><div class="label good">Intent first</div>
+<pre data-hl="python">def step_rail_3v3(ctx):
+    ctx.psu.output(True)
+    v = ctx.dmm.read_stable("3V3", tol=0.005, timeout=2)
+    return ctx.check("VDD_3V3", v)      # limits from the
+                                        # versioned file</pre></div>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>4 · Measurement quality and correlation <small>a pass is only worth the measurement behind it</small></summary>
+      <div class="dd">
+        <div class="table-wrap"><table>
+          <thead><tr><th>Term</th><th>Meaning</th><th>Why it matters</th></tr></thead>
+          <tbody>
+            <tr><td><b>Calibration</b></td><td>Instrument checked against a reference on a schedule</td><td>An uncalibrated instrument may be wrong by more than the limit</td></tr>
+            <tr><td><b>Repeatability</b></td><td>Same unit, same tester, same result</td><td>Noisy measurements cause false fails and false passes</td></tr>
+            <tr><td><b>GR&amp;R</b></td><td>Repeatability and reproducibility across testers, fixtures and operators</td><td>Proves the measurement system is fit to judge the tolerance</td></tr>
+            <tr><td><b>Golden unit</b></td><td>A known-good unit kept as a reference</td><td>Daily check that the tester still reads correctly. Pair it with a known-bad unit.</td></tr>
+            <tr><td><b>Correlation</b></td><td>Two testers (or two stages) agree on the same units</td><td>Lets you add a second tester or move the line without surprises</td></tr>
+            <tr><td><b>Guardband</b></td><td>Tightening the test limit inside the spec limit by the measurement uncertainty</td><td>Stops marginal units from escaping, at the price of some false fails</td></tr>
+            <tr><td><b>Cpk</b></td><td>How many 3-sigma widths fit between the mean and the nearest limit</td><td>One number for "is this measurement capable". Many programs ask for 1.33 or more.</td></tr>
+          </tbody></table></div>
+        <p>Set limits from <b>measured data</b> on real units, not from the datasheet alone, and review them with TE. See example 4 for a Cpk calculation.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>5 · Yield and the numbers that matter <small>and the retest trap</small></summary>
+      <div class="dd">
+        <div class="table-wrap"><table>
+          <thead><tr><th>Metric</th><th>Meaning</th><th>Use it to</th></tr></thead>
+          <tbody>
+            <tr><td><b>First-pass yield (FPY)</b></td><td>Share of units that pass on the first attempt</td><td>See the real health of the process and the tester</td></tr>
+            <tr><td><b>Final yield</b></td><td>Share that pass eventually, after retests and repair</td><td>Compare with FPY: a big gap means lots of rework</td></tr>
+            <tr><td><b>Rolled throughput yield (RTY)</b></td><td>Product of the FPY of every stage</td><td>Four stages at 95% FPY each give 0.95<sup>4</sup> &asymp; 81%</td></tr>
+            <tr><td><b>Retest rate</b></td><td>Share of units tested more than once</td><td>Spot unstable fixtures and contact problems</td></tr>
+            <tr><td><b>False-fail rate</b></td><td>Good units that fail the tester</td><td>Measure the tester's own contribution to loss</td></tr>
+            <tr><td><b>Test time / UPH</b></td><td>Seconds per unit, units per hour</td><td>Keep the tester from limiting the line</td></tr>
+            <tr><td><b>Escapes (DPPM)</b></td><td>Bad units that reached the customer, per million</td><td>Judge whether coverage is enough</td></tr>
+          </tbody></table></div>
+        <div class="note"><p><b>The retest trap.</b> "Retest until it passes" hides a bad fixture and inflates the final yield. Track FPY, run a Pareto of failing steps, and fix the top item. You will build the yield maths in exercise 3.</p></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>6 · Writing a JDM proposal <small>winning the work with technology and manner</small></summary>
+      <div class="dd">
+        <p>In JDM the TDE, HPS and TE write a proposal for a customer who may be choosing between partners. The proposal shows <b>what we propose</b>, <b>how we work</b> and <b>what only we can do well</b>.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Section</th><th>The question it answers</th></tr></thead>
+          <tbody>
+            <tr><td><b>Understanding</b></td><td>Do you understand the product, volumes, quality target, cost target and schedule?</td></tr>
+            <tr><td><b>Test strategy and technology</b></td><td>Which stages and which technology will you use to reach the coverage, and why?</td></tr>
+            <tr><td><b>Our capability</b></td><td>What do you already have: reusable tester platforms, modules, automation, local fabrication, relevant past programs?</td></tr>
+            <tr><td><b>Way of working</b></td><td>How will we run the project: design reviews, reporting, communication, decision points?</td></tr>
+            <tr><td><b>Scope</b></td><td>What do you design, build and deliver, and what must the customer provide?</td></tr>
+            <tr><td><b>Plan</b></td><td>What are the milestones through NPI, and when is the tester ready for the line?</td></tr>
+            <tr><td><b>Cost</b></td><td>One-time development (NRE) versus cost of test per unit. What drives each?</td></tr>
+            <tr><td><b>Risks and assumptions</b></td><td>What could go wrong, and what are you assuming (test access, firmware readiness, volumes)?</td></tr>
+            <tr><td><b>Support</b></td><td>What happens after delivery: sustaining, maintenance, response times?</td></tr>
+          </tbody></table></div>
+        <p><b>Habits of a strong proposal:</b> numbers over adjectives (test time in seconds, expected coverage in percent), evidence over claims (a photo of a similar tester, results from a past program), and honest risks. A proposal that hides a risk loses trust the moment it appears.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>7 · Handover to MFG and sustaining <small>after the tester leaves the lab</small></summary>
+      <div class="dd">
+        <ul>
+          <li><b>Acceptance criteria are agreed before the build</b>: run-at-rate, correlation and repeatability targets, maximum false-fail rate, uptime.</li>
+          <li><b>Training is part of the delivery.</b> Operators run it, technicians keep it alive. Both need material and practice.</li>
+          <li><b>Change control.</b> Every change to software, limits or hardware gets a version, a reason and a reviewer. Test an ECO's effect on the tester before it reaches the line.</li>
+          <li><b>Preventive maintenance.</b> Calibration dates, pin replacement by cycle count, golden-unit checks, spare parts stock.</li>
+          <li><b>Watch the data.</b> A slow drift in yield or measurement is usually the tester, not the product. Catch it before the line complains.</li>
+          <li><b>Plan for the future.</b> Instrument obsolescence, replicating testers for new lines, knowledge written down so that it survives staff changes.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ============================================================ 6. EXAMPLES -->
+<section class="block" id="examples">
+  <div class="container">
+    <span class="kicker">06 · Programming examples</span>
+    <h2>Tester software, ready to run</h2>
+    <p class="lead">Python with a pytest-style API, applied to production test. The first five examples are <b>editable and run in your browser</b>: change the code, break it on purpose and see how a failure looks. The last three show real instrument control, a station loop and a release pipeline. If your stations use LabVIEW, TestStand or C#, the structure is the same.</p>
+    <p class="runtime-note">The first run downloads the Python runtime (about 10 MB, then cached by your browser).</p>
+    <div id="examples-root"></div>
+  </div>
+</section>
+
+<!-- ============================================================ 7. PRACTICE -->
+<section class="block" id="practice">
+  <div class="container">
+    <span class="kicker">07 · Practice</span>
+    <h2>Prove it: seven exercises</h2>
+    <p class="lead">Two kinds of challenge. In <b>Implement</b> exercises you write a function and hidden tests grade it. In <b>Write the tests</b> exercises the code already exists in one correct and several buggy versions, and your tests must tell them apart, because a tester that cannot spot a planted bug will not spot a real one. Progress and code are saved in this browser.</p>
+    <div id="practice-root"></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <p><b>TDE Training.</b> A static site: no build step, no tracking. Code runs locally in your browser using <a href="https://pyodide.org">Pyodide</a>. See the README for how to publish it on GitHub Pages and how to add your own exercises.</p>
+  </div>
+</footer>
+
+<noscript><div class="container"><p class="note">This site needs JavaScript for the diagrams and exercises.</p></div></noscript>
+</body>
+</html>
