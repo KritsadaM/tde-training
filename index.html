@@ -29,12 +29,14 @@
       <a href="#models">CM vs JDM</a>
       <a href="#lifecycle">NPI to sustaining</a>
       <a href="#diagrams">Diagrams</a>
+      <a href="#ocp">OCP rack</a>
+      <a href="#cooling">Cooling</a>
       <a href="#deep-dive">Deep dive</a>
       <a href="#examples">Examples</a>
       <a href="#practice">Practice</a>
       <a href="#glossary">Glossary</a>
     </nav>
-    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/8</span></span>
+    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/10</span></span>
     <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">☾</button>
   </div>
   <div id="progress-bar" aria-hidden="true"></div>
@@ -52,9 +54,9 @@
       <a class="btn" href="#practice">Jump to practice</a>
     </div>
     <ul class="stats">
-      <li><b>4</b><span>interactive diagrams</span></li>
-      <li><b>9</b><span>code examples</span></li>
-      <li><b>8</b><span>graded exercises</span></li>
+      <li><b>6</b><span>interactive diagrams</span></li>
+      <li><b>11</b><span>code examples</span></li>
+      <li><b>10</b><span>graded exercises</span></li>
       <li><b>0</b><span>installs needed</span></li>
     </ul>
 
@@ -64,10 +66,12 @@
       <a class="card link" href="#models"><span class="num">2</span><h4>CM vs JDM</h4><p>The two program types and where the TDE joins each.</p></a>
       <a class="card link" href="#lifecycle"><span class="num">3</span><h4>NPI to sustaining</h4><p>The life of a tester, from proposal to maintenance.</p></a>
       <a class="card link" href="#diagrams"><span class="num">4</span><h4>Diagrams</h4><p>Test stages on the line and the anatomy of a tester.</p></a>
-      <a class="card link" href="#deep-dive"><span class="num">5</span><h4>Deep dive</h4><p>Strategy, hardware, software, 4M1E, safety, yield, proposals.</p></a>
-      <a class="card link" href="#examples"><span class="num">6</span><h4>Examples</h4><p>Nine Python examples. Six run in your browser.</p></a>
-      <a class="card link" href="#practice"><span class="num">7</span><h4>Practice</h4><p>Eight graded exercises with hints and solutions.</p></a>
-      <a class="card link" href="#glossary"><span class="num">8</span><h4>Glossary</h4><p>120+ acronyms grouped by topic, with search.</p></a>
+      <a class="card link" href="#ocp"><span class="num">5</span><h4>OCP rack</h4><p>What is new in an Open Rack: power, busbar, manifold, and how to test one.</p></a>
+      <a class="card link" href="#cooling"><span class="num">6</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
+      <a class="card link" href="#deep-dive"><span class="num">7</span><h4>Deep dive</h4><p>Strategy, hardware, software, 4M1E, safety, yield, proposals.</p></a>
+      <a class="card link" href="#examples"><span class="num">8</span><h4>Examples</h4><p>Eleven Python examples. Seven run in your browser.</p></a>
+      <a class="card link" href="#practice"><span class="num">9</span><h4>Practice</h4><p>Ten graded exercises with hints and solutions.</p></a>
+      <a class="card link" href="#glossary"><span class="num">10</span><h4>Glossary</h4><p>150+ acronyms grouped by topic, with search.</p></a>
     </div>
   </div>
 </section>
@@ -160,7 +164,7 @@
       </div>
     </div>
 
-    <div class="note"><p><b>Lost in acronyms?</b> The <a href="#glossary">Glossary</a> groups 120+ of them by topic: company, MFG, test, quality, software, hardware, interfaces, IT and safety. It is searchable.</p></div>
+    <div class="note"><p><b>Lost in acronyms?</b> The <a href="#glossary">Glossary</a> groups 150+ of them by topic: company, MFG, test, quality, software, hardware, interfaces, OCP rack and cooling, IT and safety. It is searchable.</p></div>
   </div>
 </section>
 
@@ -339,10 +343,220 @@
   </div>
 </section>
 
+<!-- ============================================================ 5. OCP RACK -->
+<section class="block view" id="ocp">
+  <div class="container">
+    <span class="kicker">05 · OCP rack</span>
+    <h2>The OCP rack: what is different</h2>
+    <p class="lead">OCP racks are new to the team, so start here. <b>OCP</b> (Open Compute Project) is a community that publishes open hardware designs for data centres. Its <b>Open Rack</b> changes how a rack is built, powered and cooled, and with it, how a rack is tested.</p>
+
+    <div class="sub" data-sub="different" data-title="What is different">
+    <div class="grid g3">
+      <div class="card"><div class="ico">⚡</div><h4>Shared power</h4>
+        <ul><li>One power shelf feeds a DC busbar for the whole rack</li><li>Nodes plug into the busbar, no AC supply in each server</li><li>A battery shelf (BBU) rides through short outages</li></ul></div>
+      <div class="card"><div class="ico">≋</div><h4>Shared cooling</h4>
+        <ul><li>Fans can be shared, and liquid-cooled racks add a coolant manifold</li><li>Nodes mate to it with blind quick disconnects</li><li>A CDU moves the heat to facility water</li></ul></div>
+      <div class="card"><div class="ico">⚙</div><h4>Rack as the product</h4>
+        <ul><li>The customer buys a tested <em>rack</em>, not loose servers</li><li>Rack-level power, liquid and thermal tests join the node tests</li><li>Records are kept per rack serial number</li></ul></div>
+    </div>
+
+    <h3>Open Rack compared with a traditional 19-inch rack</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>Traditional 19-inch (EIA) rack</th><th>OCP Open Rack</th></tr></thead>
+        <tbody>
+          <tr><td><b>Equipment width</b></td><td>19 inches</td><td>21 inches</td></tr>
+          <tr><td><b>Height unit</b></td><td>1U = 44.45 mm</td><td>OpenU (OU) = 48 mm</td></tr>
+          <tr><td><b>Power</b></td><td>An AC power supply in every server, fed from PDUs</td><td>Shared power shelf feeding a DC busbar. 12 V in V1 and V2, <b>48 V in V3</b></td></tr>
+          <tr><td><b>Connection</b></td><td>Power and network cables at the rear of each server</td><td>Blind-mate connection to the busbar. In liquid-cooled racks, also to the coolant manifold</td></tr>
+          <tr><td><b>Cooling</b></td><td>Fans in each server</td><td>Air, or direct-to-chip liquid through a rack manifold. Immersion uses a different mechanical format</td></tr>
+          <tr><td><b>Management</b></td><td>A BMC in each server</td><td>A BMC in each node, plus telemetry from power shelves and battery shelves</td></tr>
+          <tr><td><b>Rack power</b></td><td>Typically a few kW to about 15 kW</td><td>30 kW and beyond. Newer high-power racks go much higher</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><p><b>Do not assume 19-inch fixtures, cable lengths or tester interfaces carry over.</b> Get the mechanical drawings of the exact Open Rack version for the program.</p></div>
+    </div>
+
+    <div class="sub" data-sub="anatomy" data-title="Anatomy and power">
+    <h3>Anatomy of an Open Rack</h3>
+    <p>A typical arrangement, seen from the front, with the shared services that run at the rear. Real racks vary by design and program. Click any part.</p>
+    <div class="diagram">
+      <div class="diagram-scroll">
+        <svg id="svg-rack" viewBox="0 0 780 560" role="group" aria-label="Open Rack anatomy">
+          <g class="node" data-key="frame" style="--tint:2%"><rect class="shape dashed" x="20" y="20" width="540" height="520" rx="14"/><text class="big" x="40" y="42">OPEN RACK · typical arrangement</text></g>
+          <g class="node" data-key="switch"><rect class="shape" x="40" y="56" width="380" height="44" rx="8"/><text class="t" x="56" y="84">Network switch (ToR)</text></g>
+          <g class="node" data-key="powershelf"><rect class="shape" x="40" y="110" width="380" height="60" rx="8"/><text class="t" x="56" y="136">Power shelf</text><text class="s" x="56" y="156">AC or HVDC in, 48 V DC out to the busbar</text></g>
+          <g class="node" data-key="compute" style="--tint:10%"><rect class="shape" x="40" y="180" width="380" height="200" rx="8"/><text class="t" x="56" y="208">Compute / GPU nodes (OpenU sleds)</text><text class="s" x="56" y="230">Blind-mate to the busbar at the rear</text><text class="s" x="56" y="248">Liquid-cooled nodes also mate to the manifold</text><line class="dash" x1="56" y1="276" x2="404" y2="276"/><line class="dash" x1="56" y1="308" x2="404" y2="308"/><line class="dash" x1="56" y1="340" x2="404" y2="340"/></g>
+          <g class="node" data-key="bbu"><rect class="shape" x="40" y="390" width="380" height="50" rx="8"/><text class="t" x="56" y="414">Battery backup (BBU) shelf</text><text class="s" x="56" y="431">Ride-through after a power loss</text></g>
+          <g class="node cool" data-key="cdu"><rect class="shape" x="40" y="450" width="380" height="76" rx="8"/><text class="t" x="56" y="478">CDU (in the rack, optional)</text><text class="s" x="56" y="498">Row-level CDUs are also common</text></g>
+          <g class="node" data-key="busbar" style="--tint:14%"><rect class="shape" x="440" y="56" width="34" height="470" rx="6"/><text class="t" x="462" y="291" text-anchor="middle" transform="rotate(-90 462 291)">48 V DC busbar</text></g>
+          <g class="node cool" data-key="manifold" style="--tint:14%"><rect class="shape" x="484" y="56" width="30" height="470" rx="6"/><rect class="shape" x="520" y="56" width="30" height="470" rx="6"/><text class="t" x="499" y="291" text-anchor="middle" transform="rotate(-90 499 291)">Liquid supply</text><text class="t" x="535" y="291" text-anchor="middle" transform="rotate(-90 535 291)">Liquid return</text></g>
+          <text class="big" x="590" y="70">FRONT</text>
+          <text class="cap" x="590" y="92">Network, power,</text>
+          <text class="cap" x="590" y="110">compute, battery.</text>
+          <text class="big" x="590" y="150">REAR (vertical bars)</text>
+          <text class="cap" x="590" y="172">Busbar and liquid</text>
+          <text class="cap" x="590" y="190">manifold, full height.</text>
+          <rect class="shape" x="590" y="226" width="22" height="14" rx="3" style="fill:none;stroke:var(--accent);stroke-width:1.6"/><text class="cap" x="622" y="238">Power path</text>
+          <rect class="shape" x="590" y="254" width="22" height="14" rx="3" style="fill:none;stroke:var(--cool);stroke-width:1.6"/><text class="cap" x="622" y="266">Liquid path</text>
+          <text class="cap" x="590" y="310">Click any part.</text>
+        </svg>
+      </div>
+      <div class="detail" id="panel-rack" aria-live="polite"></div>
+    </div>
+
+    <h3>The power path, and why 48 V</h3>
+    <div class="ladder">
+      <div class="step"><b>1 · Facility feed</b><span>AC (or high-voltage DC) arrives at the rack.</span></div>
+      <div class="step"><b>2 · Power shelf</b><span>Redundant rectifier modules convert it to 48 V DC.</span></div>
+      <div class="step"><b>3 · Busbar</b><span>A copper bar distributes DC to every shelf.</span></div>
+      <div class="step"><b>4 · Node</b><span>On-board converters step 48 V down to the voltages the chips need.</span></div>
+    </div>
+    <p>The BBU sits on the same busbar and bridges outages. <b>The numbers:</b> a 30 kW rack at 48 V carries about 625 A. At 12 V it would be about 2,500 A. Four times less current means sixteen times less resistive loss in the same copper, which is why Open Rack V3 moved to 48 V. It is still a lot of current, so contact resistance, heating and safe hot-plugging are real test topics.</p>
+    </div>
+
+    <div class="sub" data-sub="testing" data-title="Rack test plan">
+    <h3>A rack-level test plan</h3>
+    <p>Node tests still happen first. Then the assembled rack is tested as one product. This is a typical plan. The program's test specification decides the real list and limits.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Area</th><th>What it proves</th><th>Typical checks</th><th>Watch out</th></tr></thead>
+        <tbody>
+          <tr><td><b>Mechanical and identity</b></td><td>Right parts, fit, labels</td><td>Visual and dimensional checks, node serial numbers linked to the rack serial number</td><td>Fixtures sized for 19 inches</td></tr>
+          <tr><td><b>Power</b></td><td>Busbar and shelves deliver power safely</td><td>Contact resistance, safety tests per spec, load test, pull one rectifier (N+1), BBU ride-through</td><td>High current. Arcing on hot-plug</td></tr>
+          <tr><td><b>Network</b></td><td>Every link is up</td><td>Link and speed, optics type, cable map, loopback</td><td>Mislabelled cables</td></tr>
+          <tr><td><b>Management</b></td><td>Every node and shelf is visible and healthy</td><td>BMC / Redfish discovery, firmware versions, sensor sanity, inventory</td><td>Missing or stale readings</td></tr>
+          <tr><td><b>Liquid</b></td><td>No leaks, correct flow</td><td>Pressure decay, flow and &Delta;P, fill and purge, quick-disconnect mating</td><td>Air in the loop</td></tr>
+          <tr><td><b>Thermal soak</b></td><td>The rack holds full load within limits</td><td>Load software on the nodes, watch temperatures and flow for hours</td><td>Start only after the liquid tests pass</td></tr>
+          <tr><td><b>Fault response</b></td><td>Protections really work</td><td>Pull a power supply, stop the pump, unplug a fan, check alarms, throttling and shutdown</td><td>Test the alarm, not only the sensor</td></tr>
+          <tr><td><b>Ship readiness</b></td><td>The rack arrives safe</td><td>Drain and dry if required, QD caps fitted, records complete</td><td>Residual coolant</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Questions to ask at the start of an OCP rack program</h3>
+    <div class="card">
+      <ul class="checklist">
+        <li>Which Open Rack version, and which mechanical drawings?</li>
+        <li>Is the input AC or high-voltage DC? Is the busbar 12 V or 48 V?</li>
+        <li>Is it air-cooled, rear-door, or direct-to-chip liquid?</li>
+        <li>Which coolant, and what supply temperature range and flow?</li>
+        <li>Who supplies the CDU, manifold and quick disconnects?</li>
+        <li>What test pressure, hold time and leak limit apply?</li>
+        <li>What flow and &Delta;P limits for the rack and per node?</li>
+        <li>How is thermal load applied, with which software or heaters?</li>
+        <li>Does the rack ship dry or filled?</li>
+        <li>Which safety standards apply to the power and liquid tests?</li>
+        <li>Which records must be delivered per rack serial number?</li>
+        <li>Do we get a sample rack and a golden node early?</li>
+      </ul>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 6. COOLING -->
+<section class="block view" id="cooling">
+  <div class="container">
+    <span class="kicker">06 · Cooling</span>
+    <h2>Cooling: fan, water or immersion?</h2>
+    <p class="lead">Every watt a rack uses becomes heat that has to go somewhere. As chips get hotter, air runs out of capacity and liquid takes over. This page compares the options, then goes deep on <b>water cooling</b>, the one an OCP rack is most likely to use.</p>
+
+    <div class="sub" data-sub="why" data-title="Why liquid?">
+    <h3>Why liquid? Heat per volume</h3>
+    <p>Heat removed = mass flow &times; specific heat &times; temperature rise. Water holds about 3,500 times more heat than the same volume of air, so a thin pipe does the work of a huge airflow. Try it:</p>
+    <div class="card calc" id="cooling-calc">
+      <div class="calc-grid">
+        <label>Rack heat load (kW)<input id="calc-kw" type="number" min="1" max="500" step="1" value="30" inputmode="decimal"></label>
+        <label>Air temperature rise (K)<input id="calc-dta" type="number" min="1" max="40" step="1" value="15" inputmode="decimal"></label>
+        <label>Water temperature rise (K)<input id="calc-dtw" type="number" min="1" max="40" step="1" value="10" inputmode="decimal"></label>
+      </div>
+      <div class="calc-out">
+        <div><span>Air needed</span><b id="calc-air">–</b><small id="calc-air2"></small></div>
+        <div class="cool"><span>Water needed</span><b id="calc-water">–</b><small id="calc-water2"></small></div>
+        <div><span>Volume ratio</span><b id="calc-ratio">–</b><small>more air than water</small></div>
+      </div>
+      <p class="tag">Air: cp 1.005 kJ/(kg&middot;K), density 1.2 kg/m&sup3;. Water: cp 4.18 kJ/(kg&middot;K), density 0.997 kg/L. A water-glycol mix needs a few percent more flow. You will code this in exercise 10.</p>
+    </div>
+    </div>
+
+    <div class="sub" data-sub="compare" data-title="Compare methods">
+    <h3>Compare the methods</h3>
+    <p>Pick the methods to put side by side (on a phone, swipe the table sideways). The ranges are indicative. Real limits come from the design and the program specification.</p>
+    <div id="cmp-chips" class="cmp-chips" role="group" aria-label="Methods to compare"></div>
+    <div class="table-wrap cmp-wrap"><table class="cmp" id="cmp-table"></table></div>
+    <div class="note"><p><b>Where OCP racks fit:</b> Open Racks are normally air-cooled or direct-to-chip liquid-cooled through a rack manifold, and the OCP Advanced Cooling Solutions project works on specifications for the liquid parts. Immersion tanks are usually a different mechanical format from an Open Rack, so check what the program really uses.</p></div>
+    </div>
+
+    <div class="sub" data-sub="water" data-title="Water cooling">
+    <h3>Water cooling in an OCP rack</h3>
+    <p>Heat travels left to right: from the chip into the coolant, through the CDU into the facility water, and out of the building. Two loops keep the clean rack coolant apart from building water. Click any part.</p>
+    <div class="diagram">
+      <div class="diagram-scroll">
+        <svg id="svg-loop" viewBox="0 0 960 420" role="group" aria-label="Liquid cooling loops">
+          <line class="axis" x1="30" y1="60" x2="930" y2="60" marker-end="url(#arrow)"/>
+          <text class="big" x="480" y="46" text-anchor="middle">HEAT FLOWS THIS WAY</text>
+          <g class="node cool" data-key="coldplate"><rect class="shape" x="30" y="90" width="130" height="100" rx="12"/><text class="t" x="95" y="130" text-anchor="middle">Cold plate</text><text class="t" x="95" y="150" text-anchor="middle">on the chip</text><text class="s" x="95" y="176" text-anchor="middle">water or PG25</text></g>
+          <g class="node cool" data-key="qd"><rect class="shape" x="184" y="90" width="130" height="100" rx="12"/><text class="t" x="249" y="130" text-anchor="middle">Quick</text><text class="t" x="249" y="150" text-anchor="middle">disconnect</text><text class="s" x="249" y="176" text-anchor="middle">blind-mate</text></g>
+          <g class="node cool" data-key="manifold"><rect class="shape" x="338" y="90" width="130" height="100" rx="12"/><text class="t" x="403" y="130" text-anchor="middle">Rack</text><text class="t" x="403" y="150" text-anchor="middle">manifold</text><text class="s" x="403" y="176" text-anchor="middle">supply and return</text></g>
+          <g class="node cool" data-key="cdu" style="--tint:16%"><rect class="shape" x="492" y="90" width="130" height="100" rx="12"/><text class="t" x="557" y="130" text-anchor="middle">CDU</text><text class="t" x="557" y="150" text-anchor="middle">pump + HX</text><text class="s" x="557" y="176" text-anchor="middle">separates the loops</text></g>
+          <g class="node" data-key="facility"><rect class="shape" x="646" y="90" width="130" height="100" rx="12"/><text class="t" x="711" y="130" text-anchor="middle">Facility</text><text class="t" x="711" y="150" text-anchor="middle">water</text><text class="s" x="711" y="176" text-anchor="middle">building loop</text></g>
+          <g class="node" data-key="reject"><rect class="shape" x="800" y="90" width="130" height="100" rx="12"/><text class="t" x="865" y="130" text-anchor="middle">Heat</text><text class="t" x="865" y="150" text-anchor="middle">rejection</text><text class="s" x="865" y="176" text-anchor="middle">chiller / dry cooler</text></g>
+          <line class="axis" x1="162" y1="140" x2="182" y2="140" marker-end="url(#arrow)"/><line class="axis" x1="316" y1="140" x2="336" y2="140" marker-end="url(#arrow)"/><line class="axis" x1="470" y1="140" x2="490" y2="140" marker-end="url(#arrow)"/><line class="axis" x1="624" y1="140" x2="644" y2="140" marker-end="url(#arrow)"/><line class="axis" x1="778" y1="140" x2="798" y2="140" marker-end="url(#arrow)"/>
+          <line class="axis" x1="620" y1="220" x2="30" y2="220" marker-end="url(#arrow)"/>
+          <text class="cap" x="325" y="244" text-anchor="middle">cooled coolant returns to the chips</text>
+          <path class="axis" d="M30 266 V276 H622 V266"/><text class="big" x="326" y="298" text-anchor="middle">TCS · Technology Cooling System (the rack coolant loop)</text>
+          <path class="axis" d="M492 316 V326 H930 V316"/><text class="big" x="711" y="348" text-anchor="middle">FWS · Facility Water System (building side)</text>
+          <g class="node" data-key="sensors"><rect class="shape" x="30" y="366" width="440" height="42" rx="10"/><text class="t" x="50" y="392">Sensors and controls</text><text class="s" x="230" y="392">flow · temperature · pressure · leak</text></g>
+          <g class="node cool" data-key="conditioning"><rect class="shape" x="490" y="366" width="440" height="42" rx="10"/><text class="t" x="510" y="392">Fluid conditioning</text><text class="s" x="690" y="392">filter · expansion tank · air purge</text></g>
+        </svg>
+      </div>
+      <div class="detail" id="panel-loop" aria-live="polite"></div>
+    </div>
+
+    <h3>Key ideas for water cooling</h3>
+    <div class="grid g2">
+      <div class="card"><h4>1 · Heat balance</h4><ul><li>Heat = flow &times; density &times; cp &times; &Delta;T.</li><li>About 1.4 L/min of water carries 1 kW at a 10 K rise. Halve the temperature rise and you need double the flow.</li><li>Comparing the electrical load with the heat measured in the coolant is a powerful check.</li></ul></div>
+      <div class="card"><h4>2 · Coolant choice</h4><ul><li>Water carries the most heat but needs corrosion and microbe control.</li><li>PG25 (25% propylene glycol with inhibitors) protects against corrosion and freezing, but carries a little less heat (about 6% more flow with this course's constants) and is more viscous, so &Delta;P rises.</li><li>Use the coolant the design specifies. Never top up with something else.</li></ul></div>
+      <div class="card"><h4>3 · Materials and water quality</h4><ul><li>Every wetted material must be compatible: copper, brass, stainless steel, aluminium, seals, plastics.</li><li>Mixing metals such as aluminium and copper in a water loop invites galvanic corrosion.</li><li>Control particles (filters), conductivity, pH and microbes. Follow the vendor's approved list.</li></ul></div>
+      <div class="card"><h4>4 · Pressure and flow</h4><ul><li>&Delta;P adds up across cold plates, quick disconnects and the manifold.</li><li>The pump delivers whatever flow makes its curve meet the loop's resistance curve.</li><li>Nodes should receive nearly equal flow (hydraulic balance). A clogged or kinked part shows up as low flow or high &Delta;P.</li></ul></div>
+      <div class="card"><h4>5 · Dew point and condensation</h4><ul><li>If coolant is colder than the room air's dew point, water condenses on pipes and cold plates and can drip on electronics.</li><li>Keep the supply temperature above the dew point with a margin, and watch humidity.</li></ul></div>
+      <div class="card"><h4>6 · Air in the loop</h4><ul><li>Bubbles block narrow channels, make noise and cause hot spots.</li><li>Fill from the lowest point, vent the highest points, circulate until flow and &Delta;P are stable.</li></ul></div>
+      <div class="card"><h4>7 · Leaks and detection</h4><ul><li>Layers: leak-tight connectors, drip trays, rope or point sensors, and flow or pressure anomalies.</li><li>A policy decides the response: alarm, throttle, shut down, close isolation valves.</li><li>Prove it with fault injection, not just by reading the sensor.</li></ul></div>
+      <div class="card"><h4>8 · Safety and handling</h4><ul><li>Water and electricity share the rack: keep wet and electrical zones apart and grounded.</li><li>Read the safety data sheets for glycol and inhibitors. Keep a spill kit at the station.</li><li>Dispose of coolant according to the site rules.</li></ul></div>
+    </div>
+    </div>
+
+    <div class="sub" data-sub="testing" data-title="What a TDE tests">
+    <h3>What a TDE tests on a water-cooled rack</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Test</th><th>How</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td><b>Incoming checks</b></td><td>Confirm fluid type and batch, filter fitted, coupling faces clean</td><td>Contamination clogs cold plates</td></tr>
+          <tr><td><b>Fill and purge</b></td><td>Fill from the low point, vent, circulate until flow and &Delta;P are stable</td><td>Air causes hot spots and noise</td></tr>
+          <tr><td><b>Leak (pressure decay)</b></td><td>Pressurise to the test pressure, isolate, watch the drop over the hold time (exercise 9)</td><td>Finds leaks before any heat or power is applied</td></tr>
+          <tr><td><b>Hydraulic check</b></td><td>Measure flow and &Delta;P for the rack and per node against limits</td><td>Reveals clogs, kinks and unbalanced flow</td></tr>
+          <tr><td><b>Quick-disconnect check</b></td><td>Mating force, leak after mating, cycle count</td><td>Wear and dirt cause drips</td></tr>
+          <tr><td><b>Thermal soak</b></td><td>Apply load, wait until stable, check temperatures and heat balance (exercise 10)</td><td>Proves the cooling capacity</td></tr>
+          <tr><td><b>Sensors and alarms</b></td><td>Calibrate, then inject faults: flow loss, over-temperature, wet leak sensor</td><td>Protections must really act</td></tr>
+          <tr><td><b>Drain and dry</b></td><td>Drain or blow down as required, fit QD caps, record it</td><td>Residual liquid in shipping</td></tr>
+          <tr><td><b>Records</b></td><td>Link rack serial number to the pressure curve, flow, temperatures and fluid batch</td><td>Traceability</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>The liquid test stand</h3>
+    <p>Testing liquid needs a station that is a small cooling system of its own: a pump, a chiller or heat exchanger to remove the heat, filters, valves, a flow meter, pressure transducers, temperature sensors, a pressure-decay leak tester, and a load (heaters or the nodes' own stress software). The software is sequenced like any other tester, with states, interlocks, limits and logs. The station also needs its own safety: a pressure relief valve, an emergency stop, drip trays and a leak sensor under the rig. See example 11 for the shape of the sequence.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ============================================================ 5. DEEP DIVE -->
 <section class="block view" id="deep-dive">
   <div class="container">
-    <span class="kicker">05 · Deep dive</span>
+    <span class="kicker">07 · Deep dive</span>
     <h2>The craft behind a trusted tester</h2>
     <p class="lead">Nine topics, from choosing what to test to shopfloor safety and line triage. Open any of them.</p>
 
@@ -518,9 +732,9 @@
 <!-- ============================================================ 6. EXAMPLES -->
 <section class="block view" id="examples">
   <div class="container">
-    <span class="kicker">06 · Programming examples</span>
+    <span class="kicker">08 · Programming examples</span>
     <h2>Tester software, ready to run</h2>
-    <p class="lead">Python with a pytest-style API, applied to production test. The first six examples are <b>editable and run in your browser</b>: change the code, break it on purpose and see how a failure looks. The last three show real instrument control, a station loop and a release pipeline. If your stations use LabVIEW, TestStand or C#, the structure is the same.</p>
+    <p class="lead">Python with a pytest-style API, applied to production test. Seven of the eleven examples are <b>editable and run in your browser</b>: change the code, break it on purpose and see how a failure looks. The read-only ones show real instrument control, a station loop, a release pipeline and a liquid test sequence. If your stations use LabVIEW, TestStand or C#, the structure is the same.</p>
     <p class="runtime-note">The first run downloads the Python runtime (about 10 MB, then cached by your browser).</p>
     <div id="examples-root"></div>
   </div>
@@ -529,8 +743,8 @@
 <!-- ============================================================ 7. PRACTICE -->
 <section class="block view" id="practice">
   <div class="container">
-    <span class="kicker">07 · Practice</span>
-    <h2>Prove it: eight exercises</h2>
+    <span class="kicker">09 · Practice</span>
+    <h2>Prove it: ten exercises</h2>
     <p class="lead">Two kinds of challenge. In <b>Implement</b> exercises you write a function and hidden tests grade it. In <b>Write the tests</b> exercises the code already exists in one correct and several buggy versions, and your tests must tell them apart, because a tester that cannot spot a planted bug will not spot a real one. Progress and code are saved in this browser.</p>
     <div id="practice-root"></div>
   </div>
@@ -538,7 +752,7 @@
 <!-- ============================================================ 8. GLOSSARY -->
 <section class="block view" id="glossary">
   <div class="container">
-    <span class="kicker">08 · Reference</span>
+    <span class="kicker">10 · Reference</span>
     <h2>Glossary of acronyms</h2>
     <p class="lead">The acronyms you will meet, grouped by topic. Search by acronym or by meaning, or pick a topic. Some acronyms mean different things in different fields (for example <b>SPI</b>), so check the group.</p>
     <div class="gl-layout">

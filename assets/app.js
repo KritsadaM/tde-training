@@ -418,6 +418,63 @@
     apply();
   }
 
+  /* ------------------------------------------------------------ cooling page */
+  function buildCooling() {
+    if (!$("#cooling-calc") || !TDE.COOLING) return;
+
+    // --- why liquid: heat per volume calculator
+    const kw = $("#calc-kw"), dta = $("#calc-dta"), dtw = $("#calc-dtw");
+    const fmt = (n, d = 0) => n.toLocaleString("en-US", { maximumFractionDigits: d });
+    function calc() {
+      const P = +kw.value, Ta = +dta.value, Tw = +dtw.value;
+      const ok = P > 0 && Ta > 0 && Tw > 0;
+      if (!ok) {
+        ["air", "water", "ratio"].forEach((k) => ($(`#calc-${k}`).textContent = "–"));
+        $("#calc-air2").textContent = $("#calc-water2").textContent = "";
+        return;
+      }
+      const airM3s = (P * 1000) / (1005 * 1.2 * Ta);          // W / (cp * rho * dT)
+      const waterM3s = (P * 1000) / (4180 * 997 * Tw);
+      const lpm = waterM3s * 1000 * 60;
+      $("#calc-air").textContent = `${fmt(airM3s * 2118.88)} CFM`;
+      $("#calc-air2").textContent = `${fmt(airM3s * 3600)} m³/h`;
+      $("#calc-water").textContent = `${fmt(lpm, 1)} L/min`;
+      $("#calc-water2").textContent = `${fmt(lpm / 3.78541, 1)} GPM`;
+      $("#calc-ratio").textContent = `${fmt(airM3s / waterM3s)}×`;
+    }
+    [kw, dta, dtw].forEach((i) => i.addEventListener("input", calc));
+    calc();
+
+    // --- compare the methods side by side
+    const { methods, criteria } = TDE.COOLING;
+    const valid = new Set(methods.map((m) => m.id));
+    let selected = store.get("tde.cmp", ["air", "dlc", "imm1"]).filter((id) => valid.has(id));
+    if (!selected.length) selected = ["air", "dlc", "imm1"];
+    const chips = $("#cmp-chips"), table = $("#cmp-table");
+
+    function render() {
+      $$("button", chips).forEach((b) => b.setAttribute("aria-pressed", selected.includes(b.dataset.id)));
+      const cols = methods.filter((m) => selected.includes(m.id));
+      const head = el("thead", {}, el("tr", {}, el("th", { scope: "col" }, ""), cols.map((m) => el("th", { scope: "col", class: m.id === "dlc" ? "focus" : "" }, m.name))));
+      const body = el("tbody", {}, criteria.map(([key, label]) =>
+        el("tr", { class: key === "tde" ? "hl" : "" }, el("th", { scope: "row" }, label), cols.map((m) => el("td", {}, m[key])))));
+      table.style.setProperty("--n", cols.length);
+      table.replaceChildren(head, body);
+    }
+
+    methods.forEach((m) => {
+      const b = el("button", { type: "button", "data-id": m.id }, m.short);
+      b.addEventListener("click", () => {
+        if (selected.includes(m.id)) { if (selected.length === 1) return; selected = selected.filter((x) => x !== m.id); }
+        else selected = methods.filter((x) => selected.includes(x.id) || x.id === m.id).map((x) => x.id);
+        store.set("tde.cmp", selected);
+        render();
+      });
+      chips.append(b);
+    });
+    render();
+  }
+
   /* ------------------------------------------------------------ theme + nav */
   function setupTheme() {
     const root = document.documentElement;
@@ -438,7 +495,7 @@
   function setupViews() {
     const views = $$("section.view");
     const ids = views.map((v) => v.id);
-    const labels = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", examples: "Examples", practice: "Practice", glossary: "Glossary" };
+    const labels = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", ocp: "OCP rack", cooling: "Cooling", "deep-dive": "Deep dive", examples: "Examples", practice: "Practice", glossary: "Glossary" };
     const links = $$(".nav-links a");
     document.documentElement.classList.add("js-views");
 
@@ -448,22 +505,42 @@
         prev ? el("a", { class: "prev", href: `#${prev}` }, el("small", {}, "← Previous"), el("b", {}, labels[prev])) : null,
         next ? el("a", { class: "next", href: `#${next}` }, el("small", {}, "Next →"), el("b", {}, labels[next])) : null);
       (v.querySelector(".container") || v).append(pager);
+
+      // long pages are split into sub-pages: #page/sub
+      const subs = $$(".sub", v);
+      if (subs.length) {
+        const nav = el("nav", { class: "subnav", "aria-label": `${labels[v.id]} sections` },
+          subs.map((sub, n) => el("a", { href: `#${v.id}/${sub.dataset.sub}`, "data-sub": sub.dataset.sub }, el("span", {}, String(n + 1)), sub.dataset.title)));
+        subs[0].before(nav);
+      }
     });
 
-    let current = null;
+    let current = null, currentSub = null;
     function show() {
-      const id = ids.includes(location.hash.slice(1)) ? location.hash.slice(1) : "top";
-      if (id === current) return;
-      const first = current === null;
-      current = id;
-      views.forEach((v) => v.classList.toggle("active", v.id === id));
-      links.forEach((a) => (a.getAttribute("href") === `#${id}` ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
-      const active = links.find((a) => a.getAttribute("aria-current"));
-      if (active) active.scrollIntoView({ block: "nearest", inline: "center" });
-      document.title = id === "top" ? "TDE Training – Test Development Engineer" : `${labels[id]} · TDE Training`;
+      const [rawId, rawSub] = location.hash.slice(1).split("/");
+      const id = ids.includes(rawId) ? rawId : "top";
+      const view = $(`#${id}`);
+      const subs = $$(".sub", view);
+      const names = subs.map((s) => s.dataset.sub);
+      const sub = subs.length ? (names.includes(rawSub) ? rawSub : names[0]) : null;
+      if (id === current && sub === currentSub) return;
+
+      const first = current === null, viewChanged = id !== current;
+      current = id; currentSub = sub;
+      if (viewChanged) {
+        views.forEach((v) => v.classList.toggle("active", v.id === id));
+        links.forEach((a) => (a.getAttribute("href") === `#${id}` ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
+        const active = links.find((a) => a.getAttribute("aria-current"));
+        if (active) active.scrollIntoView({ block: "nearest", inline: "center" });
+        document.title = id === "top" ? "TDE Training – Test Development Engineer" : `${labels[id]} · TDE Training`;
+      }
+      if (sub) {
+        subs.forEach((s) => s.classList.toggle("active", s.dataset.sub === sub));
+        $$(".subnav a", view).forEach((a) => (a.dataset.sub === sub ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
+      }
       window.scrollTo({ top: 0, behavior: "instant" });
       if (!first) {
-        const h = $("h1, h2", $(`#${id}`));
+        const h = $("h1, h2", view);
         if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
       }
     }
@@ -487,9 +564,12 @@
     bindDiagram("svg-phases", "panel-phases", TDE.DIAGRAMS.phases, "npi");
     bindDiagram("svg-line", "panel-line", TDE.DIAGRAMS.line, "fct");
     bindDiagram("svg-tester", "panel-tester", TDE.DIAGRAMS.tester, "drivers");
+    bindDiagram("svg-rack", "panel-rack", TDE.DIAGRAMS.rack, "busbar");
+    bindDiagram("svg-loop", "panel-loop", TDE.DIAGRAMS.loop, "cdu");
     buildExamples();
     buildExercises();
     buildGlossary();
+    buildCooling();
     progress.paint();
     setupViews();
   });

@@ -77,6 +77,21 @@ for ex in tde["EXERCISES"]:
             check(f"bug {i} differs from correct code", m["code"].strip() != ex["good"].strip())
     check("has hints", len(ex["hints"]) >= 2)
 
+print("Glossary and cooling data")
+seen = set()
+for grp in tde["GLOSSARY"]:
+    for item in grp["items"]:
+        ok = len(item) == 3 and all(isinstance(x, str) and x.strip() for x in item)
+        key = (grp["id"], item[0])
+        check(f"{grp['id']}: {item[0]}", ok and key not in seen)
+        seen.add(key)
+criteria = [k for k, _ in tde["COOLING"]["criteria"]]
+for m in tde["COOLING"]["methods"]:
+    missing = [k for k in criteria if not m.get(k, "").strip()]
+    check(f"cooling method {m['id']} has every criterion", not missing, ", ".join(missing))
+for dname, d in tde["DIAGRAMS"].items():
+    check(f"diagram {dname} has detail text", all(v["title"] and v["body"] for v in d.values()))
+
 print()
 if failures:
     print(f"{len(failures)} check(s) FAILED")

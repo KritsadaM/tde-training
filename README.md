@@ -66,6 +66,8 @@ There are two exercise kinds:
 | 6 | Medium | write tests | `final_verdict`: FAIL vs ERROR, nothing tested never passes (7 hidden bugs) |
 | 7 | Hard | implement | `run_sequence`: limits, FAIL vs ERROR, stop on fail, always power off |
 | 8 | Medium | implement | `calc_cpk`: sample mean, standard deviation, one/two-sided limits, Cpk threshold |
+| 9 | Medium | implement | `evaluate_leak_test`: pressure-decay leak test for a liquid loop |
+| 10 | Medium | implement | `heat_load_kw`, `required_flow_lpm`, `heat_balance_ok`: heat balance of a coolant loop |
 
 ## Project layout
 

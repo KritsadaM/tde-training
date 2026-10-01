@@ -221,6 +221,115 @@ TDE.DIAGRAMS = {
         <li>Pin-cycle counters, preventive maintenance, spare parts.</li></ul>`,
     },
   },
+
+  rack: {
+    frame: {
+      title: "Open Rack frame",
+      body: `<p>An OCP <b>Open Rack</b> is wider and taller per unit than a traditional rack.</p>
+        <ul><li><b>Equipment width:</b> 21 inches, against 19 inches for the EIA rack most fixtures and cables were built for.</li>
+        <li><b>Height unit:</b> OpenU (OU) = 48 mm, against 44.45 mm for 1U.</li>
+        <li><b>Shared services at the rear:</b> a power busbar and, in liquid-cooled racks, a coolant manifold.</li>
+        <li><b>Watch out:</b> do not assume that 19-inch fixtures, cable lengths or tester interfaces carry over. Check the mechanical drawings.</li></ul>`,
+    },
+    switch: {
+      title: "Network switch (ToR)",
+      body: `<p>The top-of-rack switch connects every node to the data-centre network.</p>
+        <ul><li><b>TDE checks:</b> every link comes up at the right speed, optics and cables are the right type, the cable map matches the design.</li>
+        <li><b>Watch out:</b> mislabelled cables look fine until the rack is in service.</li></ul>`,
+    },
+    powershelf: {
+      title: "Power shelf",
+      body: `<p>Converts the incoming supply (AC or high-voltage DC) into DC for the rack busbar, using hot-swappable rectifier modules. N+1 redundancy is typical.</p>
+        <ul><li>In Open Rack V3 the busbar is <b>48 V DC</b>. Earlier versions used 12 V.</li>
+        <li><b>TDE checks:</b> load test, redundancy (pull a module and the rack must stay up), efficiency, telemetry readings, hot-plug behaviour.</li></ul>`,
+    },
+    compute: {
+      title: "Compute / GPU nodes",
+      body: `<p>Servers in OpenU-sized sleds take DC power straight from the busbar through a blind-mate connector. They typically have no individual AC power supply.</p>
+        <ul><li>In a liquid-cooled rack each node also has cold plates and quick disconnects at the rear that mate with the manifold when the node slides in.</li>
+        <li><b>TDE checks:</b> node-level functional test and burn-in <em>before</em> racking, then insertion and blind-mate checks.</li></ul>`,
+    },
+    bbu: {
+      title: "Battery backup (BBU)",
+      body: `<p>A battery shelf on the same busbar keeps the rack running for a short ride-through after power is lost, until backup power starts or the load shuts down in a controlled way.</p>
+        <ul><li><b>TDE checks:</b> charge, ride-through time under load, switch-over without a dropout, telemetry.</li>
+        <li><b>Watch out:</b> batteries bring handling, safety and shipping rules.</li></ul>`,
+    },
+    busbar: {
+      title: "DC busbar",
+      body: `<p>A vertical copper bar at the rear distributes power. Each node clips onto it.</p>
+        <ul><li><b>Why 48 V:</b> a 30 kW rack at 48 V carries about 625 A (30,000 W / 48 V). At 12 V it would be about 2,500 A. The 4x lower current means 16x lower resistive loss (I&sup2;R) in the same copper.</li>
+        <li><b>Still a lot of current,</b> so contact quality and heating matter.</li>
+        <li><b>TDE checks:</b> contact resistance, insertion-cycle wear, thermal imaging under load, safety interlocks.</li></ul>`,
+    },
+    manifold: {
+      title: "Liquid manifold",
+      body: `<p>Vertical <b>supply</b> and <b>return</b> pipes at the rear, with one port pair per node. Blind-mate quick disconnects let a node slide in without anyone handling hoses.</p>
+        <ul><li><b>TDE checks:</b> leak and pressure decay of the whole manifold, flow balance across ports, quick-disconnect mating and cycle counting, fill and air purge.</li>
+        <li><b>Watch out:</b> an unbalanced manifold starves the nodes at the far end.</li></ul>`,
+    },
+    cdu: {
+      title: "CDU (in-rack or row)",
+      body: `<p>The <b>Coolant Distribution Unit</b> holds the pump and heat exchanger. It separates the rack's coolant loop from the facility water and controls flow and temperature.</p>
+        <ul><li>Some designs put a small CDU in the rack. Larger deployments use a row or room CDU for many racks.</li>
+        <li><b>TDE checks:</b> pump speed and redundancy, control loop, alarms, sensor calibration, leak detection, interlocks.</li></ul>`,
+    },
+  },
+
+  loop: {
+    coldplate: {
+      title: "Cold plate",
+      body: `<p>A metal block, usually copper, with micro-channels or fins, clamped onto a hot chip (CPU, GPU, sometimes memory or voltage regulators) over a thermal interface material (TIM). Coolant flows through it and carries the heat away.</p>
+        <ul><li><b>Watch out:</b> the channels are tiny. Particles clog them, so the loop needs filtration.</li>
+        <li>The plate adds pressure drop (&Delta;P), which the pump must overcome.</li>
+        <li><b>TDE checks:</b> flow and &Delta;P per plate, leak at fittings, mounting pressure, chip temperature under load.</li></ul>`,
+    },
+    qd: {
+      title: "Quick disconnect (QD)",
+      body: `<p>A dry-break coupling that lets a node be pulled without draining the loop. Blind-mate versions connect automatically when the node slides into the rack. OCP liquid-cooling work defines a Universal Quick Disconnect (UQD) family.</p>
+        <ul><li>Each QD adds pressure drop and has a limited cycle life.</li>
+        <li><b>Watch out:</b> dirt or damage on a coupling face is the classic source of drips.</li>
+        <li><b>TDE checks:</b> leak after mating, mate and unmate cycle counts, protective caps fitted.</li></ul>`,
+    },
+    manifold: {
+      title: "Rack manifold",
+      body: `<p>Supply and return headers that feed every node in the rack.</p>
+        <ul><li>Should deliver nearly equal flow to each node ("hydraulic balance").</li>
+        <li>Has vents for air and a drain point.</li>
+        <li><b>TDE checks:</b> pressure hold, leak, flow at each port.</li></ul>`,
+    },
+    cdu: {
+      title: "CDU: pump and heat exchanger",
+      body: `<p>Moves coolant round the rack loop and passes the heat to the facility water through a heat exchanger. Liquid-to-liquid is the usual type for water cooling. Liquid-to-air exists for sites without facility water.</p>
+        <ul><li>Pumps are often redundant. Controls hold a supply temperature and a flow or pressure setpoint.</li>
+        <li>Keeps the clean rack coolant separate from building water quality.</li></ul>`,
+    },
+    facility: {
+      title: "Facility water (FWS)",
+      body: `<p>The building-side loop that feeds the CDUs. Its temperature and pressure are set by the facility, not by the rack.</p>
+        <ul><li><b>Warm-water designs</b> accept a high supply temperature, which lets the site use dry coolers instead of chillers and saves energy.</li>
+        <li><b>Watch out:</b> keep supply water above the dew point or pipes and cold surfaces will sweat. ASHRAE defines facility-water temperature classes for this.</li></ul>`,
+    },
+    reject: {
+      title: "Heat rejection",
+      body: `<p>Where the heat finally leaves the building: chillers, cooling towers or dry coolers.</p>
+        <ul><li>In a hot climate the outdoor temperature decides whether dry coolers alone can reach the supply temperature the racks need.</li>
+        <li>That is why the allowed coolant temperature in the rack specification matters so much.</li></ul>`,
+    },
+    sensors: {
+      title: "Sensors and controls",
+      body: `<p>Supply and return temperature, flow, pressure (and &Delta;P), leak detection (rope or point sensors, drip trays), humidity or dew point, and sometimes coolant conductivity.</p>
+        <ul><li>A controller or the node BMC reads them. Alarms can throttle or shut down a node.</li>
+        <li><b>TDE checks:</b> calibrate the sensors, and use <b>fault injection</b> (stop the pump, close a valve, wet a leak sensor) to prove that the alarm and the protective action really happen.</li></ul>`,
+    },
+    conditioning: {
+      title: "Fluid conditioning",
+      body: `<p>Filter or strainer, expansion tank, air vents and purge points, make-up fluid, and inhibitors or biocide for water-glycol mixes.</p>
+        <ul><li><b>Air in the loop</b> causes noise, uneven flow and hot spots, so a fill is followed by a purge.</li>
+        <li>Coolant quality (particles, conductivity, pH) is checked and recorded.</li>
+        <li><b>TDE checks:</b> follow the fill procedure, record the fluid batch, drain and dry before shipping if the program requires it.</li></ul>`,
+    },
+  },
 };
 
 /* ------------------------------------------------------------------ examples */
@@ -585,6 +694,118 @@ def test_catches_noisy_worn_pogo_pins():
     with pytest.raises(StationHealthError, match="Excessive measurement noise"):
         verify_golden_unit(noisy, expected_nominal=5.000, max_sigma=0.015)
 `,
+  },
+  {
+    id: "redfish",
+    title: "10. Rack telemetry via the BMC (Redfish)",
+    runnable: true,
+    intro: "Every node in an OCP rack has a BMC that reports its sensors over Redfish (JSON over HTTPS). A TDE reads them to prove fans, temperatures and coolant temperatures are healthy. Here the JSON is already loaded into a dict, in the shape of a Redfish <code>Thermal</code> resource (newer firmware may expose the same data under <code>ThermalSubsystem</code>). The rule that matters: <b>a missing reading is a problem, never a pass</b>.",
+    code: String.raw`import copy
+
+THERMAL = {
+    "Temperatures": [
+        {"Name": "CPU1 Temp",      "ReadingCelsius": 62, "UpperThresholdCritical": 95},
+        {"Name": "Coolant Supply", "ReadingCelsius": 31, "UpperThresholdCritical": 45},
+        {"Name": "Coolant Return", "ReadingCelsius": 40, "UpperThresholdCritical": 45},
+    ],
+    "Fans": [
+        {"Name": "Fan1", "Reading": 8200, "ReadingUnits": "RPM", "LowerThresholdCritical": 2000},
+        {"Name": "Fan2", "Reading": 7900, "ReadingUnits": "RPM", "LowerThresholdCritical": 2000},
+    ],
+}
+
+def thermal_violations(thermal, margin_c=2):
+    """List readable problems. An empty list means healthy."""
+    problems = []
+    temps = thermal.get("Temperatures", [])
+    fans = thermal.get("Fans", [])
+    if not temps and not fans:
+        return ["no sensors reported"]          # nothing tested must not pass
+    for t in temps:
+        reading = t.get("ReadingCelsius")
+        if reading is None:
+            problems.append(f"{t['Name']}: no reading")
+        elif reading >= t["UpperThresholdCritical"] - margin_c:
+            problems.append(f"{t['Name']}: {reading} C is within {margin_c} C of the critical limit")
+    for f in fans:
+        reading = f.get("Reading")
+        if reading is None:
+            problems.append(f"{f['Name']}: no reading")
+        elif reading < f["LowerThresholdCritical"]:
+            problems.append(f"{f['Name']}: {reading} {f['ReadingUnits']} is below the minimum")
+    return problems
+
+def test_healthy_node_has_no_problems():
+    assert thermal_violations(THERMAL) == []
+
+def test_flags_a_stopped_fan():
+    t = copy.deepcopy(THERMAL)
+    t["Fans"][1]["Reading"] = 0
+    assert thermal_violations(t) == ["Fan2: 0 RPM is below the minimum"]
+
+def test_flags_coolant_return_near_its_limit():
+    t = copy.deepcopy(THERMAL)
+    t["Temperatures"][2]["ReadingCelsius"] = 44
+    problems = thermal_violations(t)
+    assert len(problems) == 1 and problems[0].startswith("Coolant Return")
+
+def test_a_missing_reading_is_a_problem_not_a_pass():
+    t = copy.deepcopy(THERMAL)
+    t["Temperatures"][0]["ReadingCelsius"] = None
+    assert thermal_violations(t) == ["CPU1 Temp: no reading"]
+
+def test_an_empty_resource_is_not_healthy():
+    assert thermal_violations({}) == ["no sensors reported"]
+`,
+  },
+  {
+    id: "liquidseq",
+    title: "11. Liquid test sequence for a rack",
+    runnable: false,
+    intro: "The <em>order</em> of a liquid test matters: never apply heat before the loop is full, purged and leak-tight, and always leave the rig safe. This skeleton uses the ideas from exercises 9 and 10 (<code>evaluate_leak_test</code>, <code>heat_load_kw</code>). Read-only: the <code>rig</code> and <code>spec</code> objects are placeholders, and every number comes from the program's test specification.",
+    code: String.raw`def liquid_test(rig, rack, spec):
+    """Return (verdict, results). Order matters."""
+    results = {}
+    rig.connect(rack)                                  # QDs mated, rack locked in, presence sensed
+    try:
+        # 1. Fill and purge: no heat until the loop is full of liquid, not air
+        rig.fill(spec.fill_pressure_kpa)
+        rig.purge_air(timeout_s=spec.purge_timeout_s)
+
+        # 2. Leak test (pressure decay). ERROR means "not pressurised", so the rack is not judged
+        rig.pressurize(spec.test_pressure_kpa)
+        samples = rig.hold_and_sample(spec.hold_s)     # list of (seconds, kPa)
+        leak = evaluate_leak_test(samples, spec.min_start_kpa, spec.max_drop_kpa)
+        results["leak"] = leak
+        if leak["verdict"] != "PASS":
+            return leak["verdict"], results            # stop: no point heating a leaking rack
+
+        # 3. Circulate and check the hydraulics
+        rig.circulate(spec.flow_lpm)
+        flow, dp = rig.read_flow_lpm(), rig.read_dp_kpa()
+        results["hydraulics"] = {"flow_lpm": flow, "dp_kpa": dp}
+        if not (spec.flow_min <= flow <= spec.flow_max and dp <= spec.dp_max_kpa):
+            return "FAIL", results
+
+        # 4. Thermal soak with a known load, then check the heat balance
+        rig.apply_load(spec.load_kw)
+        rig.wait_until_stable(timeout_s=spec.soak_timeout_s)
+        measured = heat_load_kw(rig.read_flow_lpm(), rig.read_t_in_c(), rig.read_t_out_c(), spec.fluid)
+        results["heat_balance"] = {"applied_kw": spec.load_kw, "measured_kw": measured}
+        if not heat_balance_ok(spec.load_kw, measured, spec.balance_tol_pct):
+            return "FAIL", results
+
+        # 5. Prove the protections: stop the flow and expect an alarm and a safe reaction
+        rig.inject_flow_loss()
+        results["flow_loss_alarm"] = rig.alarm_raised(within_s=spec.alarm_s)
+        return ("PASS" if results["flow_loss_alarm"] else "FAIL"), results
+    except Exception:
+        return "ERROR", results                        # a rig problem is not a verdict on the rack
+    finally:
+        rig.stop_load()                                # always leave the rig safe
+        rig.depressurize()
+        if spec.ship_dry:
+            rig.drain_and_dry()`,
   },
 ];
 
@@ -1494,6 +1715,226 @@ def test_invalid_arguments_raise():
         calc_cpk([3.3, float("nan")], lsl=3.0, usl=4.0)
 `,
   },
+
+  /* ---------------------------------------------------------------------- 9 */
+  {
+    id: "leak-decay",
+    level: "Medium",
+    kind: "implement",
+    title: "Leak test by pressure decay",
+    summary: "Judge a liquid loop from pressure samples. Not pressurised is not a pass.",
+    brief: `<p>Before a water-cooled rack gets any heat, its loop is pressurised, sealed and watched. If the pressure falls, liquid is leaking out. Implement <code>evaluate_leak_test(samples, min_start_kpa, max_drop_kpa)</code>. <code>samples</code> is a list of <code>(seconds, kPa)</code> pairs in time order.</p>
+      <ul>
+        <li>Fewer than 2 samples, or times that do not strictly increase: raise <code>ValueError</code>.</li>
+        <li>If the <b>first</b> pressure is below <code>min_start_kpa</code>, the loop was never properly pressurised, so the test is invalid. Return verdict <code>"ERROR"</code> with <code>drop_kpa</code> and <code>rate_kpa_per_min</code> set to <code>None</code>.</li>
+        <li>Otherwise <code>drop = first_pressure - last_pressure</code> (only the first and last samples count) and <code>rate = drop / minutes</code> between them.</li>
+        <li>Verdict is <code>"PASS"</code> when <code>drop &lt;= max_drop_kpa</code> (inclusive), else <code>"FAIL"</code>. A pressure <em>rise</em> (for example from warming) gives a negative drop and passes.</li>
+        <li>Return <code>{"verdict": ..., "drop_kpa": ..., "rate_kpa_per_min": ...}</code>.</li>
+      </ul>
+      <p class="note">Why ERROR and not FAIL? A rack that was never pressurised has not been shown to leak, and has not been shown to hold either. Do not scrap it, and do not ship it. Fix the rig and test again. Real limits come from the program's test specification.</p>`,
+    starter: String.raw`def evaluate_leak_test(samples, min_start_kpa, max_drop_kpa):
+    raise NotImplementedError
+`,
+    hints: [
+      "Validate the input first: <code>len(samples) &lt; 2</code>, then check that every time is greater than the previous one with <code>zip(times, times[1:])</code>.",
+      "Unpack <code>(t0, p0) = samples[0]</code> and <code>(t1, p1) = samples[-1]</code>. Check <code>p0 &lt; min_start_kpa</code> before computing anything else.",
+      "Minutes between the samples are <code>(t1 - t0) / 60</code>. Compare the drop with <code>&lt;=</code> so a drop equal to the limit passes.",
+    ],
+    solution: String.raw`def evaluate_leak_test(samples, min_start_kpa, max_drop_kpa):
+    if len(samples) < 2:
+        raise ValueError("need at least two samples")
+    times = [t for t, _ in samples]
+    if any(b <= a for a, b in zip(times, times[1:])):
+        raise ValueError("times must strictly increase")
+
+    (t0, p0), (t1, p1) = samples[0], samples[-1]
+    if p0 < min_start_kpa:
+        return {"verdict": "ERROR", "drop_kpa": None, "rate_kpa_per_min": None}
+
+    drop = p0 - p1
+    rate = drop / ((t1 - t0) / 60)
+    verdict = "PASS" if drop <= max_drop_kpa else "FAIL"
+    return {"verdict": verdict, "drop_kpa": drop, "rate_kpa_per_min": rate}
+`,
+    tests: String.raw`import pytest
+
+def test_small_drop_passes():
+    r = evaluate_leak_test([(0, 300.0), (60, 299.8), (120, 299.7)], 250, 0.5)
+    assert r["verdict"] == "PASS"
+    assert r["drop_kpa"] == pytest.approx(0.3)
+    assert r["rate_kpa_per_min"] == pytest.approx(0.15)
+
+def test_large_drop_fails():
+    r = evaluate_leak_test([(0, 300.0), (600, 298.0)], 250, 0.5)
+    assert r["verdict"] == "FAIL"
+    assert r["drop_kpa"] == pytest.approx(2.0)
+    assert r["rate_kpa_per_min"] == pytest.approx(0.2)
+
+def test_a_drop_equal_to_the_limit_passes():
+    assert evaluate_leak_test([(0, 300.0), (60, 299.5)], 250, 0.5)["verdict"] == "PASS"
+
+def test_a_pressure_rise_is_not_a_leak():
+    r = evaluate_leak_test([(0, 300.0), (60, 300.4)], 250, 0.5)
+    assert r["verdict"] == "PASS"
+    assert r["drop_kpa"] == pytest.approx(-0.4)
+
+def test_not_pressurised_is_an_error_not_a_verdict_on_the_rack():
+    r = evaluate_leak_test([(0, 100.0), (60, 100.0)], 250, 0.5)
+    assert r == {"verdict": "ERROR", "drop_kpa": None, "rate_kpa_per_min": None}
+
+def test_starting_exactly_at_the_minimum_is_a_valid_test():
+    assert evaluate_leak_test([(0, 250.0), (60, 250.0)], 250, 0.5)["verdict"] == "PASS"
+
+def test_only_first_and_last_samples_decide():
+    r = evaluate_leak_test([(0, 300.0), (30, 290.0), (60, 299.9)], 250, 0.5)
+    assert r["verdict"] == "PASS"
+    assert r["drop_kpa"] == pytest.approx(0.1)
+
+@pytest.mark.parametrize("samples", [
+    [], [(0, 300.0)], [(0, 300.0), (0, 299.0)], [(10, 300.0), (5, 299.0)],
+])
+def test_bad_sample_lists_are_rejected(samples):
+    with pytest.raises(ValueError):
+        evaluate_leak_test(samples, 250, 0.5)
+
+def test_invalid_input_is_reported_before_the_pressure_check():
+    with pytest.raises(ValueError):
+        evaluate_leak_test([(0, 10.0)], 250, 0.5)
+`,
+  },
+
+  /* --------------------------------------------------------------------- 10 */
+  {
+    id: "heat-balance",
+    level: "Medium",
+    kind: "implement",
+    title: "Heat balance of a liquid loop",
+    summary: "Turn flow and temperatures into kilowatts, and check them against the load.",
+    brief: `<p>A water-cooled rack carries heat away at the rate <code>heat = mass flow &times; cp &times; &Delta;T</code>. With flow in litres per minute: <code>kW = (flow_lpm / 60) &times; rho &times; cp &times; &Delta;T</code>. Use these approximate constants (they are in the starter code):</p>
+      <table class="spec"><tr><th>Fluid</th><th>rho (kg/L)</th><th>cp (kJ/kg&middot;K)</th></tr>
+        <tr><td><code>"water"</code></td><td>0.997</td><td>4.18</td></tr>
+        <tr><td><code>"pg25"</code> (25% propylene glycol)</td><td>1.02</td><td>3.85</td></tr></table>
+      <p>Implement three functions:</p>
+      <ul>
+        <li><code>heat_load_kw(flow_lpm, t_in_c, t_out_c, fluid="water")</code>: heat carried away, in kW. <code>ValueError</code> if flow is not positive, the outlet is colder than the inlet, or the fluid is unknown. Equal temperatures give <code>0.0</code>.</li>
+        <li><code>required_flow_lpm(power_kw, delta_t_k, fluid="water")</code>: flow needed to carry <code>power_kw</code> at a temperature rise of <code>delta_t_k</code>. <code>ValueError</code> for negative power, non-positive &Delta;T or an unknown fluid. Zero power gives <code>0.0</code>.</li>
+        <li><code>heat_balance_ok(applied_kw, measured_kw, tol_pct=10)</code>: <code>True</code> when the measured heat is within <code>tol_pct</code> percent of the applied load (inclusive). <code>ValueError</code> if <code>applied_kw</code> is not positive.</li>
+      </ul>
+      <p class="note">In production, the applied electrical load and the heat measured in the coolant must roughly agree. If they do not, a sensor is wrong, there is air in the loop, or heat is leaving some other way.</p>`,
+    starter: String.raw`FLUIDS = {
+    "water": {"rho": 0.997, "cp": 4.18},   # kg/L, kJ/(kg*K), approximate
+    "pg25":  {"rho": 1.02,  "cp": 3.85},
+}
+
+def heat_load_kw(flow_lpm, t_in_c, t_out_c, fluid="water"):
+    raise NotImplementedError
+
+def required_flow_lpm(power_kw, delta_t_k, fluid="water"):
+    raise NotImplementedError
+
+def heat_balance_ok(applied_kw, measured_kw, tol_pct=10):
+    raise NotImplementedError
+`,
+    hints: [
+      "Look the fluid up first: <code>FLUIDS[fluid]</code> raises <code>KeyError</code>, so catch it or test <code>fluid not in FLUIDS</code> and raise <code>ValueError</code> yourself.",
+      "<code>heat_load_kw</code> is <code>flow_lpm / 60 * rho * cp * (t_out - t_in)</code>. <code>required_flow_lpm</code> is the same formula solved for the flow.",
+      "For the balance check compute <code>abs(measured - applied) / applied * 100</code> and compare with <code>&lt;=</code>.",
+    ],
+    solution: String.raw`FLUIDS = {
+    "water": {"rho": 0.997, "cp": 4.18},   # kg/L, kJ/(kg*K), approximate
+    "pg25":  {"rho": 1.02,  "cp": 3.85},
+}
+
+def _props(fluid):
+    if fluid not in FLUIDS:
+        raise ValueError(f"unknown fluid: {fluid!r}")
+    return FLUIDS[fluid]["rho"], FLUIDS[fluid]["cp"]
+
+def heat_load_kw(flow_lpm, t_in_c, t_out_c, fluid="water"):
+    rho, cp = _props(fluid)
+    if flow_lpm <= 0:
+        raise ValueError("flow must be positive")
+    if t_out_c < t_in_c:
+        raise ValueError("outlet is colder than inlet")
+    return flow_lpm / 60 * rho * cp * (t_out_c - t_in_c)
+
+def required_flow_lpm(power_kw, delta_t_k, fluid="water"):
+    rho, cp = _props(fluid)
+    if power_kw < 0:
+        raise ValueError("power must not be negative")
+    if delta_t_k <= 0:
+        raise ValueError("delta T must be positive")
+    return power_kw * 60 / (rho * cp * delta_t_k)
+
+def heat_balance_ok(applied_kw, measured_kw, tol_pct=10):
+    if applied_kw <= 0:
+        raise ValueError("applied load must be positive")
+    return abs(measured_kw - applied_kw) / applied_kw * 100 <= tol_pct
+`,
+    tests: String.raw`import pytest
+
+def test_heat_load_of_water():
+    # 60 L/min = 1 L/s, 10 K rise: 1 * 0.997 * 4.18 * 10
+    assert heat_load_kw(60, 30, 40) == pytest.approx(41.6746, rel=1e-4)
+
+def test_heat_load_scales_with_flow_and_delta_t():
+    base = heat_load_kw(30, 30, 40)
+    assert heat_load_kw(60, 30, 40) == pytest.approx(2 * base)
+    assert heat_load_kw(30, 30, 50) == pytest.approx(2 * base)
+
+def test_equal_temperatures_mean_no_heat():
+    assert heat_load_kw(30, 35, 35) == 0.0
+
+def test_glycol_carries_less_heat_for_the_same_flow():
+    assert heat_load_kw(60, 30, 40, "pg25") < heat_load_kw(60, 30, 40, "water")
+
+def test_required_flow_for_a_30_kw_rack():
+    assert required_flow_lpm(30, 10) == pytest.approx(43.19, rel=1e-3)
+
+def test_glycol_needs_more_flow():
+    assert required_flow_lpm(30, 10, "pg25") == pytest.approx(45.84, rel=1e-3)
+    assert required_flow_lpm(30, 10, "pg25") > required_flow_lpm(30, 10, "water")
+
+def test_zero_power_needs_no_flow():
+    assert required_flow_lpm(0, 10) == 0.0
+
+def test_the_two_formulas_agree():
+    flow = required_flow_lpm(18, 8)
+    assert heat_load_kw(flow, 30, 38) == pytest.approx(18)
+
+@pytest.mark.parametrize("args", [(0, 30, 40), (-5, 30, 40), (30, 40, 30)])
+def test_heat_load_rejects_bad_input(args):
+    with pytest.raises(ValueError):
+        heat_load_kw(*args)
+
+def test_unknown_fluid_is_rejected():
+    with pytest.raises(ValueError):
+        heat_load_kw(30, 30, 40, "oil")
+    with pytest.raises(ValueError):
+        required_flow_lpm(30, 10, "oil")
+
+@pytest.mark.parametrize("power, dt", [(-1, 10), (30, 0), (30, -5)])
+def test_required_flow_rejects_bad_input(power, dt):
+    with pytest.raises(ValueError):
+        required_flow_lpm(power, dt)
+
+def test_balance_within_tolerance():
+    assert heat_balance_ok(100, 95) is True
+    assert heat_balance_ok(100, 105) is True
+
+def test_balance_edge_is_inclusive_and_beyond_fails():
+    assert heat_balance_ok(100, 90, 10) is True
+    assert heat_balance_ok(100, 89.9, 10) is False
+
+def test_balance_uses_the_tolerance_argument():
+    assert heat_balance_ok(100, 97, 2) is False
+    assert heat_balance_ok(100, 97, 5) is True
+
+def test_balance_needs_a_positive_applied_load():
+    with pytest.raises(ValueError):
+        heat_balance_ok(0, 1)
+`,
+  },
 ];
 
 /* ------------------------------------------------------------------ glossary */
@@ -1674,6 +2115,41 @@ TDE.GLOSSARY = [
     ],
   },
   {
+    id: "ocp", title: "OCP rack and cooling",
+    intro: "Terms for OCP racks, power and liquid cooling.",
+    items: [
+      ["OCP", "Open Compute Project", "A community that publishes open hardware designs for data centres: racks, servers, power, networking and cooling."],
+      ["ORv3", "Open Rack Version 3", "The third-generation OCP rack, with a 48 V DC busbar. Earlier versions used 12 V."],
+      ["OU / OpenU", "Open Unit", "Height unit of an Open Rack: 48 mm, against 44.45 mm for a standard 1U."],
+      ["ToR", "Top of Rack", "The switch at the top of a rack that links its nodes to the network."],
+      ["BBU", "Battery Backup Unit", "A battery shelf that keeps the rack powered briefly after power loss."],
+      ["PDU", "Power Distribution Unit", "Distributes power to the equipment in a traditional rack."],
+      ["HVDC", "High-Voltage DC", "A DC supply (for example around 380 V) that some data centres feed to power shelves instead of AC."],
+      ["BMC", "Baseboard Management Controller", "A small controller on the server that reports sensors and controls power remotely."],
+      ["IPMI", "Intelligent Platform Management Interface", "An older standard protocol for talking to a BMC."],
+      ["Redfish", "Redfish (DMTF standard)", "A modern REST / JSON interface for managing servers and reading BMC sensors."],
+      ["CDU", "Coolant Distribution Unit", "A pump and heat exchanger that separates the rack coolant loop from facility water."],
+      ["TCS", "Technology Cooling System", "The coolant loop that reaches the IT equipment."],
+      ["FWS", "Facility Water System", "The building-side water loop that feeds the CDUs."],
+      ["QD / UQD", "Quick Disconnect / Universal Quick Disconnect", "A dry-break coupling that lets a node be unplugged from the loop without spilling. UQD is the family used in OCP liquid-cooled designs."],
+      ["DLC", "Direct Liquid Cooling", "Liquid reaches the heat source directly through cold plates (also called direct-to-chip)."],
+      ["RDHx", "Rear-Door Heat Exchanger", "A water-cooled radiator door that cools the rack's exhaust air."],
+      ["L2L / L2A", "Liquid-to-Liquid / Liquid-to-Air", "The two kinds of CDU heat exchanger."],
+      ["PG25", "25% Propylene Glycol", "A common water-glycol coolant mix. Protects against corrosion and freezing, but carries a little less heat than water."],
+      ["&Delta;T", "Temperature difference", "For example return minus supply temperature. It sets how much flow is needed."],
+      ["&Delta;P", "Pressure drop", "Pressure lost across a part such as a cold plate, quick disconnect or manifold."],
+      ["LPM / GPM", "Litres / US gallons per minute", "Liquid flow-rate units."],
+      ["CFM", "Cubic Feet per Minute", "Airflow unit."],
+      ["TDP", "Thermal Design Power", "The heat a chip is designed to dissipate. It sizes the cooling."],
+      ["TIM", "Thermal Interface Material", "Paste or pad between a chip and its cold plate or heat sink."],
+      ["PUE", "Power Usage Effectiveness", "Total facility power divided by IT power. Closer to 1 is better."],
+      ["HX", "Heat Exchanger", "A device that passes heat from one fluid to another."],
+      ["ACS", "Advanced Cooling Solutions", "The OCP project that works on liquid-cooling specifications."],
+      ["ASHRAE", "American Society of Heating, Refrigerating and Air-Conditioning Engineers", "Publishes data-centre thermal and liquid-cooling guidelines, including facility-water temperature classes."],
+      ["PFAS", "Per- and polyfluoroalkyl substances", "A chemical family under regulatory scrutiny. Some two-phase cooling fluids contain them."],
+    ],
+  },
+  {
     id: "safety", title: "Safety and compliance",
     intro: "Rules that protect people, products and customers.",
     items: [
@@ -1688,3 +2164,93 @@ TDE.GLOSSARY = [
     ],
   },
 ];
+
+/* ------------------------------------------------------------------ cooling comparison */
+/* Ranges are indicative. Real limits come from the design and the program specification. */
+TDE.COOLING = {
+  criteria: [
+    ["how", "How it works"],
+    ["density", "Typical rack heat (indicative)"],
+    ["share", "Share of heat taken by liquid"],
+    ["coolant", "Coolant"],
+    ["facility", "What the facility provides"],
+    ["pros", "Main advantages"],
+    ["cons", "Main risks and limits"],
+    ["service", "Service and upkeep"],
+    ["tde", "What a TDE tests"],
+  ],
+  methods: [
+    {
+      id: "air", name: "Air (fans)", short: "Fans",
+      how: "Fans pull cool air front to back through the server. The heat leaves in the exhaust air and the room or aisle containment carries it to the air handlers.",
+      density: "Roughly 10 to 25 kW per rack. Practical limit set by airflow and containment.",
+      share: "0%. All heat goes into the air.",
+      coolant: "Air",
+      facility: "Air handlers, chilled water to the coils, aisle containment.",
+      pros: "Simple and familiar. No leak risk. Cheapest to build and to service. Works with standard hardware.",
+      cons: "Fans consume a lot of power and make noise. Air carries little heat per volume, so hot chips and dense racks hit a ceiling. Hot spots.",
+      service: "Fans are hot-swappable wear items. Filters need changing.",
+      tde: "Fan speed and fault tests, airflow and thermal soak under load, fan-failure response.",
+    },
+    {
+      id: "rdhx", name: "Rear-door heat exchanger", short: "Rear door",
+      how: "A water-cooled radiator on the back of the rack cools the exhaust air before it re-enters the room. The servers inside are still air-cooled.",
+      density: "Roughly tens of kW per rack, depending on the door and the water temperature.",
+      share: "Most of the rack's heat can be removed at the door (design dependent), but the chips themselves are still air-cooled.",
+      coolant: "Water or water-glycol to the door",
+      facility: "Water connection to every rack, supply temperature above the dew point.",
+      pros: "Can be retrofitted to existing air-cooled racks. No change inside the server. Keeps the room neutral.",
+      cons: "Chip cooling is still limited by air. Door weight and hoses. Condensation if the water is too cold. Fans still needed.",
+      service: "Door hoses and fittings to inspect. Condensation checks.",
+      tde: "Door leak and pressure tests, flow and pressure drop, door sensors, fan response.",
+    },
+    {
+      id: "dlc", name: "Direct-to-chip, water (single-phase)", short: "Water (D2C)",
+      how: "Cold plates sit on the hot chips. Water or a water-glycol mix flows through them to a rack manifold, and a CDU passes the heat to facility water. Remaining parts (memory, drives, power) still use some air.",
+      density: "Commonly tens of kW up to 100 kW or more per rack.",
+      share: "Roughly 70 to 80% in typical designs. The rest is removed by air.",
+      coolant: "Water or PG25, inhibited and filtered",
+      facility: "CDU (in rack or row), facility water loop. Warm-water designs allow dry coolers.",
+      pros: "Very high density. Far less fan power. Chips run cooler or at higher power. Warm water saves chiller energy. Nodes stay serviceable thanks to quick disconnects.",
+      cons: "Leak risk inside the IT space. New parts to qualify: cold plates, hoses, QDs, manifolds, CDUs. Fluid quality must be controlled. Still needs some air.",
+      service: "QD cycle life, filters, coolant checks, hose inspection.",
+      tde: "Leak and pressure decay, flow and pressure drop, fill and purge, QD mating, thermal soak, sensor and alarm checks, drain and dry before shipping.",
+    },
+    {
+      id: "dlc2", name: "Direct-to-chip, two-phase", short: "Two-phase D2C",
+      how: "A dielectric fluid flows to the cold plates and boils there. The vapour carries the heat away and condenses in a heat exchanger. Boiling absorbs a lot of heat at a steady temperature.",
+      density: "High, comparable to or above single-phase direct-to-chip.",
+      share: "Similar to single-phase direct-to-chip.",
+      coolant: "Engineered dielectric fluid with a low boiling point",
+      facility: "Condenser or CDU for the two-phase fluid, and facility water.",
+      pros: "Handles very high heat flux. Even chip temperature. A leak of dielectric fluid does not short electronics.",
+      cons: "Specialised and costly fluids. Some fluids face regulatory scrutiny (for example PFAS). Pressure and vapour management. Less mature supply chain.",
+      service: "Fluid inventory and seals. Vapour-tight service procedures.",
+      tde: "Tight leak testing, charge level, pressure and temperature profile, vapour containment.",
+    },
+    {
+      id: "imm1", name: "Immersion, single-phase", short: "Immersion (1-phase)",
+      how: "Servers sit in a tank of dielectric fluid (oil-like) that stays liquid. Pumps move the fluid through a heat exchanger.",
+      density: "Often 50 to 100 kW or more per tank.",
+      share: "Nearly all. Server fans are removed.",
+      coolant: "Dielectric oil or synthetic fluid",
+      facility: "Tank, pumps, heat exchanger, facility water. Strong floor for the tank weight.",
+      pros: "Takes nearly all the heat. No server fans, so quiet. Even cooling. Simple server design with no cold plates.",
+      cons: "Heavy tanks. Messy service. Materials must be compatible with the fluid (cables, seals, labels, optics). Hardware must be adapted. Not an OCP Open Rack form factor.",
+      service: "Lift servers out and let them drip dry. Fluid quality and filtering.",
+      tde: "Material compatibility, fluid temperature and flow, qualification of nodes in the fluid, cleaning rules, contamination control.",
+    },
+    {
+      id: "imm2", name: "Immersion, two-phase", short: "Immersion (2-phase)",
+      how: "Servers sit in a sealed tank of a low-boiling dielectric. The fluid boils on hot chips, the vapour rises, condenses on a coil and drips back.",
+      density: "Very high, in the 100 kW class and above.",
+      share: "Nearly all.",
+      coolant: "Engineered low-boiling dielectric fluid",
+      facility: "Condenser coil with facility water, sealed tank, vapour management.",
+      pros: "Passive boiling, very high heat flux, even temperature, no pumps in the server heat path.",
+      cons: "Costly fluid that is lost as vapour when the tank is opened. Some fluids face regulatory scrutiny (PFAS). Sealed-tank handling. Specialised hardware.",
+      service: "Opening procedures that limit vapour loss, fluid inventory, vapour recovery.",
+      tde: "Tank sealing and vapour loss, node qualification, behaviour of components when boiling, containment.",
+    },
+  ],
+};
