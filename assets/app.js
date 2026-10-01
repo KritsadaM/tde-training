@@ -354,64 +354,65 @@
   }
 
   /* ------------------------------------------------------------ glossary */
+  /* One topic at a time (short page). Searching looks across every topic. */
   function buildGlossary() {
     const root = $("#glossary-root");
     if (!root || !TDE.GLOSSARY) return;
     const search = $("#gl-search"), filters = $("#gl-filters"), empty = $("#gl-empty"), count = $("#gl-count");
-    let topic = "all";
     const total = TDE.GLOSSARY.reduce((n, g) => n + g.items.length, 0);
+    let topic = store.get("tde.glossaryTopic", TDE.GLOSSARY[0].id);
+    if (!TDE.GLOSSARY.some((g) => g.id === topic)) topic = TDE.GLOSSARY[0].id;
 
     const groups = TDE.GLOSSARY.map((g) => {
       const rows = g.items.map(([acr, full, plain]) => {
-        const tr = el("tr", {}, el("th", { scope: "row" }, acr), el("td", {}, full), el("td", {}, plain));
-        tr.dataset.text = `${acr} ${full} ${plain}`.toLowerCase();
-        tr._cells = [acr, full, plain];
-        return tr;
+        const row = el("div", { class: "gl-row" }, el("dt", {}), el("dd", { class: "full" }), el("dd", { class: "plain" }));
+        row._cells = [acr, full, plain];
+        row._text = `${acr} ${full} ${plain}`.toLowerCase();
+        return row;
       });
       const heading = el("h3", {}, g.title, el("small", {}));
-      const section = el("section", { class: "gl-group", id: `gl-${g.id}` }, heading, el("p", {}, g.intro),
-        el("div", { class: "table-wrap" }, el("table", {}, el("tbody", {}, rows))));
+      const section = el("section", { class: "gl-group", id: `gl-${g.id}` }, heading, el("p", {}, g.intro), el("dl", {}, rows));
       root.append(section);
       return { g, rows, section, heading };
     });
 
-    const chip = (id, label) => {
-      const b = el("button", { type: "button", "aria-pressed": id === "all" }, label);
-      b.dataset.topic = id;
-      b.addEventListener("click", () => { topic = id; $$("button", filters).forEach((x) => x.setAttribute("aria-pressed", x === b)); apply(); });
+    const buttons = TDE.GLOSSARY.map((g) => {
+      const b = el("button", { type: "button" }, el("span", {}, g.title), el("em", {}, String(g.items.length)));
+      b.addEventListener("click", () => {
+        topic = g.id; store.set("tde.glossaryTopic", topic);
+        search.value = "";
+        apply();
+        if (matchMedia("(max-width: 899px)").matches) root.scrollIntoView({ block: "start" });
+      });
       filters.append(b);
-    };
-    chip("all", "All topics");
-    TDE.GLOSSARY.forEach((g) => chip(g.id, g.title.split(":")[0]));
+      return b;
+    });
 
     const mark = (text, q) => {
-      if (!q) return esc(text);
-      const i = text.toLowerCase().indexOf(q);
+      const i = q ? text.toLowerCase().indexOf(q) : -1;
       return i < 0 ? esc(text) : `${esc(text.slice(0, i))}<mark>${esc(text.slice(i, i + q.length))}</mark>${esc(text.slice(i + q.length))}`;
     };
 
     function apply() {
       const q = search.value.trim().toLowerCase();
       let shown = 0;
-      for (const { g, rows, section, heading } of groups) {
+      groups.forEach(({ g, rows, section, heading }, i) => {
         let n = 0;
-        for (const tr of rows) {
-          const hit = (topic === "all" || topic === g.id) && (!q || tr.dataset.text.includes(q));
-          tr.hidden = !hit;
+        for (const row of rows) {
+          const hit = q ? row._text.includes(q) : g.id === topic;
+          row.hidden = !hit;
           if (hit) {
             n++;
-            const [acr, full, plain] = tr._cells;
-            tr.children[0].innerHTML = mark(acr, q);
-            tr.children[1].innerHTML = mark(full, q);
-            tr.children[2].innerHTML = mark(plain, q);
+            [0, 1, 2].forEach((c) => (row.children[c].innerHTML = mark(row._cells[c], q)));
           }
         }
         section.hidden = n === 0;
         $("small", heading).textContent = `${n} ${n === 1 ? "term" : "terms"}`;
+        buttons[i].setAttribute("aria-pressed", !q && g.id === topic);
         shown += n;
-      }
+      });
       empty.hidden = shown > 0;
-      count.textContent = q || topic !== "all" ? `${shown} of ${total} terms` : `${total} terms in ${groups.length} topics`;
+      count.textContent = q ? `${shown} of ${total} terms match, across all topics` : `${total} terms in ${groups.length} topics`;
     }
     search.addEventListener("input", apply);
     apply();

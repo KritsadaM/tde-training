@@ -541,13 +541,17 @@
     <span class="kicker">08 · Reference</span>
     <h2>Glossary of acronyms</h2>
     <p class="lead">The acronyms you will meet, grouped by topic. Search by acronym or by meaning, or pick a topic. Some acronyms mean different things in different fields (for example <b>SPI</b>), so check the group.</p>
-    <div class="gl-tools">
-      <input id="gl-search" type="search" placeholder="Search, e.g. ICT or yield" aria-label="Search the glossary" autocomplete="off">
-      <div id="gl-filters" class="gl-filters" role="group" aria-label="Filter by topic"></div>
+    <div class="gl-layout">
+      <aside class="gl-side">
+        <input id="gl-search" type="search" placeholder="Search all topics, e.g. ICT or yield" aria-label="Search the glossary" autocomplete="off">
+        <nav id="gl-filters" class="gl-filters" aria-label="Glossary topics"></nav>
+      </aside>
+      <div class="gl-main">
+        <p id="gl-count" class="tag" aria-live="polite"></p>
+        <div id="glossary-root"></div>
+        <p id="gl-empty" class="note" hidden>No match. Try a shorter search.</p>
+      </div>
     </div>
-    <p id="gl-count" class="tag" aria-live="polite"></p>
-    <div id="glossary-root"></div>
-    <p id="gl-empty" class="note" hidden>No match. Try a shorter search or pick All topics.</p>
   </div>
 </section>
 </main>
