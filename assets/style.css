@@ -170,7 +170,7 @@ table.spec { width: auto; margin: 8px 0 16px; border: 1px solid var(--line); bor
 .hint-line { font-size: .88rem; color: var(--muted); margin: 6px 0 0; }
 svg text { fill: var(--ink); }
 svg .t { font-size: 16px; font-weight: 650; }
-#svg-phases .t, #svg-line .t { font-size: 14.5px; }
+#svg-phases .t, #svg-line .t, #svg-nodeflow .t { font-size: 14.5px; }
 svg .s { font-size: 13.5px; fill: var(--muted); }
 svg .cap { font-size: 14px; fill: var(--muted); }
 svg .big { font-size: 14px; font-weight: 600; fill: var(--muted); }
@@ -434,3 +434,7 @@ main, footer { transition: margin-left .2s ease; }
 .view[data-sub-index]:not([data-sub-index="0"]) .container > .subhead { display: block; }
 .subpage > h3:first-child { margin-top: 20px; }
 @media (max-width: 1500px) { html.sb-open .diagram { grid-template-columns: 1fr; } }
+
+.calc-out > div.hl { background: var(--accent-soft); }
+.calc-out > div.hl b { color: var(--accent); }
+.subpage pre.code { margin: 8px 0 14px; }

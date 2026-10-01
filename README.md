@@ -69,6 +69,8 @@ There are two exercise kinds:
 | 9 | Medium | implement | `evaluate_leak_test`: pressure-decay leak test for a liquid loop |
 | 10 | Medium | implement | `heat_load_kw`, `required_flow_lpm`, `heat_balance_ok`: heat balance of a coolant loop |
 | 11 | Easy | implement | `usable_capacity_kw`, `redundancy_ok`, `bbu_runtime_s`: N+1 power shelf and battery ride-through |
+| 12 | Medium | implement | `testers_needed`, `cost_per_unit`, `breakeven_units`: size a test line and price the test |
+| 13 | Medium | implement | `diff_config`: compare a node's readings with its golden configuration |
 
 ## Navigation
 
@@ -82,6 +84,10 @@ A collapsible **left sidebar** (a drawer on phones) groups the course as **categ
   * Examples, Practice and Glossary list their items from `assets/content.js`.
 * **Adding a page:** add a `<section class="block view" id="my-page">` in `index.html` (keep the order in the file the same as the order in `CATEGORIES`), then add its id and label to `CATEGORIES` / `PAGE_LABELS`.
 * Do not use the CSS class `sub` for anything new: the hero subtitle already uses it. Sub-pages use `subpage`.
+
+## Adding ISS3 content
+
+No public documentation for ISS3 (the test sequencer most JDM programs use) was available when the Test sequencer page was written, so the site teaches sequencer *concepts* and gives a first-week checklist, but does not describe ISS3's own screens, syntax or features. To add them, edit the `ISS3 in JDM programs` sub-page in `index.html` (`data-sub="iss3"` inside `<section id="sequencer">`): replace the grey note with real material, such as the full name, how a sequence and a step are written, a screenshot or a short example sequence, and how a release is built. Take it from the team's own ISS3 documentation. Run `python3 tools/stamp_assets.py` before committing.
 
 ## Before you commit (cache-busting)
 

@@ -387,6 +387,57 @@ TDE.DIAGRAMS = {
         <li>Pressure relief valve, drip tray, clear indicator lamps.</li></ul>`,
     },
   },
+
+  nodeflow: {
+    identify: {
+      title: "Identify",
+      body: `<p>Know exactly which node is on the bench.</p>
+        <ul><li>Scan the serial number and check the route (right product, right step).</li>
+        <li>Visual check: labels, connectors, bent pins, damage, coolant couplings capped.</li>
+        <li>Record the BOM revision. A wrong revision explains many "mystery" failures.</li></ul>`,
+    },
+    power: {
+      title: "Power and BMC",
+      body: `<p>First power-on, with limits set.</p>
+        <ul><li>Apply power from the stand (or the rack) with current limits. Check rails and inrush.</li>
+        <li>The BMC should come up on the management network. Read its sensors and FRU data.</li>
+        <li><b>Stop here</b> on a short, a missing rail or a BMC that never answers. There is no point running the rest.</li></ul>`,
+    },
+    firmware: {
+      title: "Firmware and configuration",
+      body: `<p>Make the node match its golden configuration.</p>
+        <ul><li>Read BIOS, BMC, NIC, drive and accelerator firmware versions and compare them with the baseline for this SKU (exercise 13).</li>
+        <li>Update only if the procedure allows it, then verify by reading back.</li>
+        <li>Set BIOS options and provision identity (serial, MAC addresses). See example 12.</li></ul>`,
+    },
+    components: {
+      title: "Component tests",
+      body: `<p>Does everything the BOM promises actually work?</p>
+        <ul><li>Inventory: CPUs, DIMM count, size and speed, drives, NICs, GPUs, PCIe link width and speed.</li>
+        <li>Quick diagnostics for memory, storage, network links and accelerators.</li>
+        <li>Fast and cheap: failures found here are easier to diagnose than failures found during stress.</li></ul>`,
+    },
+    stress: {
+      title: "Stress and thermal soak",
+      body: `<p>Run everything at once, for long enough to heat-soak the node.</p>
+        <ul><li>CPU, memory, storage, network and accelerators loaded together.</li>
+        <li>Watch temperatures, fan speeds or coolant flow, throttling, corrected ECC errors and logs.</li>
+        <li>Pass criteria come from the test specification: duration, limits, and "no new errors".</li></ul>`,
+    },
+    final: {
+      title: "Final checks and records",
+      body: `<p>Close the test properly.</p>
+        <ul><li>Review event logs (BMC, kernel) for anything unexpected during the run.</li>
+        <li>Put the node in its shipping state (logs cleared if the procedure says so, boot order, power state).</li>
+        <li>Write the record against the serial number: results, firmware versions, test software and limits version.</li></ul>`,
+    },
+    ready: {
+      title: "Rack-ready",
+      body: `<p>Hand the node on to rack integration.</p>
+        <ul><li>Labels correct, protective caps on quick disconnects, drained and dry if the program requires it.</li>
+        <li>Packed or staged safely. In the rack it meets the power, liquid and thermal tests of the rack test plan.</li></ul>`,
+    },
+  },
 };
 
 /* ------------------------------------------------------------------ examples */
@@ -863,6 +914,74 @@ def test_an_empty_resource_is_not_healthy():
         rig.depressurize()
         if spec.ship_dry:
             rig.drain_and_dry()`,
+  },
+  {
+    id: "provision",
+    title: "12. Provisioning: serial numbers and MACs",
+    runnable: true,
+    intro: "Production programming writes <b>identity</b> into each unit: a serial number and MAC addresses. Two rules matter. A typo must be detectable (a <b>check digit</b>), and the same MAC must never be given to two units. The OUI below is a made-up locally administered example. Use the one your company is assigned.",
+    code: String.raw`import pytest
+
+OUI = "02:11:22"   # example only (locally administered), use your assigned OUI
+
+def mac_from_index(oui, index):
+    """OUI + a 24-bit device number, for example index 255 -> 02:11:22:00:00:FF"""
+    if not 0 <= index < 2**24:
+        raise ValueError("index out of range")
+    tail = f"{index:06X}"
+    return f"{oui}:{tail[0:2]}:{tail[2:4]}:{tail[4:6]}"
+
+def check_digit(digits):
+    """Weighted mod-10 digit: weight 3 for the last digit, 1 for the next, and so on."""
+    total = sum(int(d) * (3 if i % 2 == 0 else 1) for i, d in enumerate(reversed(digits)))
+    return (10 - total % 10) % 10
+
+def make_serial(prefix, number):
+    body = f"{number:08d}"
+    return f"{prefix}{body}{check_digit(body)}"
+
+def is_valid_serial(sn, prefix):
+    if not sn.startswith(prefix) or len(sn) != len(prefix) + 9:
+        return False
+    body, check = sn[len(prefix):-1], sn[-1]
+    return body.isdigit() and check.isdigit() and int(check) == check_digit(body)
+
+def find_duplicates(values):
+    seen, dup = set(), []
+    for v in values:
+        if v in seen and v not in dup:
+            dup.append(v)
+        seen.add(v)
+    return dup
+
+def test_mac_is_formatted_from_the_index():
+    assert mac_from_index(OUI, 0) == "02:11:22:00:00:00"
+    assert mac_from_index(OUI, 255) == "02:11:22:00:00:FF"
+
+def test_mac_index_must_fit_in_24_bits():
+    with pytest.raises(ValueError):
+        mac_from_index(OUI, 2**24)
+
+def test_serial_carries_a_check_digit():
+    assert make_serial("SN", 1) == "SN000000017"
+
+def test_valid_serial_is_accepted():
+    assert is_valid_serial(make_serial("SN", 12345678), "SN")
+
+def test_every_single_digit_typo_is_caught():
+    sn = make_serial("SN", 12345678)
+    for pos in range(2, len(sn)):                      # every digit after the prefix
+        wrong = str((int(sn[pos]) + 1) % 10)
+        assert not is_valid_serial(sn[:pos] + wrong + sn[pos + 1:], "SN")
+
+def test_wrong_prefix_is_rejected():
+    assert not is_valid_serial(make_serial("SN", 5), "XX")
+
+def test_overlapping_ranges_produce_duplicate_macs():
+    batch_a = [mac_from_index(OUI, i) for i in range(0, 5)]
+    batch_b = [mac_from_index(OUI, i) for i in range(4, 8)]     # starts one too early
+    assert find_duplicates(batch_a + batch_b) == ["02:11:22:00:00:04"]
+`,
   },
 ];
 
@@ -2103,6 +2222,223 @@ def test_bbu_rejects_bad_input(args):
         bbu_runtime_s(*args)
 `,
   },
+
+  /* --------------------------------------------------------------------- 12 */
+  {
+    id: "capacity-cost",
+    level: "Medium",
+    kind: "implement",
+    title: "Testers needed and cost of test",
+    summary: "Size a test line and price the test, the way a proposal does.",
+    brief: `<p>Every proposal needs two answers: how many stations, and what each tested unit costs. Implement three functions.</p>
+      <ul>
+        <li><code>testers_needed(demand_per_day, cycle_s, available_s_per_day, retest_rate=0.0, uptime=1.0, units_per_cycle=1)</code>.
+          Test seconds needed per day = <code>demand &times; cycle_s &times; (1 + retest_rate) / units_per_cycle</code>. One tester supplies <code>available_s_per_day &times; uptime</code> seconds per day.
+          Return the smallest <b>whole number</b> of testers that covers the need (round up, but ignore floating-point noise below 1e-9). Zero demand needs 0 testers.
+          <code>ValueError</code> for: negative demand, <code>cycle_s</code> or <code>available_s_per_day</code> not positive, negative retest rate, <code>uptime</code> outside 0 &lt; uptime &le; 1, <code>units_per_cycle</code> below 1.</li>
+        <li><code>cost_per_unit(capex, nre, lifetime_units, annual_running_cost, annual_units)</code> = <code>(capex + nre) / lifetime_units + annual_running_cost / annual_units</code>.
+          <code>ValueError</code> if <code>lifetime_units</code> or <code>annual_units</code> is not positive, or any cost is negative.</li>
+        <li><code>breakeven_units(fixed_cost, saving_per_unit)</code>: units after which a fixed extra cost (for example an ICT fixture) is paid back by a per-unit saving. <code>ValueError</code> if <code>fixed_cost</code> is negative or the saving is not positive.</li>
+      </ul>
+      <p class="note">Worked example: 1,200 units a day, 180 s per unit, 8% retest, 16 h of line time (57,600 s), 90% uptime needs 1,200 &times; 194.4 s = 233,280 s a day. One tester gives 51,840 s, so 4.5 testers, so <b>5</b>.</p>`,
+    starter: String.raw`import math
+
+def testers_needed(demand_per_day, cycle_s, available_s_per_day,
+                   retest_rate=0.0, uptime=1.0, units_per_cycle=1):
+    raise NotImplementedError
+
+def cost_per_unit(capex, nre, lifetime_units, annual_running_cost, annual_units):
+    raise NotImplementedError
+
+def breakeven_units(fixed_cost, saving_per_unit):
+    raise NotImplementedError
+`,
+    hints: [
+      "Compute the seconds needed and the seconds one tester supplies, then divide. Use <code>math.ceil(ratio - 1e-9)</code> so an exact fit such as 1.0 does not become 2.",
+      "Validate first: each rule in the brief is one <code>if ... raise ValueError</code>. Zero demand should return 0 before dividing anything.",
+      "<code>cost_per_unit</code> is two divisions added together. <code>breakeven_units</code> is one division.",
+    ],
+    solution: String.raw`import math
+
+def testers_needed(demand_per_day, cycle_s, available_s_per_day,
+                   retest_rate=0.0, uptime=1.0, units_per_cycle=1):
+    if demand_per_day < 0 or cycle_s <= 0 or available_s_per_day <= 0:
+        raise ValueError("demand must be >= 0 and times must be positive")
+    if retest_rate < 0 or not (0 < uptime <= 1) or units_per_cycle < 1:
+        raise ValueError("bad retest rate, uptime or units per cycle")
+    if demand_per_day == 0:
+        return 0
+    needed = demand_per_day * cycle_s * (1 + retest_rate) / units_per_cycle
+    per_tester = available_s_per_day * uptime
+    return math.ceil(needed / per_tester - 1e-9)
+
+def cost_per_unit(capex, nre, lifetime_units, annual_running_cost, annual_units):
+    if lifetime_units <= 0 or annual_units <= 0:
+        raise ValueError("volumes must be positive")
+    if min(capex, nre, annual_running_cost) < 0:
+        raise ValueError("costs must not be negative")
+    return (capex + nre) / lifetime_units + annual_running_cost / annual_units
+
+def breakeven_units(fixed_cost, saving_per_unit):
+    if fixed_cost < 0 or saving_per_unit <= 0:
+        raise ValueError("fixed cost >= 0 and saving > 0 required")
+    return fixed_cost / saving_per_unit
+`,
+    tests: String.raw`import pytest
+
+def test_the_worked_example_needs_five_testers():
+    assert testers_needed(1200, 180, 57600, retest_rate=0.08, uptime=0.9) == 5
+
+def test_rounds_up():
+    assert testers_needed(100, 36, 3000) == 2        # 3600 / 3000 = 1.2
+
+def test_an_exact_fit_does_not_add_a_tester():
+    assert testers_needed(10, 360, 3600) == 1
+
+def test_retests_add_load():
+    assert testers_needed(1000, 100, 36000) == 3     # 2.78
+    assert testers_needed(1000, 100, 36000, retest_rate=0.5) == 5   # 4.17
+
+def test_uptime_reduces_what_one_tester_supplies():
+    assert testers_needed(1200, 180, 57600, uptime=0.5) == 8        # 7.5
+
+def test_a_multi_up_fixture_shares_the_cycle():
+    assert testers_needed(1200, 180, 57600, units_per_cycle=2) == 2  # 1.875
+
+def test_no_demand_needs_no_testers():
+    assert testers_needed(0, 180, 57600) == 0
+
+@pytest.mark.parametrize("kwargs", [
+    {"demand_per_day": -1}, {"cycle_s": 0}, {"available_s_per_day": 0},
+    {"retest_rate": -0.1}, {"uptime": 0}, {"uptime": 1.1}, {"units_per_cycle": 0},
+])
+def test_testers_needed_rejects_bad_input(kwargs):
+    args = dict(demand_per_day=100, cycle_s=60, available_s_per_day=3600)
+    args.update(kwargs)
+    with pytest.raises(ValueError):
+        testers_needed(**args)
+
+def test_cost_per_unit_worked_example():
+    assert cost_per_unit(1_000_000, 500_000, 300_000, 200_000, 150_000) == pytest.approx(6.3333, rel=1e-4)
+
+def test_cost_with_no_running_cost_is_just_amortisation():
+    assert cost_per_unit(100, 50, 30, 0, 10) == pytest.approx(5.0)
+
+def test_a_volume_drop_raises_cost_per_unit():
+    base = cost_per_unit(1_000_000, 500_000, 300_000, 200_000, 150_000)
+    low = cost_per_unit(1_000_000, 500_000, 240_000, 200_000, 120_000)
+    assert low == pytest.approx(base * 1.25)
+
+@pytest.mark.parametrize("args", [
+    (1, 1, 0, 1, 1), (1, 1, 1, 1, 0), (-1, 1, 1, 1, 1), (1, -1, 1, 1, 1), (1, 1, 1, -1, 1),
+])
+def test_cost_per_unit_rejects_bad_input(args):
+    with pytest.raises(ValueError):
+        cost_per_unit(*args)
+
+def test_breakeven():
+    assert breakeven_units(400_000, 8) == pytest.approx(50_000)
+    assert breakeven_units(0, 5) == 0
+
+@pytest.mark.parametrize("args", [(-1, 5), (100, 0), (100, -2)])
+def test_breakeven_rejects_bad_input(args):
+    with pytest.raises(ValueError):
+        breakeven_units(*args)
+`,
+  },
+
+  /* --------------------------------------------------------------------- 13 */
+  {
+    id: "golden-config",
+    level: "Medium",
+    kind: "implement",
+    title: "Verify a node against its golden configuration",
+    summary: "Compare nested hardware and firmware readings with the baseline.",
+    brief: `<p>A node must match its golden configuration: firmware versions, DIMM count, link speeds. Implement <code>diff_config(expected, actual, strict=False)</code> where both are (nested) dicts, and return a <b>sorted list of readable differences</b>. An empty list means the node matches.</p>
+      <ul>
+        <li>Walk <code>expected</code>. Name each value by its path with dots, for example <code>dimm.count</code>.</li>
+        <li>Key missing in <code>actual</code>: <code>"nic.speed: missing (expected 100)"</code> (use <code>repr</code> of the expected value).</li>
+        <li>Different value: <code>"bios: expected '2.4.1', got '2.3.0'"</code>. Lists and scalars are compared as a whole. If one side is a dict and the other is not, that is a difference too.</li>
+        <li>Two dicts: compare them recursively.</li>
+        <li>Keys that exist only in <code>actual</code> are <b>ignored</b>, unless <code>strict=True</code>. Then each is reported as <code>"path: unexpected"</code>.</li>
+        <li>Return the messages sorted (plain string sort).</li>
+      </ul>
+      <p class="note">This is the check that stops "wrong firmware shipped", one of the most common escapes. The baseline is stored per SKU in a versioned file, and the test reads the actual values from the BMC.</p>`,
+    starter: String.raw`def diff_config(expected, actual, strict=False):
+    raise NotImplementedError
+`,
+    hints: [
+      "Write a recursive helper that takes a path prefix, or add a private <code>_prefix</code> argument. Build each path as <code>prefix + key</code> and pass <code>path + '.'</code> down.",
+      "Order of checks for each expected key: missing, then both-are-dicts (recurse), then plain inequality.",
+      "For <code>strict</code>, loop over <code>actual</code> keys that are not in <code>expected</code> and add <code>f\"{path}: unexpected\"</code>. Finish with <code>sorted(...)</code>.",
+    ],
+    solution: String.raw`def diff_config(expected, actual, strict=False, _prefix=""):
+    diffs = []
+    for key, exp in expected.items():
+        path = f"{_prefix}{key}"
+        if key not in actual:
+            diffs.append(f"{path}: missing (expected {exp!r})")
+        elif isinstance(exp, dict) and isinstance(actual[key], dict):
+            diffs.extend(diff_config(exp, actual[key], strict, path + "."))
+        elif exp != actual[key]:
+            diffs.append(f"{path}: expected {exp!r}, got {actual[key]!r}")
+    if strict:
+        for key in actual:
+            if key not in expected:
+                diffs.append(f"{_prefix}{key}: unexpected")
+    return sorted(diffs)
+`,
+    tests: String.raw`GOLD = {"bios": "2.4.1", "bmc": "1.18", "dimm": {"count": 16, "speed_mts": 4800}}
+
+def test_an_identical_node_has_no_differences():
+    assert diff_config(GOLD, dict(GOLD, dimm=dict(GOLD["dimm"]))) == []
+
+def test_wrong_value():
+    assert diff_config({"bios": "2.4.1"}, {"bios": "2.3.0"}) == ["bios: expected '2.4.1', got '2.3.0'"]
+
+def test_nested_paths_use_dots():
+    actual = {"dimm": {"count": 15, "speed_mts": 4800}}
+    assert diff_config({"dimm": {"count": 16, "speed_mts": 4800}}, actual) == ["dimm.count: expected 16, got 15"]
+
+def test_missing_key():
+    assert diff_config({"nic": {"speed": 100}}, {"nic": {}}) == ["nic.speed: missing (expected 100)"]
+
+def test_missing_section():
+    assert diff_config({"gpu": {"count": 8}}, {}) == ["gpu: missing (expected {'count': 8})"]
+
+def test_lists_are_compared_as_a_whole():
+    assert diff_config({"fans": [1, 2, 3]}, {"fans": [1, 2]}) == ["fans: expected [1, 2, 3], got [1, 2]"]
+
+def test_dict_versus_scalar_is_a_difference():
+    assert diff_config({"a": {"b": 1}}, {"a": 5}) == ["a: expected {'b': 1}, got 5"]
+
+def test_results_are_sorted():
+    out = diff_config({"b": 1, "a": 1}, {"b": 2, "a": 2})
+    assert out == ["a: expected 1, got 2", "b: expected 1, got 2"]
+
+def test_extra_keys_are_ignored_by_default():
+    assert diff_config({"a": 1}, {"a": 1, "extra": 9}) == []
+    assert diff_config({"d": {"x": 1}}, {"d": {"x": 1, "y": 2}}) == []
+
+def test_strict_reports_extra_keys_at_every_level():
+    assert diff_config({"a": 1}, {"a": 1, "extra": 9}, strict=True) == ["extra: unexpected"]
+    assert diff_config({"d": {"x": 1}}, {"d": {"x": 1, "y": 2}}, strict=True) == ["d.y: unexpected"]
+
+def test_several_problems_are_all_reported():
+    actual = {"bios": "2.3.0", "dimm": {"count": 15}}
+    out = diff_config(GOLD, actual)
+    assert out == [
+        "bios: expected '2.4.1', got '2.3.0'",
+        "bmc: missing (expected '1.18')",
+        "dimm.count: expected 16, got 15",
+        "dimm.speed_mts: missing (expected 4800)",
+    ]
+
+def test_empty_baseline_matches_anything():
+    assert diff_config({}, {"a": 1}) == []
+    assert diff_config({}, {"a": 1}, strict=True) == ["a: unexpected"]
+`,
+  },
 ];
 
 /* ------------------------------------------------------------------ glossary */
@@ -2122,6 +2458,8 @@ TDE.GLOSSARY = [
       ["SOW", "Statement of Work", "The written scope of what will be delivered and what the customer provides."],
       ["NRE", "Non-Recurring Engineering", "One-time development cost (for example designing the tester), as opposed to cost per unit."],
       ["BOM", "Bill of Materials", "The list of every part in a product or in a tester."],
+      ["CAPEX / OPEX", "Capital / Operating expenditure", "One-time spending on equipment versus the running cost of using it. Both go into the cost of test."],
+      ["TCO", "Total Cost of Ownership", "Everything a tester costs over its life: purchase, running, maintenance, calibration and the cost of quality."],
       ["ECO / ECN", "Engineering Change Order / Notice", "A controlled change to a design or process. Check what it does to the tester before it reaches the line."],
     ],
   },
@@ -2204,6 +2542,7 @@ TDE.GLOSSARY = [
     id: "software", title: "Software",
     intro: "Terms for the test software side.",
     items: [
+      ["ISS3", "ISS3 (name as used by the team)", "The test sequencer most JDM programs use. This site teaches sequencer concepts, not ISS3's own features."],
       ["SCPI", "Standard Commands for Programmable Instruments", "Text commands such as MEAS:VOLT:DC? that most instruments understand."],
       ["VISA", "Virtual Instrument Software Architecture", "The software layer used to talk to instruments over USB, LAN or GPIB."],
       ["API", "Application Programming Interface", "The way one program asks another to do something."],
@@ -2280,6 +2619,25 @@ TDE.GLOSSARY = [
       ["VM", "Virtual Machine", "A computer simulated in software, handy for build servers."],
       ["DB", "Database", "Where results and limits can be stored and queried."],
       ["SSO", "Single Sign-On", "One login for many company systems."],
+    ],
+  },
+  {
+    id: "node", title: "Server and node test",
+    intro: "Terms used when testing servers and compute nodes.",
+    items: [
+      ["BIOS / UEFI", "Basic Input/Output System / Unified Extensible Firmware Interface", "The firmware that starts the server and sets hardware options before the operating system loads."],
+      ["DIMM", "Dual In-line Memory Module", "A memory stick. A node test checks how many are present, their size and speed."],
+      ["ECC", "Error-Correcting Code (memory)", "Memory that detects and corrects some errors. A rising count of corrected errors warns of a failing DIMM."],
+      ["NVMe", "Non-Volatile Memory Express", "The fast storage interface used by SSDs on PCIe."],
+      ["SMART", "Self-Monitoring, Analysis and Reporting Technology", "Health data that drives report about themselves."],
+      ["PXE", "Preboot Execution Environment", "Booting a node over the network, often to install or test it."],
+      ["SEL", "System Event Log", "The BMC's log of hardware events such as over-temperature or memory errors."],
+      ["FRU", "Field Replaceable Unit", "A part that can be swapped in the field. FRU data stores its identity, such as serial number and part number."],
+      ["SKU", "Stock Keeping Unit", "A specific product variant. Each SKU has its own golden configuration and test limits."],
+      ["MAC", "Media Access Control (address)", "The unique hardware address of a network port. Must never be duplicated."],
+      ["OUI", "Organizationally Unique Identifier", "The first three bytes of a MAC address, assigned to a manufacturer."],
+      ["RAS", "Reliability, Availability, Serviceability", "Features that keep a server running and make faults visible, such as ECC and error logging."],
+      ["HSM", "Hardware Security Module", "A protected device that holds signing keys, for example for production programming of signed firmware."],
     ],
   },
   {

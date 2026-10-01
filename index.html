@@ -7,9 +7,9 @@
   <title>TDE Training – Test Development Engineer</title>
   <meta name="description" content="Interactive training for Test Development Engineers in electronics manufacturing: CM and JDM programs, NPI and sustaining, tester hardware and software, diagrams, Python examples and hands-on exercises that run in your browser.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c7a6f'/%3E%3Cpath d='M8 17l5 5 11-12' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="assets/style.css?v=053adb33a8">
-  <script src="assets/content.js?v=053adb33a8" defer></script>
-  <script src="assets/app.js?v=053adb33a8" defer></script>
+  <link rel="stylesheet" href="assets/style.css?v=10dbe6f83a">
+  <script src="assets/content.js?v=10dbe6f83a" defer></script>
+  <script src="assets/app.js?v=10dbe6f83a" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -25,7 +25,7 @@
   <div class="container">
     <button class="icon-btn" id="sb-toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide navigation"><span aria-hidden="true">☰</span></button>
     <a class="brand" href="#top"><span class="logo">TDE</span> Training</a>
-    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/11</span></span>
+    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/13</span></span>
     <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">☾</button>
   </div>
   <div id="progress-bar" aria-hidden="true"></div>
@@ -50,9 +50,9 @@
       <a class="btn" href="#practice">Jump to practice</a>
     </div>
     <ul class="stats">
-      <li><b>7</b><span>interactive diagrams</span></li>
-      <li><b>11</b><span>code examples</span></li>
-      <li><b>11</b><span>graded exercises</span></li>
+      <li><b>8</b><span>interactive diagrams</span></li>
+      <li><b>12</b><span>code examples</span></li>
+      <li><b>13</b><span>graded exercises</span></li>
       <li><b>0</b><span>installs needed</span></li>
     </ul>
 
@@ -62,12 +62,15 @@
       <a class="card link" href="#models"><span class="num">2</span><h4>CM vs JDM</h4><p>The two program types and where the TDE joins each.</p></a>
       <a class="card link" href="#lifecycle"><span class="num">3</span><h4>NPI to sustaining</h4><p>The life of a tester, from proposal to maintenance.</p></a>
       <a class="card link" href="#diagrams"><span class="num">4</span><h4>Diagrams</h4><p>Test stages on the line and the anatomy of a tester.</p></a>
-      <a class="card link" href="#deep-dive"><span class="num">5</span><h4>Deep dive</h4><p>Strategy, hardware, software, 4M1E, safety, yield, proposals.</p></a>
-      <a class="card link" href="#ocp"><span class="num">6</span><h4>OCP rack</h4><p>Open Rack basics, power, safety, test stands, troubleshooting and a 30-day plan.</p></a>
-      <a class="card link" href="#cooling"><span class="num">7</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
-      <a class="card link" href="#examples"><span class="num">8</span><h4>Examples</h4><p>Eleven Python examples. Seven run in your browser.</p></a>
-      <a class="card link" href="#practice"><span class="num">9</span><h4>Practice</h4><p>Eleven graded exercises with hints and solutions.</p></a>
-      <a class="card link" href="#glossary"><span class="num">10</span><h4>Glossary</h4><p>150+ acronyms grouped by topic, with search.</p></a>
+      <a class="card link" href="#deep-dive"><span class="num">5</span><h4>Deep dive</h4><p>Strategy, hardware, software, DFT, programming, platforms, documents, safety.</p></a>
+      <a class="card link" href="#sequencer"><span class="num">6</span><h4>Test sequencer</h4><p>What a sequencer does, how to write steps, and a first-week plan for ISS3.</p></a>
+      <a class="card link" href="#planning"><span class="num">7</span><h4>Capacity and cost</h4><p>How many testers, what a test costs, with calculators.</p></a>
+      <a class="card link" href="#ocp"><span class="num">8</span><h4>OCP rack</h4><p>Open Rack basics, power, safety, test stands, troubleshooting and a 30-day plan.</p></a>
+      <a class="card link" href="#cooling"><span class="num">9</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
+      <a class="card link" href="#servertest"><span class="num">10</span><h4>Node test</h4><p>Testing server nodes: flow, tools, BMC and Redfish, golden configuration.</p></a>
+      <a class="card link" href="#examples"><span class="num">11</span><h4>Examples</h4><p>Twelve Python examples. Eight run in your browser.</p></a>
+      <a class="card link" href="#practice"><span class="num">12</span><h4>Practice</h4><p>Thirteen graded exercises with hints and solutions.</p></a>
+      <a class="card link" href="#glossary"><span class="num">13</span><h4>Glossary</h4><p>170+ acronyms grouped by topic, with search.</p></a>
     </div>
   </div>
 </section>
@@ -160,7 +163,7 @@
       </div>
     </div>
 
-    <div class="note"><p><b>Lost in acronyms?</b> The <a href="#glossary">Glossary</a> groups 150+ of them by topic: company, MFG, test, quality, software, hardware, interfaces, OCP rack and cooling, IT and safety. It is searchable.</p></div>
+    <div class="note"><p><b>Lost in acronyms?</b> The <a href="#glossary">Glossary</a> groups 170+ of them by topic: company, MFG, test, quality, software, hardware, interfaces, server and node test, OCP rack and cooling, IT and safety. It is searchable.</p></div>
   </div>
 </section>
 
@@ -229,6 +232,7 @@
           <tr><td><b>Closest partners</b></td><td>Customer engineers, TE, MFG</td><td>HPS, TE, customer, MFG</td></tr>
           <tr><td><b>Biggest lever</b></td><td>Feedback on testability during design review</td><td>Choosing the test approach together with the hardware</td></tr>
           <tr><td><b>What we sell</b></td><td>Fast, reliable, low-cost test delivery</td><td>Our technology, our way of working and our unique capability</td></tr>
+          <tr><td><b>Test sequencer</b></td><td>Follow the customer's requirement when there is one</td><td>Mostly <b>ISS3</b> (see the Test sequencer page)</td></tr>
           <tr><td><b>After NPI</b></td><td colspan="2">Both: help maintain the tester in the sustaining phase</td></tr>
         </tbody>
       </table>
@@ -512,13 +516,377 @@
         </ul>
       </div>
     </details>
+    <details>
+      <summary>10 · Design for test: a review checklist <small>ask early, it is cheap then</small></summary>
+      <div class="dd">
+        <p>Send this list to the design team (the customer in CM, HPS in JDM) at the first schematic review. Each item costs almost nothing before layout and a lot after.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Area</th><th>Ask for</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td><b>Test points</b></td><td>A pad or pin on every power rail, reset, clock enable and key bus, reachable from the one side the fixture will touch</td><td>No access means ICT cannot see the net and FCT cannot probe it</td></tr>
+            <tr><td><b>Pad rules</b></td><td>Follow the fixture vendor's rules for pad size, spacing and keep-out zones. As a typical starting point, pads of roughly 0.8 to 1.0 mm, not under tall parts</td><td>Probes need a stable landing. Check the vendor's real numbers</td></tr>
+            <tr><td><b>Boundary scan</b></td><td>A JTAG chain with accessible TAP signals, and the BSDL files of the devices</td><td>Tests connections without probing</td></tr>
+            <tr><td><b>Programming access</b></td><td>Header or pads for flash, FPGA and BMC programming, and for a serial console</td><td>Production programming and debugging need a way in</td></tr>
+            <tr><td><b>Power-up</b></td><td>A documented sequence, enable pins, and a way to power the board stand-alone</td><td>Needed to run functional test on a bare board</td></tr>
+            <tr><td><b>Boot and test hooks</b></td><td>Boot-mode straps within reach, a self-test or diagnostic mode, status LEDs a sensor can read</td><td>Lets software judge the unit without a person</td></tr>
+            <tr><td><b>Identity storage</b></td><td>Where the serial number and MAC addresses live, and who writes them</td><td>Provisioning needs a defined place</td></tr>
+            <tr><td><b>Mechanical</b></td><td>Tooling holes, edge clearance, height limits near test areas, connector orientation</td><td>The fixture must clamp and mate thousands of times</td></tr>
+            <tr><td><b>Thermal and liquid</b></td><td>Sensors the BMC can read, coolant sensor points, access to quick disconnects</td><td>Needed for the thermal and liquid tests</td></tr>
+            <tr><td><b>Documents</b></td><td>Schematics, test-point list, BOM, firmware, test requirements</td><td>Without them the tester cannot be designed</td></tr>
+          </tbody></table></div>
+        <div class="note"><p>Record the review as a list of open items, each with an owner and a date. An unanswered DFT request does not disappear. It turns into tester cost later.</p></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>11 · Production programming and provisioning <small>firmware, identity, keys</small></summary>
+      <div class="dd">
+        <p>Many units leave the factory with something the tester wrote into them.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>What is written</th><th>Examples</th><th>Typical risks</th></tr></thead>
+          <tbody>
+            <tr><td><b>Firmware</b></td><td>BIOS, BMC, FPGA bitstream, EEPROM images</td><td>Wrong version for the SKU, power lost during the write</td></tr>
+            <tr><td><b>Identity</b></td><td>Serial number, MAC addresses, UUID</td><td>Duplicates, typos, a unit shipped before it was provisioned</td></tr>
+            <tr><td><b>Keys and licences</b></td><td>Certificates, signing keys, feature licences</td><td>Keys leaking into code, logs or screenshots</td></tr>
+            <tr><td><b>Calibration and configuration</b></td><td>Sensor offsets, BIOS options</td><td>Stale values after a design change</td></tr>
+          </tbody></table></div>
+        <ul>
+          <li><b>Methods:</b> in-system programming through JTAG, SWD or SPI with the fixture's pogo pins; an update through the BMC or the network after power-up; pre-programmed parts; an offline programmer for sockets.</li>
+          <li><b>Speed:</b> programming a large flash can take minutes. Program in parallel, or on a separate station, so it is not on the line's critical path.</li>
+          <li><b>Verify:</b> read back or check a hash, then record it. A write that was never verified is a hope, not a fact.</li>
+          <li><b>Baseline:</b> the right image for each SKU comes from a versioned baseline, never from an operator's choice.</li>
+          <li><b>Identity:</b> allocate serials and MACs from one central service, with a check digit and a duplicate check (example 12).</li>
+          <li><b>Secrets:</b> keep keys in a hardware security module or a signing service. Never in the repository, the logs or the work instruction.</li>
+          <li><b>Traceability:</b> record who programmed which version, when, on which station.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>12 · Choosing the test software platform <small>no universal winner</small></summary>
+      <div class="dd">
+        <div class="table-wrap"><table>
+          <thead><tr><th>Platform</th><th>Strong at</th><th>Watch out for</th></tr></thead>
+          <tbody>
+            <tr><td><b>Python</b></td><td>Fast to write and review, large ecosystem (PyVISA, pyserial), no licence cost, easy to unit-test with simulators</td><td>You supply the sequencer, operator UI and reporting yourself, or adopt a framework</td></tr>
+            <tr><td><b>NI TestStand</b> (with LabVIEW, .NET or Python steps)</td><td>Ready-made sequencing, parallel testing, reporting and operator interface</td><td>Licence cost, specialist skills, harder to review and version</td></tr>
+            <tr><td><b>LabVIEW</b></td><td>Graphical, strong instrument and DAQ integration, familiar to many test engineers</td><td>Licence cost. Large diagrams are hard to review and compare</td></tr>
+            <tr><td><b>C# / .NET</b></td><td>Good Windows interfaces and performance, full control</td><td>You write more of the infrastructure</td></tr>
+            <tr><td><b>OpenTAP</b></td><td>Open-source test sequencing engine (originally from Keysight) with a plug-in model</td><td>Smaller community. Check fit for your instruments</td></tr>
+            <tr><td><b>Customer-supplied platform</b></td><td>Required in some CM programs. Matches the customer's conventions</td><td>Limited freedom. Follow their release rules</td></tr>
+          </tbody></table></div>
+        <div class="note"><p>In JDM programs the team mostly uses <b>ISS3</b> as the test sequencer. The <a href="#sequencer">Test sequencer</a> page covers the concepts that apply to ISS3 and to any other sequencer.</p></div>
+        <p><b>How to decide:</b> the customer's requirement (in CM), reuse across programs (in JDM), the number of stations (licences add up), the skills of the team, the need for parallel test, support over a product life of years, and the available instrument drivers. When it is close, build one real test step on each candidate and compare the effort. Decide on evidence.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>13 · Documents a TDE owns <small>write for the technician at 3 a.m.</small></summary>
+      <div class="dd">
+        <div class="table-wrap"><table>
+          <thead><tr><th>Document</th><th>What it says</th><th>Reviewed with</th></tr></thead>
+          <tbody>
+            <tr><td><b>Test strategy and plan</b></td><td>Stages, coverage (PCOLA / SOQ map), risks</td><td>TE, customer</td></tr>
+            <tr><td><b>DFT report</b></td><td>Testability findings and requests, with owners</td><td>HPS or the customer's design team</td></tr>
+            <tr><td><b>Tester design specification</b></td><td>Hardware and software architecture, interfaces, safety</td><td>TE, MFG, EHS</td></tr>
+            <tr><td><b>Fixture drawings and BOM</b></td><td>Mechanics, contacts, wiring</td><td>The fabricator, MFG</td></tr>
+            <tr><td><b>Test specification</b></td><td>Every step, measurement, unit and limit, with the reason for the limit</td><td>TE, customer</td></tr>
+            <tr><td><b>Work instruction</b></td><td>Operator steps, what to do on pass and fail, safety</td><td>MFG</td></tr>
+            <tr><td><b>Calibration and maintenance plan</b></td><td>What, how often, who, which spares</td><td>MFG, quality</td></tr>
+            <tr><td><b>Correlation and GR&amp;R report</b></td><td>Evidence that the measurement is capable</td><td>TE, customer</td></tr>
+            <tr><td><b>Release notes</b></td><td>Version, changes, known issues, how to roll back</td><td>MFG, TE</td></tr>
+            <tr><td><b>Handover checklist</b></td><td>Acceptance evidence and sign-off</td><td>MFG</td></tr>
+          </tbody></table></div>
+        <p>Everything is versioned, dated and has an owner. If a technician cannot act on a document without calling you, the document is not finished.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ============================================================ TEST SEQUENCER -->
+<section class="block view" id="sequencer">
+  <div class="container">
+    <span class="kicker">06 · Test sequencer</span>
+    <h2>The test sequencer: the engine of a test station</h2>
+    <p class="lead">The sequencer runs a test as an ordered list of steps, applies limits, decides the verdict and writes the record. In JDM programs the team mostly uses <b>ISS3</b> for this. The ideas on this page are the same in every sequencer, so they make ISS3 faster to learn, and they tell you what to ask about it.</p>
+
+    <div class="subpage" data-sub="does" data-title="What a sequencer does">
+      <h3>Responsibilities</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Responsibility</th><th>What it means</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td><b>Run order and flow</b></td><td>Run steps in order, with loops, branches, and "stop on first fail" or "run everything"</td><td>Safe ordering: no heat before the loop is full, no test before power is good</td></tr>
+          <tr><td><b>Steps with limits</b></td><td>Each step measures something and compares it with limits</td><td>The limits are the definition of "good". They need review and versions</td></tr>
+          <tr><td><b>Verdicts</b></td><td>PASS, FAIL, ERROR, SKIP per step, and one verdict per unit</td><td>A tester fault must never look like a pass or like a bad unit (exercise 6)</td></tr>
+          <tr><td><b>Instrument and DUT access</b></td><td>Drivers for instruments, the DUT console and I/O, ideally with simulators</td><td>Swap an instrument without touching the sequence. Develop without hardware</td></tr>
+          <tr><td><b>Parallel testing</b></td><td>Test several units or sockets at the same time</td><td>Cuts the cost of test (see Capacity and cost)</td></tr>
+          <tr><td><b>Operator interface</b></td><td>Scan the serial number, show progress and a clear result</td><td>The operator must not be able to skip steps or change limits</td></tr>
+          <tr><td><b>Data and records</b></td><td>Every measurement, verdict, version and timestamp, per serial number</td><td>Traceability, yield analysis, and answers when a customer asks</td></tr>
+          <tr><td><b>Configuration</b></td><td>Limits, station settings, product variants kept as data</td><td>A limit change is then a reviewed data change, not a code edit</td></tr>
+          <tr><td><b>Safe state and errors</b></td><td>Always return outputs to a safe state, even after a failure or a crash</td><td>Protects the DUT, the fixture and the people (exercise 7)</td></tr>
+          <tr><td><b>Development and debug</b></td><td>Run, step through and dry-run a sequence, read logs</td><td>Sets how fast you can build and fix tests</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Sequence, steps and data are three separate things</h3>
+      <div class="grid g3">
+        <div class="card"><h4>The sequence</h4><ul><li>The list of steps and their order</li><li>Flow rules: stop on fail, retry policy</li><li>Says <em>what</em> and <em>when</em></li></ul></div>
+        <div class="card"><h4>The steps</h4><ul><li>Code that does one measurement or action</li><li>Talks to instruments through drivers</li><li>Says <em>how</em></li></ul></div>
+        <div class="card"><h4>The data</h4><ul><li>Limits, settings, product variants</li><li>Versioned and reviewed</li><li>Says <em>how good is good enough</em></li></ul></div>
+      </div>
+      <div class="note"><p>You have already built the core of a sequencer: exercise 7 runs steps against limits, separates FAIL from ERROR, stops on fail and always powers off. A real sequencer adds parallel testing, an operator interface, logging and release management around that core.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="steps" data-title="Writing good steps">
+      <h3>A step in a generic style</h3>
+      <p>This is a <b>Python illustration of the idea</b>, not the syntax of any particular sequencer. Every sequencer has its own way of writing a step, but a good step looks like this in all of them.</p>
+<pre data-hl="python">def step_rail_3v3(ctx):
+    """One purpose: check the 3.3 V rail."""
+    ctx.psu.output(True)
+    value = ctx.dmm.read_stable("3V3", tol=0.005, timeout=2.0)   # wait for a condition, not for time
+    return ctx.check("VDD_3V3", value)    # limits come from the versioned limits file
+
+SEQUENCE = ["step_power_on", "step_rail_3v3", "step_boot", "step_uart_banner", "step_power_off"]</pre>
+
+      <h3>What makes a step good</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Rule</th><th>Why</th><th>Practise it in</th></tr></thead>
+        <tbody>
+          <tr><td><b>One purpose per step</b></td><td>A failing step then names the broken thing</td><td>Exercise 2, 6</td></tr>
+          <tr><td><b>Limits come from data</b></td><td>Changing a limit must not mean editing code</td><td>Example 5, exercise 1</td></tr>
+          <tr><td><b>Wait for conditions, not for time</b></td><td>Faster and more reliable than a fixed delay</td><td>Exercise 5</td></tr>
+          <tr><td><b>Problems raise errors, never fake values</b></td><td>A missing reading must not turn into 0 and pass</td><td>Exercise 1, example 10</td></tr>
+          <tr><td><b>Clean up, always</b></td><td>Outputs off and fixtures released, even after an error</td><td>Exercise 7</td></tr>
+          <tr><td><b>No hidden coupling</b></td><td>A step should not rely on side effects of a step that may have been skipped</td><td>Exercise 7</td></tr>
+          <tr><td><b>Log what you measured, not only the verdict</b></td><td>Later questions are answered from the data</td><td>Example 7</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Anti-patterns to avoid</h3>
+      <div class="cols">
+        <div><div class="label bad">Hides problems</div>
+<pre data-hl="python">try:
+    v = dmm.read()
+except Exception:
+    v = 0                    # a dead meter now reads 0 V
+if v &lt; 3.5:
+    result = "PASS"          # ...and 0 V "passes"</pre></div>
+        <div><div class="label good">Surfaces them</div>
+<pre data-hl="python">v = dmm.read()               # an exception becomes ERROR
+status = check_limit(v, 3.135, 3.465)   # PASS or FAIL
+return status</pre></div>
+      </div>
+    </div>
+
+    <div class="subpage" data-sub="iss3" data-title="ISS3 in JDM programs">
+      <h3>What we know</h3>
+      <p>In JDM programs the team mostly uses <b>ISS3</b> as the test sequencer. So a new TDE on a JDM program will build, debug and release tests in ISS3.</p>
+      <div class="note"><p><b>About this site and ISS3.</b> No public documentation for ISS3 was available when this page was written, so the site does <em>not</em> describe ISS3's own screens, syntax or features, and it will not guess. Ask your lead for the ISS3 documentation, a training environment and a few example sequences from existing JDM programs. When the team has them, add them to this page (see the README).</p></div>
+
+      <h3>Your first-week checklist for ISS3</h3>
+      <p>Answer these twelve questions in your own words, with a worked example from a real program for each. Together they cover what you need to build and release a test.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>#</th><th>Question to answer</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>How is a sequence defined and stored? Where does it live in version control?</td><td>You must be able to review, compare and roll back</td></tr>
+          <tr><td>2</td><td>How is a step written, in which language, and how does it return a value and a verdict?</td><td>It is the unit of work you will write every day</td></tr>
+          <tr><td>3</td><td>Where do limits and configuration live? How are they versioned and approved?</td><td>Limits define "good"</td></tr>
+          <tr><td>4</td><td>How are FAIL and ERROR told apart, and what happens to the unit in each case?</td><td>Scrapping good units or shipping bad ones</td></tr>
+          <tr><td>5</td><td>How does it reach instruments and the DUT? How do you add a new driver?</td><td>Every new tester needs some</td></tr>
+          <tr><td>6</td><td>How do you run and debug a sequence without hardware?</td><td>Speed of development</td></tr>
+          <tr><td>7</td><td>Does it support parallel testing, and how is that configured?</td><td>Capacity and cost of test</td></tr>
+          <tr><td>8</td><td>What does the operator see, and can the operator change anything?</td><td>Operator mistakes and tampering</td></tr>
+          <tr><td>9</td><td>What is recorded per unit, in what format, and how does it reach MES?</td><td>Traceability and yield analysis</td></tr>
+          <tr><td>10</td><td>How is a release built, versioned, deployed to stations and rolled back?</td><td>MFG must know exactly what is installed</td></tr>
+          <tr><td>11</td><td>Who supports it, and what are its known limitations and licence rules?</td><td>Where to go when you are stuck</td></tr>
+          <tr><td>12</td><td>Which existing JDM sequences are the best ones to copy?</td><td>Follow what already works</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Map this site to ISS3</h3>
+      <p>The exercises here teach the concepts in plain Python. For each one, find where the same thing happens in ISS3.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Concept</th><th>On this site</th><th>In ISS3, find out</th></tr></thead>
+        <tbody>
+          <tr><td><b>Limit check</b></td><td>Exercise 1, example 1 and 5</td><td>How a step is compared with limits, and inclusive or exclusive edges</td></tr>
+          <tr><td><b>FAIL vs ERROR</b></td><td>Exercise 6, 7</td><td>How an exception or a driver timeout is reported</td></tr>
+          <tr><td><b>Sequencer core</b></td><td>Exercise 7</td><td>Stop-on-fail, skip, and the cleanup that always runs</td></tr>
+          <tr><td><b>Wait for stable</b></td><td>Exercise 5</td><td>Whether a wait or poll helper already exists</td></tr>
+          <tr><td><b>Instrument driver and simulator</b></td><td>Example 3</td><td>How instruments are wrapped and whether simulation is supported</td></tr>
+          <tr><td><b>Result record</b></td><td>Example 7</td><td>The fields recorded, and what is sent to MES</td></tr>
+          <tr><td><b>Golden configuration</b></td><td>Exercise 13</td><td>How product variants and baselines are selected</td></tr>
+          <tr><td><b>Cost of test</b></td><td>Exercise 12, Capacity and cost</td><td>What parallel testing and multi-up fixtures it can drive</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="subpage" data-sub="plan" data-title="A learning plan">
+      <p class="lead">A realistic path from "I have never seen it" to "I can build and release a test". Adjust it to what ISS3 offers. If it has no dry-run mode, build instrument simulators as in example 3.</p>
+      <div class="week">
+        <div class="day"><b>Week 1</b><p>Read the documentation and answer the twelve questions. Run an existing sequence from a JDM program on the training setup or a simulator.</p></div>
+        <div class="day"><b>Week 2</b><p>Change something safely: edit a limit through the proper process, add a step, read the log and the record it produced.</p></div>
+        <div class="day"><b>Week 3</b><p>Add an instrument driver or a simulator. Write a small sequence for a real board, with FAIL and ERROR handled.</p></div>
+        <div class="day"><b>Week 4</b><p>Get your sequence reviewed. Build a release the way MFG will receive it, install it on a station and roll it back once.</p></div>
+      </div>
+
+      <h3>Habits that carry over to any sequencer</h3>
+      <div class="card">
+        <ul class="checklist">
+          <li>Read an existing, trusted sequence before writing your own</li>
+          <li>Keep limits and settings out of the code</li>
+          <li>Treat missing data as an error, never as a pass</li>
+          <li>Test with a golden unit and a known-bad unit</li>
+          <li>Version every sequence, limit file and release</li>
+          <li>Write the release notes for the technician, not for yourself</li>
+          <li>Keep a simulator so work does not wait for hardware</li>
+          <li>Review each other's sequences like code</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CAPACITY AND COST -->
+<section class="block view" id="planning">
+  <div class="container">
+    <span class="kicker">07 · Capacity and cost</span>
+    <h2>How many testers, and what does a test cost?</h2>
+    <p class="lead">Two numbers decide whether a test plan is realistic: how many stations the line needs, and what each tested unit costs. A TDE estimates both for every proposal and every NPI build, and defends them with stated assumptions.</p>
+
+    <div class="subpage" data-sub="throughput" data-title="Test time and throughput">
+      <h3>Where the seconds go</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Part of the cycle</th><th>What happens</th><th>How to shorten it</th></tr></thead>
+        <tbody>
+          <tr><td><b>Load and connect</b></td><td>Operator places the unit, the fixture clamps, contacts mate</td><td>Dual fixtures so one is loaded while the other is tested. Easy-load mechanics</td></tr>
+          <tr><td><b>Power-up and boot</b></td><td>Rails settle, firmware boots</td><td>Wait for conditions, not fixed delays (exercise 5). Skip waits the product does not need</td></tr>
+          <tr><td><b>Programming</b></td><td>Firmware and identity written and verified</td><td>Program in parallel or on a separate station</td></tr>
+          <tr><td><b>Test steps</b></td><td>Measurements and functional checks</td><td>Run independent steps in parallel. Drop redundant checks that data shows never fail (with TE and customer approval)</td></tr>
+          <tr><td><b>Data and result</b></td><td>Write the record, upload to MES</td><td>Upload in the background. Save locally first</td></tr>
+          <tr><td><b>Unload</b></td><td>Release, remove, label, move on</td><td>Overlap with the next cycle</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>How many testers does the line need?</h3>
+      <p>The line must output one unit every <b>takt time</b> (available time divided by demand). Each tester supplies only part of its day, because of uptime, and retests repeat work. A multi-up fixture tests several units per cycle.</p>
+      <pre class="code"><code>seconds needed per day = demand x cycle x (1 + retest rate) / units per cycle
+seconds one tester gives = line seconds per day x uptime
+testers = round up ( needed / one tester gives )</code></pre>
+      <div class="card calc" id="cap-calc">
+        <div class="calc-grid">
+          <label>Demand (units per day)<input id="cap-demand" type="number" min="0" step="1" value="1200" inputmode="decimal"></label>
+          <label>Line hours per day<input id="cap-hours" type="number" min="1" max="24" step="0.5" value="16" inputmode="decimal"></label>
+          <label>Test cycle (seconds)<input id="cap-cycle" type="number" min="1" step="1" value="180" inputmode="decimal"></label>
+          <label>Units per cycle (multi-up)<input id="cap-units" type="number" min="1" step="1" value="1" inputmode="decimal"></label>
+          <label>Retest rate (%)<input id="cap-retest" type="number" min="0" max="100" step="0.5" value="8" inputmode="decimal"></label>
+          <label>Tester uptime (%)<input id="cap-uptime" type="number" min="1" max="100" step="1" value="90" inputmode="decimal"></label>
+        </div>
+        <div class="calc-out">
+          <div class="hl"><span>Testers needed</span><b id="cap-n">–</b><small id="cap-exact"></small></div>
+          <div><span>Utilisation</span><b id="cap-util">–</b><small>of the testers you buy</small></div>
+          <div><span>Capacity</span><b id="cap-capacity">–</b><small>units per day with that many</small></div>
+          <div><span>Takt time</span><b id="cap-takt">–</b><small>one unit out of the line every</small></div>
+        </div>
+        <p class="tag">You will code this in exercise 12. The default numbers are the worked example in the exercise.</p>
+      </div>
+      <div class="note"><p><b>Test time only matters if the tester is the bottleneck.</b> Compare the cycle per unit with the takt time first. If the tester is far faster than the slowest other station, buying speed here is wasted money.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="cost" data-title="Cost of test">
+      <h3>What a test costs</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Group</th><th>What is in it</th></tr></thead>
+        <tbody>
+          <tr><td><b>One-time (NRE and capital)</b></td><td>Engineering hours, fixture and tester fabrication, instruments, software development, validation. Spread over the units the program will build</td></tr>
+          <tr><td><b>Running</b></td><td>Operator share, maintenance, calibration, consumables such as pogo pins, spare parts, floor space, power, software licences</td></tr>
+          <tr><td><b>Cost of quality</b></td><td>False fails (retest handling, delay, scrap) and escapes (returns, field failures, customer penalties). Hard to see in a quote, easy to feel in a year</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Cost per tested unit</h3>
+      <p>Currency does not matter here. Use your own.</p>
+      <div class="card calc" id="cost-calc">
+        <div class="calc-grid">
+          <label>Capital (all testers and instruments)<input id="cost-capex" type="number" min="0" step="1000" value="1000000" inputmode="decimal"></label>
+          <label>NRE (one-time engineering)<input id="cost-nre" type="number" min="0" step="1000" value="500000" inputmode="decimal"></label>
+          <label>Units over the program life<input id="cost-life" type="number" min="1" step="1000" value="300000" inputmode="decimal"></label>
+          <label>Units per year<input id="cost-annual" type="number" min="1" step="1000" value="150000" inputmode="decimal"></label>
+          <label>Running cost per year<input id="cost-run" type="number" min="0" step="1000" value="200000" inputmode="decimal"></label>
+        </div>
+        <div class="calc-out">
+          <div class="hl"><span>Cost per unit</span><b id="cost-total">–</b><small>amortised plus running</small></div>
+          <div><span>Amortised</span><b id="cost-amort">–</b><small>(capital + NRE) / life volume</small></div>
+          <div><span>Running</span><b id="cost-running">–</b><small>yearly cost / yearly volume</small></div>
+        </div>
+      </div>
+
+      <h3>When does a fixture pay for itself?</h3>
+      <p>A bed-of-nails ICT fixture costs money up front but tests faster and cheaper per unit than a flying probe. Past the break-even volume it wins.</p>
+      <div class="card calc" id="be-calc">
+        <div class="calc-grid">
+          <label>Extra fixed cost (fixture)<input id="be-fixed" type="number" min="0" step="1000" value="400000" inputmode="decimal"></label>
+          <label>Saving per unit<input id="be-saving" type="number" min="0.01" step="0.5" value="8" inputmode="decimal"></label>
+          <label>Units per year<input id="be-annual" type="number" min="1" step="1000" value="150000" inputmode="decimal"></label>
+        </div>
+        <div class="calc-out">
+          <div class="hl"><span>Break-even</span><b id="be-units">–</b><small>units</small></div>
+          <div><span>Payback time</span><b id="be-months">–</b><small>at the yearly volume</small></div>
+        </div>
+        <p class="tag">Exercise 12 includes the cost-per-unit and break-even formulas.</p>
+      </div>
+      <div class="note"><p><b>What moves the number most:</b> volume (it divides every fixed cost), the retest rate (it multiplies the test seconds), fixture life, and how much of the NRE is shared with other programs through reusable platforms.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="proposal" data-title="Numbers in a proposal">
+      <h3>State your assumptions</h3>
+      <p>A cost or capacity figure without assumptions cannot be checked, so it cannot be trusted. List them next to the result.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Assumption</th><th>Example</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td><b>Volume and ramp</b></td><td>150,000 units a year, ramping over 6 months</td><td>Divides every fixed cost</td></tr>
+          <tr><td><b>Test cycle per unit</b></td><td>180 s, from a measured prototype</td><td>Sets the number of stations</td></tr>
+          <tr><td><b>Retest rate</b></td><td>8%, falling as the process matures</td><td>Adds test seconds and handling</td></tr>
+          <tr><td><b>Uptime</b></td><td>90%, with a spare tester</td><td>Sets what one tester supplies</td></tr>
+          <tr><td><b>Line hours</b></td><td>Two shifts of 8 h</td><td>Sets available seconds and takt time</td></tr>
+          <tr><td><b>Reuse</b></td><td>Existing platform, 30% of NRE shared</td><td>Changes the amortised cost</td></tr>
+          <tr><td><b>Life</b></td><td>Three years, 300,000 units</td><td>The amortisation base</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Show how sensitive the answer is</h3>
+      <p>With the default numbers above, every cost is fixed, so cost per unit moves in inverse proportion to volume. A 20% drop in volume raises it by 25%.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Scenario</th><th>Units per year</th><th>Amortised</th><th>Running</th><th>Cost per unit</th></tr></thead>
+        <tbody>
+          <tr><td>Volume &minus;20%</td><td>120,000</td><td>6.25</td><td>1.67</td><td><b>7.92</b></td></tr>
+          <tr class="hl"><td>Base</td><td>150,000</td><td>5.00</td><td>1.33</td><td><b>6.33</b></td></tr>
+          <tr><td>Volume +20%</td><td>180,000</td><td>4.17</td><td>1.11</td><td><b>5.28</b></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Checklist before the numbers go out</h3>
+      <div class="card">
+        <ul class="checklist">
+          <li>Assumptions written next to every figure</li>
+          <li>Test cycle measured on a prototype, not guessed</li>
+          <li>Retests and uptime included</li>
+          <li>A spare tester, or a plan for downtime</li>
+          <li>Wear parts and calibration in the running cost</li>
+          <li>One-time cost shown separately from per-unit cost</li>
+          <li>Best, base and worst case for volume</li>
+          <li>Options compared, for example flying probe first, ICT at ramp-up</li>
+          <li>Risks named: access, firmware readiness, volume</li>
+          <li>Reviewed by TE and, where needed, finance</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- ============================================================ 5. OCP RACK -->
 <section class="block view" id="ocp">
   <div class="container">
-    <span class="kicker">06 · OCP rack</span>
+    <span class="kicker">08 · OCP rack</span>
     <h2>The OCP rack: what is different</h2>
     <p class="lead">OCP racks are new to the team, so start here. <b>OCP</b> (Open Compute Project) is a community that publishes open hardware designs for data centres. Its <b>Open Rack</b> changes how a rack is built, powered and cooled, and with it, how a rack is tested.</p>
 
@@ -800,7 +1168,7 @@
 <!-- ============================================================ 6. COOLING -->
 <section class="block view" id="cooling">
   <div class="container">
-    <span class="kicker">07 · Cooling</span>
+    <span class="kicker">09 · Cooling</span>
     <h2>Cooling: fan, water or immersion?</h2>
     <p class="lead">Every watt a rack uses becomes heat that has to go somewhere. As chips get hotter, air runs out of capacity and liquid takes over. This page compares the options, then goes deep on <b>water cooling</b>, the one an OCP rack is most likely to use.</p>
 
@@ -895,12 +1263,117 @@
 </section>
 
 
+<!-- ============================================================ NODE TEST -->
+<section class="block view" id="servertest">
+  <div class="container">
+    <span class="kicker">10 · Node test</span>
+    <h2>Testing a server node</h2>
+    <p class="lead">Before a node goes into an OCP rack it is tested on its own. The tests combine what you know about boards (power, firmware, measurements) with how servers are managed (a BMC, Linux tools, Redfish). This page is the map.</p>
+
+    <div class="subpage" data-sub="flow" data-title="Node test flow">
+      <h3>From bench to rack-ready</h3>
+      <p>The steps run in order, and the test stops at the first failing step. Click any step.</p>
+      <div class="diagram">
+        <div class="diagram-scroll">
+          <svg id="svg-nodeflow" viewBox="0 0 960 200" role="group" aria-label="Node test flow">
+            <text class="s" x="72" y="40" text-anchor="middle">scan, inspect</text><text class="s" x="208" y="40" text-anchor="middle">first power</text><text class="s" x="344" y="40" text-anchor="middle">baseline</text><text class="s" x="480" y="40" text-anchor="middle">inventory</text><text class="s" x="616" y="40" text-anchor="middle">heat soak</text><text class="s" x="752" y="40" text-anchor="middle">logs, serial no.</text><text class="s" x="888" y="40" text-anchor="middle">hand-off</text>
+            <g class="node" data-key="identify"><rect class="shape" x="16" y="50" width="112" height="76" rx="12"/><text class="t" x="72" y="84" text-anchor="middle">Identify</text><text class="t" x="72" y="104" text-anchor="middle">node</text></g>
+            <g class="node" data-key="power"><rect class="shape" x="152" y="50" width="112" height="76" rx="12"/><text class="t" x="208" y="84" text-anchor="middle">Power +</text><text class="t" x="208" y="104" text-anchor="middle">BMC</text></g>
+            <g class="node" data-key="firmware"><rect class="shape" x="288" y="50" width="112" height="76" rx="12"/><text class="t" x="344" y="84" text-anchor="middle">Firmware</text><text class="t" x="344" y="104" text-anchor="middle">+ config</text></g>
+            <g class="node" data-key="components" style="--tint:12%"><rect class="shape" x="424" y="50" width="112" height="76" rx="12"/><text class="t" x="480" y="84" text-anchor="middle">Component</text><text class="t" x="480" y="104" text-anchor="middle">tests</text></g>
+            <g class="node" data-key="stress" style="--tint:12%"><rect class="shape" x="560" y="50" width="112" height="76" rx="12"/><text class="t" x="616" y="84" text-anchor="middle">Stress +</text><text class="t" x="616" y="104" text-anchor="middle">thermal</text></g>
+            <g class="node" data-key="final"><rect class="shape" x="696" y="50" width="112" height="76" rx="12"/><text class="t" x="752" y="84" text-anchor="middle">Final</text><text class="t" x="752" y="104" text-anchor="middle">records</text></g>
+            <g class="node" data-key="ready"><rect class="shape" x="832" y="50" width="112" height="76" rx="12"/><text class="t" x="888" y="84" text-anchor="middle">Rack-</text><text class="t" x="888" y="104" text-anchor="middle">ready</text></g>
+            <line class="axis" x1="130" y1="88" x2="150" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="266" y1="88" x2="286" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="402" y1="88" x2="422" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="538" y1="88" x2="558" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="674" y1="88" x2="694" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="810" y1="88" x2="830" y2="88" marker-end="url(#arrow)"/>
+            <rect class="fail-bar" x="16" y="152" width="928" height="34" rx="8"/>
+            <text class="fail-text" x="480" y="174" text-anchor="middle">Fail fast: stop at the first failing step and diagnose it before going on</text>
+          </svg>
+        </div>
+        <div class="detail" id="panel-nodeflow" aria-live="polite"></div>
+      </div>
+      <p>Steps 4 and 5 are where most of the test time goes. Keep them cheap to run and clear in what they report. The remaining sub-pages cover the tools, the BMC, the usual failures and the golden configuration.</p>
+    </div>
+
+    <div class="subpage" data-sub="tools" data-title="Tools and commands">
+      <p class="lead">Node test runs on Linux, usually through a network boot or a test image, driven by the station over SSH. These are common tools. The customer's test specification names the ones and the limits that apply.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Area</th><th>What to check</th><th>Common tools</th></tr></thead>
+        <tbody>
+          <tr><td><b>Management</b></td><td>Power state, sensors, event log</td><td><code>ipmitool</code> (<code>chassis power status</code>, <code>sdr</code>, <code>sel list</code>), Redfish over HTTPS</td></tr>
+          <tr><td><b>Inventory</b></td><td>CPUs, DIMMs, drives, NICs and PCIe devices match the BOM</td><td><code>lscpu</code>, <code>dmidecode</code>, <code>lsblk</code>, <code>nvme list</code>, <code>lspci</code>, <code>ip link</code></td></tr>
+          <tr><td><b>CPU and memory</b></td><td>Stability under load, memory errors</td><td><code>stress-ng</code>, <code>memtester</code>, ECC (EDAC) error counters</td></tr>
+          <tr><td><b>Storage</b></td><td>Throughput, errors, health</td><td><code>fio</code>, <code>smartctl</code>, <code>nvme smart-log</code></td></tr>
+          <tr><td><b>Network</b></td><td>Link speed, error counters, throughput</td><td><code>ethtool</code>, <code>iperf3</code></td></tr>
+          <tr><td><b>PCIe</b></td><td>Link width and speed negotiated as designed</td><td><code>lspci -vv</code> (read the <code>LnkSta</code> line)</td></tr>
+          <tr><td><b>Accelerators</b></td><td>GPU present, healthy, stressed</td><td>Vendor tools, for example <code>nvidia-smi</code> and DCGM diagnostics (<code>dcgmi diag</code>), <code>rocm-smi</code></td></tr>
+          <tr><td><b>Logs</b></td><td>No unexpected errors during the run</td><td><code>dmesg</code>, <code>journalctl</code>, the BMC event log</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><p><b>Tools only produce numbers. Your test turns them into a verdict.</b> Parse the output, compare with limits from a versioned file, and treat a missing or unreadable result as an ERROR, exactly as in the exercises.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="bmc" data-title="BMC and Redfish">
+      <p class="lead">The BMC is a small computer on the node that reports sensors and controls power, even when the node itself is off. Redfish is its modern interface: JSON over HTTPS.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Typical Redfish resource</th><th>What it holds</th></tr></thead>
+        <tbody>
+          <tr><td><code>/redfish/v1/Systems</code></td><td>Power state, processor and memory summary, boot settings</td></tr>
+          <tr><td><code>/redfish/v1/Chassis/&lt;id&gt;/Thermal</code> (or <code>ThermalSubsystem</code>)</td><td>Temperatures and fans. Newer firmware may add coolant data</td></tr>
+          <tr><td><code>/redfish/v1/Chassis/&lt;id&gt;/Power</code> (or <code>PowerSubsystem</code>)</td><td>Power readings and supplies</td></tr>
+          <tr><td><code>/redfish/v1/UpdateService/FirmwareInventory</code></td><td>Firmware versions of every component</td></tr>
+          <tr><td><code>/redfish/v1/Systems/&lt;id&gt;/LogServices</code></td><td>Event logs</td></tr>
+        </tbody>
+      </table></div>
+      <p>Exact paths and fields differ between vendors and firmware versions. Redfish describes itself, so start at <code>/redfish/v1</code> and follow the links.</p>
+      <pre class="code"><code>BMC=10.0.0.21                          # the node's management address
+# credentials come from the environment, never from the script or the repository
+curl -sk -u "$BMC_USER:$BMC_PASS" "https://$BMC/redfish/v1/Systems"
+curl -sk -u "$BMC_USER:$BMC_PASS" "https://$BMC/redfish/v1/UpdateService/FirmwareInventory"</code></pre>
+      <p>In a test, call it from code (for example Python <code>requests</code> with a timeout), parse the JSON, and compare the values with the golden configuration. Example 10 shows the checking half of that.</p>
+      <div class="note"><p><b>Habits:</b> use a timeout on every call, retry only communication errors, never put credentials in code, log the firmware versions you read, and keep management traffic on its own network.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="failures" data-title="Typical node failures">
+      <div class="table-wrap"><table>
+        <thead><tr><th>Symptom</th><th>Likely causes</th><th>Check first</th></tr></thead>
+        <tbody>
+          <tr><td><b>DIMM missing or fewer than expected</b></td><td>Poorly seated module, bad slot, failed memory training</td><td>Inventory against the BOM, BIOS memory log, reseat</td></tr>
+          <tr><td><b>Corrected ECC errors rising</b></td><td>A DIMM that is starting to fail, marginal voltage or temperature</td><td>EDAC counters before and after stress, the BMC event log</td></tr>
+          <tr><td><b>PCIe link trained down</b></td><td>Poor contact or damaged slot, wrong riser, cable or signal issue</td><td><code>lspci -vv</code> shows width and speed below the expected values</td></tr>
+          <tr><td><b>NIC link flapping or slow</b></td><td>Cable or optic, port settings, damaged connector</td><td>Swap with known-good parts, <code>ethtool</code> counters</td></tr>
+          <tr><td><b>GPU missing or errors under load</b></td><td>Seating, power delivery, thermal limit, firmware</td><td>Accelerator tool health report, kernel log, temperatures</td></tr>
+          <tr><td><b>Thermal throttling in the soak</b></td><td>Fan or coolant flow low, cold plate or heat sink seating, blocked airflow</td><td>Temperatures against flow or fan speed, compare with a golden node</td></tr>
+          <tr><td><b>Firmware mismatch</b></td><td>Wrong baseline for the SKU, update skipped or failed</td><td>Compare every version with the baseline (exercise 13)</td></tr>
+          <tr><td><b>BMC unreachable or sensors missing</b></td><td>Management network, address conflict, BMC firmware fault</td><td>Serial console, cabling, reset the BMC, read the log</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><p>As on the rack page, compare with a <b>golden node</b> and use the <b>swap method</b> before blaming the product. See the OCP rack troubleshooting page for the station-side checklist.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="baseline" data-title="Golden configuration">
+      <p class="lead">A node is "right" only compared with something. The <b>golden configuration</b> is that something: the expected firmware versions, hardware inventory and settings for one SKU, kept in a versioned file.</p>
+      <div class="grid g2">
+        <div class="card"><h4>What it contains</h4><ul><li>BIOS, BMC, NIC, drive and accelerator firmware versions</li><li>CPU model and count, DIMM count, size and speed</li><li>Drives, NICs, GPUs and PCIe link widths and speeds</li><li>BIOS settings and boot order</li><li>The test limits version it goes with</li></ul></div>
+        <div class="card"><h4>How it is used</h4><ul><li>Read the actual values from the BMC and the operating system</li><li>Compare them with the baseline for <em>this</em> SKU (exercise 13)</li><li>Report every difference, with the path and both values</li><li>Fail on a mismatch. Never silently "fix" and pass</li></ul></div>
+      </div>
+      <h3>Keeping it trustworthy</h3>
+      <ul>
+        <li><b>One baseline per SKU,</b> chosen by the serial number or the route, not by the operator.</li>
+        <li><b>Changes only through change control.</b> A new firmware release means an ECO, a new baseline version and a record of why.</li>
+        <li><b>Review the baseline with TE and the customer.</b> A wrong baseline passes every unit that is wrong in the same way.</li>
+        <li><b>Record what you found,</b> not only the verdict, so a later question can be answered from the data.</li>
+        <li><b>Identity is separate.</b> Serial numbers and MACs differ per unit, so they are checked for format and uniqueness (example 12), not for equality.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <!-- ============================================================ 6. EXAMPLES -->
 <section class="block view" id="examples">
   <div class="container">
-    <span class="kicker">08 · Programming examples</span>
+    <span class="kicker">11 · Programming examples</span>
     <h2>Tester software, ready to run</h2>
-    <p class="lead">Python with a pytest-style API, applied to production test. Seven of the eleven examples are <b>editable and run in your browser</b>: change the code, break it on purpose and see how a failure looks. The read-only ones show real instrument control, a station loop, a release pipeline and a liquid test sequence. If your stations use LabVIEW, TestStand or C#, the structure is the same.</p>
+    <p class="lead">Python with a pytest-style API, applied to production test. Eight of the twelve examples are <b>editable and run in your browser</b>: change the code, break it on purpose and see how a failure looks. The read-only ones show real instrument control, a station loop, a release pipeline and a liquid test sequence. If your stations use LabVIEW, TestStand or C#, the structure is the same.</p>
     <p class="runtime-note">The first run downloads the Python runtime (about 10 MB, then cached by your browser).</p>
     <div id="examples-root"></div>
   </div>
@@ -909,8 +1382,8 @@
 <!-- ============================================================ 7. PRACTICE -->
 <section class="block view" id="practice">
   <div class="container">
-    <span class="kicker">09 · Practice</span>
-    <h2>Prove it: eleven exercises</h2>
+    <span class="kicker">12 · Practice</span>
+    <h2>Prove it: thirteen exercises</h2>
     <p class="lead">Two kinds of challenge. In <b>Implement</b> exercises you write a function and hidden tests grade it. In <b>Write the tests</b> exercises the code already exists in one correct and several buggy versions, and your tests must tell them apart, because a tester that cannot spot a planted bug will not spot a real one. Progress and code are saved in this browser.</p>
     <div id="practice-root"></div>
   </div>
@@ -918,7 +1391,7 @@
 <!-- ============================================================ 8. GLOSSARY -->
 <section class="block view" id="glossary">
   <div class="container">
-    <span class="kicker">10 · Reference</span>
+    <span class="kicker">13 · Reference</span>
     <h2>Glossary of acronyms</h2>
     <p class="lead">The acronyms you will meet, grouped by topic. Search by acronym or by meaning, or pick a topic. Some acronyms mean different things in different fields (for example <b>SPI</b>), so check the group.</p>
     <div class="gl-layout">

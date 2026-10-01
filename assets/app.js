@@ -488,6 +488,54 @@
     render();
   }
 
+  /* ------------------------------------------------------------ capacity and cost calculators */
+  function buildPlanning() {
+    if (!$("#cap-calc")) return;
+    const num = (id) => parseFloat($(`#${id}`).value);
+    const fmt = (n, d = 0) => n.toLocaleString("en-US", { maximumFractionDigits: d, minimumFractionDigits: d });
+    const blank = (ids) => ids.forEach((id) => { $(`#${id}`).textContent = "–"; });
+
+    function capacity() {
+      const demand = num("cap-demand"), hours = num("cap-hours"), cycle = num("cap-cycle");
+      const units = num("cap-units"), retest = num("cap-retest") / 100, uptime = num("cap-uptime") / 100;
+      if (!(demand >= 0 && hours > 0 && cycle > 0 && units >= 1 && retest >= 0 && uptime > 0 && uptime <= 1)) {
+        blank(["cap-n", "cap-util", "cap-capacity", "cap-takt"]); $("#cap-exact").textContent = ""; return;
+      }
+      const line = hours * 3600;
+      const perUnit = (cycle * (1 + retest)) / units;           // seconds of tester time per unit
+      const exact = (demand * perUnit) / (line * uptime);
+      const n = demand === 0 ? 0 : Math.ceil(exact - 1e-9);
+      $("#cap-n").textContent = fmt(n);
+      $("#cap-exact").textContent = `${fmt(exact, 2)} before rounding up`;
+      $("#cap-util").textContent = n ? `${fmt((exact / n) * 100)}%` : "–";
+      $("#cap-capacity").textContent = n ? fmt((n * line * uptime) / perUnit) : "0";
+      $("#cap-takt").textContent = demand ? `${fmt(line / demand, 1)} s` : "–";
+    }
+    ["cap-demand", "cap-hours", "cap-cycle", "cap-units", "cap-retest", "cap-uptime"].forEach((id) => $(`#${id}`).addEventListener("input", capacity));
+    capacity();
+
+    function cost() {
+      const capex = num("cost-capex"), nre = num("cost-nre"), life = num("cost-life"), annual = num("cost-annual"), run = num("cost-run");
+      if (!(capex >= 0 && nre >= 0 && life > 0 && annual > 0 && run >= 0)) { blank(["cost-total", "cost-amort", "cost-running"]); return; }
+      const amort = (capex + nre) / life, running = run / annual;
+      $("#cost-amort").textContent = fmt(amort, 2);
+      $("#cost-running").textContent = fmt(running, 2);
+      $("#cost-total").textContent = fmt(amort + running, 2);
+    }
+    ["cost-capex", "cost-nre", "cost-life", "cost-annual", "cost-run"].forEach((id) => $(`#${id}`).addEventListener("input", cost));
+    cost();
+
+    function breakeven() {
+      const fixed = num("be-fixed"), saving = num("be-saving"), annual = num("be-annual");
+      if (!(fixed >= 0 && saving > 0 && annual > 0)) { blank(["be-units", "be-months"]); return; }
+      const units = fixed / saving;
+      $("#be-units").textContent = fmt(units);
+      $("#be-months").textContent = `${fmt((units / annual) * 12, 1)} months`;
+    }
+    ["be-fixed", "be-saving", "be-annual"].forEach((id) => $(`#${id}`).addEventListener("input", breakeven));
+    breakeven();
+  }
+
   /* ------------------------------------------------------------ theme + nav */
   function setupTheme() {
     const root = document.documentElement;
@@ -511,12 +559,12 @@
   const CATEGORIES = [
     { id: "start", title: "Start", pages: ["top"] },
     { id: "job", title: "The job", pages: ["role", "models", "lifecycle"] },
-    { id: "systems", title: "Test systems", pages: ["diagrams", "deep-dive"] },
-    { id: "ocp", title: "OCP rack and cooling", pages: ["ocp", "cooling"] },
+    { id: "systems", title: "Test systems", pages: ["diagrams", "deep-dive", "sequencer", "planning"] },
+    { id: "ocp", title: "OCP rack and cooling", pages: ["ocp", "cooling", "servertest"] },
     { id: "practice", title: "Learn by doing", pages: ["examples", "practice"] },
     { id: "ref", title: "Reference", pages: ["glossary"] },
   ];
-  const PAGE_LABELS = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", ocp: "OCP rack", cooling: "Cooling", examples: "Examples", practice: "Practice", glossary: "Glossary" };
+  const PAGE_LABELS = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", ocp: "OCP rack", cooling: "Cooling", sequencer: "Test sequencer", planning: "Capacity and cost", servertest: "Node test", examples: "Examples", practice: "Practice", glossary: "Glossary" };
 
   function setupNavigation() {
     const html = document.documentElement;
@@ -796,11 +844,13 @@
     bindDiagram("svg-tester", "panel-tester", TDE.DIAGRAMS.tester, "drivers");
     bindDiagram("svg-rack", "panel-rack", TDE.DIAGRAMS.rack, "busbar");
     bindDiagram("svg-stand", "panel-stand", TDE.DIAGRAMS.stand, "interface");
+    bindDiagram("svg-nodeflow", "panel-nodeflow", TDE.DIAGRAMS.nodeflow, "firmware");
     bindDiagram("svg-loop", "panel-loop", TDE.DIAGRAMS.loop, "cdu");
     buildExamples();
     buildExercises();
     buildGlossary();
     buildCooling();
+    buildPlanning();
     progress.paint();
     setupNavigation();
   });
