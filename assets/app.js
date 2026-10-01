@@ -368,18 +368,42 @@
     paint();
   }
 
-  function setupScrollSpy() {
+  /* Each top-level section is its own "page". Hash routing keeps one document,
+     so the Python runtime stays loaded when you move between pages. */
+  function setupViews() {
+    const views = $$("section.view");
+    const ids = views.map((v) => v.id);
+    const labels = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", examples: "Examples", practice: "Practice" };
     const links = $$(".nav-links a");
-    const map = new Map(links.map((a) => [a.getAttribute("href").slice(1), a]));
-    const obs = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (!e.isIntersecting) continue;
-        links.forEach((a) => a.removeAttribute("aria-current"));
-        const a = map.get(e.target.id);
-        if (a) { a.setAttribute("aria-current", "true"); a.scrollIntoView({ block: "nearest", inline: "center" }); }
+    document.documentElement.classList.add("js-views");
+
+    views.forEach((v, i) => {
+      const prev = ids[i - 1], next = ids[i + 1];
+      const pager = el("nav", { class: "pager", "aria-label": "Page navigation" },
+        prev ? el("a", { class: "prev", href: `#${prev}` }, el("small", {}, "← Previous"), el("b", {}, labels[prev])) : null,
+        next ? el("a", { class: "next", href: `#${next}` }, el("small", {}, "Next →"), el("b", {}, labels[next])) : null);
+      (v.querySelector(".container") || v).append(pager);
+    });
+
+    let current = null;
+    function show() {
+      const id = ids.includes(location.hash.slice(1)) ? location.hash.slice(1) : "top";
+      if (id === current) return;
+      const first = current === null;
+      current = id;
+      views.forEach((v) => v.classList.toggle("active", v.id === id));
+      links.forEach((a) => (a.getAttribute("href") === `#${id}` ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
+      const active = links.find((a) => a.getAttribute("aria-current"));
+      if (active) active.scrollIntoView({ block: "nearest", inline: "center" });
+      document.title = id === "top" ? "TDE Training – Test Development Engineer" : `${labels[id]} · TDE Training`;
+      window.scrollTo({ top: 0, behavior: "instant" });
+      if (!first) {
+        const h = $("h1, h2", $(`#${id}`));
+        if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
       }
-    }, { rootMargin: "-35% 0px -60% 0px" });
-    map.forEach((_, id) => { const s = document.getElementById(id); if (s) obs.observe(s); });
+    }
+    window.addEventListener("hashchange", show);
+    show();
   }
 
   function highlightStaticBlocks() {
@@ -401,6 +425,6 @@
     buildExamples();
     buildExercises();
     progress.paint();
-    setupScrollSpy();
+    setupViews();
   });
 })();

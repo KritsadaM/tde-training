@@ -276,3 +276,24 @@ footer { padding: 40px 0 56px; color: var(--muted); font-size: .92rem; border-to
   .hero { padding-top: 48px; }
   section.block { padding: 52px 0; }
 }
+
+/* ---------------------------------------------------------------- views (one section per "page") */
+.js-views .view { display: none; }
+.js-views .view.active { display: block; animation: view-in .25s ease-out; }
+@keyframes view-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.js-views section.block.view { border-block: 0; background: transparent; }
+.view h2:focus, .view h1:focus { outline: none; }
+.outline-title { margin-top: 48px; font-size: 1.4rem; }
+.outline { margin-top: 12px; }
+a.card.link { display: block; position: relative; text-decoration: none; color: inherit; transition: border-color .15s, transform .1s; }
+a.card.link:hover { border-color: var(--accent); transform: translateY(-2px); }
+a.card.link h4 { margin-bottom: .25em; }
+a.card.link p { margin: 0; color: var(--muted); font-size: .93rem; }
+a.card.link .num { position: absolute; top: 16px; right: 16px; width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font: 700 .8rem var(--mono); }
+.pager { display: flex; justify-content: space-between; gap: 12px; margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line); }
+.pager a { display: flex; flex-direction: column; gap: 2px; padding: 12px 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); text-decoration: none; color: var(--ink); max-width: 48%; min-width: 0; }
+.pager a:hover { border-color: var(--accent); }
+.pager small { color: var(--muted); font-size: .8rem; }
+.pager b { color: var(--accent); }
+.pager .next { margin-left: auto; text-align: right; }
+@media print { .js-views .view { display: block !important; } .pager { display: none; } }
