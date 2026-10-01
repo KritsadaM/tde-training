@@ -23,24 +23,20 @@
 
 <header class="nav">
   <div class="container">
+    <button class="icon-btn" id="sb-toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide navigation"><span aria-hidden="true">☰</span></button>
     <a class="brand" href="#top"><span class="logo">TDE</span> Training</a>
-    <nav class="nav-links" aria-label="Sections">
-      <a href="#role">Role</a>
-      <a href="#models">CM vs JDM</a>
-      <a href="#lifecycle">NPI to sustaining</a>
-      <a href="#diagrams">Diagrams</a>
-      <a href="#ocp">OCP rack</a>
-      <a href="#cooling">Cooling</a>
-      <a href="#deep-dive">Deep dive</a>
-      <a href="#examples">Examples</a>
-      <a href="#practice">Practice</a>
-      <a href="#glossary">Glossary</a>
-    </nav>
     <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/11</span></span>
     <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">☾</button>
   </div>
   <div id="progress-bar" aria-hidden="true"></div>
 </header>
+
+<aside id="sidebar" aria-label="Course navigation">
+  <label class="sb-search"><span class="sr-only">Search the course</span><input id="nav-search" type="search" placeholder="Search the course  ( / )" autocomplete="off"></label>
+  <div id="nav-results" class="nav-results" hidden></div>
+  <nav id="nav-tree" class="nav-tree" aria-label="Pages"></nav>
+</aside>
+<div id="sb-backdrop" class="sb-backdrop"></div>
 
 <main id="main">
 <!-- ============================================================ HERO -->
@@ -66,9 +62,9 @@
       <a class="card link" href="#models"><span class="num">2</span><h4>CM vs JDM</h4><p>The two program types and where the TDE joins each.</p></a>
       <a class="card link" href="#lifecycle"><span class="num">3</span><h4>NPI to sustaining</h4><p>The life of a tester, from proposal to maintenance.</p></a>
       <a class="card link" href="#diagrams"><span class="num">4</span><h4>Diagrams</h4><p>Test stages on the line and the anatomy of a tester.</p></a>
-      <a class="card link" href="#ocp"><span class="num">5</span><h4>OCP rack</h4><p>Open Rack basics, power, safety, test stands, troubleshooting and a 30-day plan.</p></a>
-      <a class="card link" href="#cooling"><span class="num">6</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
-      <a class="card link" href="#deep-dive"><span class="num">7</span><h4>Deep dive</h4><p>Strategy, hardware, software, 4M1E, safety, yield, proposals.</p></a>
+      <a class="card link" href="#deep-dive"><span class="num">5</span><h4>Deep dive</h4><p>Strategy, hardware, software, 4M1E, safety, yield, proposals.</p></a>
+      <a class="card link" href="#ocp"><span class="num">6</span><h4>OCP rack</h4><p>Open Rack basics, power, safety, test stands, troubleshooting and a 30-day plan.</p></a>
+      <a class="card link" href="#cooling"><span class="num">7</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
       <a class="card link" href="#examples"><span class="num">8</span><h4>Examples</h4><p>Eleven Python examples. Seven run in your browser.</p></a>
       <a class="card link" href="#practice"><span class="num">9</span><h4>Practice</h4><p>Eleven graded exercises with hints and solutions.</p></a>
       <a class="card link" href="#glossary"><span class="num">10</span><h4>Glossary</h4><p>150+ acronyms grouped by topic, with search.</p></a>
@@ -343,10 +339,186 @@
   </div>
 </section>
 
+<!-- ============================================================ 5. DEEP DIVE -->
+<section class="block view" id="deep-dive">
+  <div class="container">
+    <span class="kicker">05 · Deep dive</span>
+    <h2>The craft behind a trusted tester</h2>
+    <p class="lead">Nine topics, from choosing what to test to shopfloor safety and line triage. Open any of them.</p>
+
+    <details open>
+      <summary>1 · Test strategy: stages and defect coverage <small>find each defect at the cheapest stage</small></summary>
+      <div class="dd">
+        <p>The goal is to catch every defect class that matters, as early as possible, within the line's cycle time. No stage sees everything.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Stage</th><th>Sees</th><th>Blind to or limited by</th><th>Typical use</th></tr></thead>
+          <tbody>
+            <tr><td><b>AOI</b></td><td>Missing, skewed, wrong-polarity parts, solder bridges</td><td>Electrical function, hidden joints (BGA)</td><td>After reflow, every board</td></tr>
+            <tr><td><b>ICT (bed-of-nails)</b></td><td>Shorts, opens, wrong values, missing parts</td><td>Needs test points and a fixture; checks parts, not the whole function</td><td>High volume</td></tr>
+            <tr><td><b>Flying probe</b></td><td>Same as ICT, no fixture</td><td>Slow</td><td>Prototypes, NPI, low volume</td></tr>
+            <tr><td><b>Boundary scan (JTAG)</b></td><td>Opens and shorts on digital nets without physical access</td><td>Needs JTAG-capable devices and a chain that works</td><td>Dense digital boards</td></tr>
+            <tr><td><b>FCT</b></td><td>Power rails, clocks, interfaces, firmware boot, key functions</td><td>Weak at pinpointing which part failed</td><td>Nearly every product</td></tr>
+            <tr><td><b>Burn-in / ESS</b></td><td>Early-life failures under stress</td><td>Long time, floor space, cost</td><td>High-reliability products</td></tr>
+            <tr><td><b>System / final</b></td><td>Integrated product, interfaces, configuration</td><td>Slow</td><td>Final stage</td></tr>
+          </tbody></table></div>
+        <p><b>A coverage model: PCOLA / SOQ.</b> List the defect classes: <b>P</b>resence, <b>C</b>orrectness, <b>O</b>rientation, <b>L</b>ive (the part works), <b>A</b>lignment, plus <b>S</b>horts, <b>O</b>pens and <b>Q</b>uality (marginal parts). For each class, mark which stage covers it. The empty cells are your risk.</p>
+        <div class="note"><p><b>Ask for DFT early.</b> Test points, probe access, a JTAG header, programming connectors and a sensible power-up sequence cost almost nothing in the design review. After the board is built they cost a respin.</p></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>2 · Designing and fabricating the tester hardware <small>fixtures, interface boards, instruments</small></summary>
+      <div class="dd">
+        <ul>
+          <li><b>Contact.</b> Pogo-pin type, force and rated life are chosen for the pad size and the number of cycles. Poor contact is the classic cause of false fails. Make pin blocks replaceable and count the cycles.</li>
+          <li><b>Mechanics.</b> Alignment pins, clamping (manual, pneumatic or vacuum), a DUT-present sensor, easy loading for operators. Test it with real, slightly imperfect boards.</li>
+          <li><b>Interface board.</b> Routes fixture signals to instruments and carries any support circuits (loads, level shifters, relays). Keep analog and fast signals short and well grounded.</li>
+          <li><b>Instruments.</b> Pick accuracy much tighter than the limit it checks (a common rule of thumb is 4:1 or better), with enough channels and speed for the cycle time.</li>
+          <li><b>Safety.</b> E-stop, interlocks on guards, current limits before power-on, ESD protection, and a clear safe state.</li>
+          <li><b>Serviceability.</b> Label connectors, add a fixture ID so cycles and calibration can be tracked, keep spares.</li>
+        </ul>
+        <p><b>Typical build flow:</b> design, review with TE and MFG, order parts (start long-lead items early), machine and assemble, bring up, debug with golden units, document.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>3 · Test software for the production line <small>structure that survives years on the line</small></summary>
+      <div class="dd">
+        <ul>
+          <li><b>Separate sequence, limits and drivers.</b> Limits live in a versioned data file. Drivers hide instrument details.</li>
+          <li><b>Simulate hardware.</b> A simulated instrument lets you develop and unit-test the software anywhere, and inject faults on purpose.</li>
+          <li><b>FAIL is not ERROR.</b> FAIL means the unit is bad. ERROR means the tester or process failed and the unit has not been judged. Mixing them up scraps good units or ships bad ones.</li>
+          <li><b>Nothing tested must never pass.</b> An empty or skipped result is an error.</li>
+          <li><b>Always leave a safe state.</b> Outputs off, even after an exception.</li>
+          <li><b>Log everything.</b> Serial number, station, software and limits version, timestamps, every measurement. Local copy first, then MES.</li>
+          <li><b>Wait for conditions, not for time.</b> Poll until the rail is stable instead of a fixed sleep. It is both faster and more reliable.</li>
+          <li><b>Release like a product.</b> Version control, tagged releases, a checksum, a change log.</li>
+        </ul>
+        <div class="cols">
+          <div><div class="label bad">Hard to maintain</div>
+<pre data-hl="python">def test_3v3():
+    psu.write("OUTP ON")
+    time.sleep(2)                       # why 2?
+    v = float(dmm.query("MEAS:VOLT:DC?"))
+    if v > 3.1 and v < 3.5:             # limits buried in code
+        print("PASS")
+    # exception? output stays ON</pre></div>
+          <div><div class="label good">Intent first</div>
+<pre data-hl="python">def step_rail_3v3(ctx):
+    ctx.psu.output(True)
+    v = ctx.dmm.read_stable("3V3", tol=0.005, timeout=2)
+    return ctx.check("VDD_3V3", v)      # limits from the
+                                        # versioned file</pre></div>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>4 · Measurement quality and correlation <small>a pass is only worth the measurement behind it</small></summary>
+      <div class="dd">
+        <div class="table-wrap"><table>
+          <thead><tr><th>Term</th><th>Meaning</th><th>Why it matters</th></tr></thead>
+          <tbody>
+            <tr><td><b>Calibration</b></td><td>Instrument checked against a reference on a schedule</td><td>An uncalibrated instrument may be wrong by more than the limit</td></tr>
+            <tr><td><b>Repeatability</b></td><td>Same unit, same tester, same result</td><td>Noisy measurements cause false fails and false passes</td></tr>
+            <tr><td><b>GR&amp;R</b></td><td>Repeatability and reproducibility across testers, fixtures and operators</td><td>Proves the measurement system is fit to judge the tolerance</td></tr>
+            <tr><td><b>Golden unit</b></td><td>A known-good unit kept as a reference</td><td>Daily check that the tester still reads correctly. Pair it with a known-bad unit.</td></tr>
+            <tr><td><b>Correlation</b></td><td>Two testers (or two stages) agree on the same units</td><td>Lets you add a second tester or move the line without surprises</td></tr>
+            <tr><td><b>Guardband</b></td><td>Tightening the test limit inside the spec limit by the measurement uncertainty</td><td>Stops marginal units from escaping, at the price of some false fails</td></tr>
+            <tr><td><b>Cpk</b></td><td>How many 3-sigma widths fit between the mean and the nearest limit</td><td>One number for "is this measurement capable". Many programs ask for 1.33 or more.</td></tr>
+          </tbody></table></div>
+        <p>Set limits from <b>measured data</b> on real units, not from the datasheet alone, and review them with TE. See example 4 for a Cpk calculation.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>5 · Yield and the numbers that matter <small>and the retest trap</small></summary>
+      <div class="dd">
+        <div class="table-wrap"><table>
+          <thead><tr><th>Metric</th><th>Meaning</th><th>Use it to</th></tr></thead>
+          <tbody>
+            <tr><td><b>First-pass yield (FPY)</b></td><td>Share of units that pass on the first attempt</td><td>See the real health of the process and the tester</td></tr>
+            <tr><td><b>Final yield</b></td><td>Share that pass eventually, after retests and repair</td><td>Compare with FPY: a big gap means lots of rework</td></tr>
+            <tr><td><b>Rolled throughput yield (RTY)</b></td><td>Product of the FPY of every stage</td><td>Four stages at 95% FPY each give 0.95<sup>4</sup> &asymp; 81%</td></tr>
+            <tr><td><b>Retest rate</b></td><td>Share of units tested more than once</td><td>Spot unstable fixtures and contact problems</td></tr>
+            <tr><td><b>False-fail rate</b></td><td>Good units that fail the tester</td><td>Measure the tester's own contribution to loss</td></tr>
+            <tr><td><b>Test time / UPH</b></td><td>Seconds per unit, units per hour</td><td>Keep the tester from limiting the line</td></tr>
+            <tr><td><b>Escapes (DPPM)</b></td><td>Bad units that reached the customer, per million</td><td>Judge whether coverage is enough</td></tr>
+          </tbody></table></div>
+        <div class="note"><p><b>The retest trap.</b> "Retest until it passes" hides a bad fixture and inflates the final yield. Track FPY, run a Pareto of failing steps, and fix the top item. You will build the yield maths in exercise 3.</p></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>6 · Writing a JDM proposal <small>winning the work with technology and manner</small></summary>
+      <div class="dd">
+        <p>In JDM the TDE, HPS and TE write a proposal for a customer who may be choosing between partners. The proposal shows <b>what we propose</b>, <b>how we work</b> and <b>what only we can do well</b>.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Section</th><th>The question it answers</th></tr></thead>
+          <tbody>
+            <tr><td><b>Understanding</b></td><td>Do you understand the product, volumes, quality target, cost target and schedule?</td></tr>
+            <tr><td><b>Test strategy and technology</b></td><td>Which stages and which technology will you use to reach the coverage, and why?</td></tr>
+            <tr><td><b>Our capability</b></td><td>What do you already have: reusable tester platforms, modules, automation, local fabrication, relevant past programs?</td></tr>
+            <tr><td><b>Way of working</b></td><td>How will we run the project: design reviews, reporting, communication, decision points?</td></tr>
+            <tr><td><b>Scope</b></td><td>What do you design, build and deliver, and what must the customer provide?</td></tr>
+            <tr><td><b>Plan</b></td><td>What are the milestones through NPI, and when is the tester ready for the line?</td></tr>
+            <tr><td><b>Cost</b></td><td>One-time development (NRE) versus cost of test per unit. What drives each?</td></tr>
+            <tr><td><b>Risks and assumptions</b></td><td>What could go wrong, and what are you assuming (test access, firmware readiness, volumes)?</td></tr>
+            <tr><td><b>Support</b></td><td>What happens after delivery: sustaining, maintenance, response times?</td></tr>
+          </tbody></table></div>
+        <p><b>Habits of a strong proposal:</b> numbers over adjectives (test time in seconds, expected coverage in percent), evidence over claims (a photo of a similar tester, results from a past program), and honest risks. A proposal that hides a risk loses trust the moment it appears.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>7 · Handover to MFG and sustaining <small>after the tester leaves the lab</small></summary>
+      <div class="dd">
+        <ul>
+          <li><b>Acceptance criteria are agreed before the build</b>: run-at-rate, correlation and repeatability targets, maximum false-fail rate, uptime.</li>
+          <li><b>Training is part of the delivery.</b> Operators run it, technicians keep it alive. Both need material and practice.</li>
+          <li><b>Change control.</b> Every change to software, limits or hardware gets a version, a reason and a reviewer. Test an ECO's effect on the tester before it reaches the line.</li>
+          <li><b>Preventive maintenance.</b> Calibration dates, pin replacement by cycle count, golden-unit checks, spare parts stock.</li>
+          <li><b>Watch the data.</b> A slow drift in yield or measurement is usually the tester, not the product. Catch it before the line complains.</li>
+          <li><b>Plan for the future.</b> Instrument obsolescence, replicating testers for new lines, knowledge written down so that it survives staff changes.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>8 · Shopfloor troubleshooting & 4M1E <small>when the tester fails on the line</small></summary>
+      <div class="dd">
+        <p>When false fails spike or a tester halts the production line, junior engineers often rush to edit software or widen test limits. <b>Never widen limits to silence a failure.</b> Follow a systematic 4M1E isolation procedure:</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Category</th><th>Common root causes</th><th>What to check and fix</th></tr></thead>
+          <tbody>
+            <tr><td><b>Machine</b><br>(Tester & Fixture)</td><td>Pogo pins worn or oxidized, loose wiring, relay failure, instrument calibration drift</td><td>Run the Golden Unit. Measure contact resistance (&lt; 50 mΩ). Clean pins with isopropyl alcohol (IPA) or replace worn pin blocks.</td></tr>
+            <tr><td><b>Material</b><br>(DUT & Components)</td><td>PCB warpage, solder flux residue on test pads, new component lot / alternate vendor</td><td>Check test pad indentation under microscope. Inspect unpopulated or skewed parts. Verify if problem follows the board or the slot.</td></tr>
+            <tr><td><b>Method</b><br>(Test & Parameters)</td><td>Insufficient power settling time, limits too tight for process drift, floating inputs</td><td>Add settling delay before analog sampling. Check if rail voltage is measured before inrush current finishes. Review Cpk history.</td></tr>
+            <tr><td><b>Man</b><br>(Operator / Process)</td><td>Board loaded tilted, clamp closed improperly, ESD strap unplugged, barcode scan misread</td><td>Observe operator loading sequence. Verify mechanical guide pins and sensor interlocks. Re-train with Standard Work Instruction (SWI).</td></tr>
+          </tbody></table></div>
+        <p><b>The Golden Rule of Isolation:</b> Swap one variable at a time. If unit fails on Tester A, test it on Tester B. If it passes on Tester B, the problem is <em>Tester A</em>, not the product.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>9 · Hardware safety & electrical golden rules <small>protecting the operator and the DUT</small></summary>
+      <div class="dd">
+        <ul>
+          <li><b>Hardware E-Stop over Software Stop.</b> Emergency Stop (E-Stop) buttons and fixture lid safety switches must break power physically through approved safety relays and contactors. Never rely on a software command (e.g. <code>psu.write("OUTP OFF")</code>) for operator safety.</li>
+          <li><b>Set Compliance (Current Limit) before Power-On.</b> When writing instrument drivers or test sequences, always configure both voltage and current compliance limit <em>before</em> commanding output ON. If a shorted DUT is plugged in, current compliance prevents PCB traces from vaporizing or catching fire.</li>
+          <li><b>Discharge Residual Capacitance.</b> High-capacitance power rails (e.g. 12V bulk input caps) hold energy after power-off. Always engage a bleeding resistor or active discharge circuit before fixture release, otherwise arcing will pit pogo pin tips and degrade contact life.</li>
+          <li><b>Verify Grounding & ESD Protection.</b> All metallic fixture parts and chassis must be bonded to earth ground (&lt; 1 Ω). Test stations must have monitored wrist strap jacks and continuous ESD bench mat grounding.</li>
+          <li><b>Isolation Relays for Programming & Sensitive Nets.</b> Sensitive programming interfaces (SWD, JTAG, I2C) must be disconnected via relays or multiplexers before powering high-voltage functional stages to prevent back-powering MCU pins through internal ESD clamping diodes.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
 <!-- ============================================================ 5. OCP RACK -->
 <section class="block view" id="ocp">
   <div class="container">
-    <span class="kicker">05 · OCP rack</span>
+    <span class="kicker">06 · OCP rack</span>
     <h2>The OCP rack: what is different</h2>
     <p class="lead">OCP racks are new to the team, so start here. <b>OCP</b> (Open Compute Project) is a community that publishes open hardware designs for data centres. Its <b>Open Rack</b> changes how a rack is built, powered and cooled, and with it, how a rack is tested.</p>
 
@@ -628,7 +800,7 @@
 <!-- ============================================================ 6. COOLING -->
 <section class="block view" id="cooling">
   <div class="container">
-    <span class="kicker">06 · Cooling</span>
+    <span class="kicker">07 · Cooling</span>
     <h2>Cooling: fan, water or immersion?</h2>
     <p class="lead">Every watt a rack uses becomes heat that has to go somewhere. As chips get hotter, air runs out of capacity and liquid takes over. This page compares the options, then goes deep on <b>water cooling</b>, the one an OCP rack is most likely to use.</p>
 
@@ -722,181 +894,6 @@
   </div>
 </section>
 
-<!-- ============================================================ 5. DEEP DIVE -->
-<section class="block view" id="deep-dive">
-  <div class="container">
-    <span class="kicker">07 · Deep dive</span>
-    <h2>The craft behind a trusted tester</h2>
-    <p class="lead">Nine topics, from choosing what to test to shopfloor safety and line triage. Open any of them.</p>
-
-    <details open>
-      <summary>1 · Test strategy: stages and defect coverage <small>find each defect at the cheapest stage</small></summary>
-      <div class="dd">
-        <p>The goal is to catch every defect class that matters, as early as possible, within the line's cycle time. No stage sees everything.</p>
-        <div class="table-wrap"><table>
-          <thead><tr><th>Stage</th><th>Sees</th><th>Blind to or limited by</th><th>Typical use</th></tr></thead>
-          <tbody>
-            <tr><td><b>AOI</b></td><td>Missing, skewed, wrong-polarity parts, solder bridges</td><td>Electrical function, hidden joints (BGA)</td><td>After reflow, every board</td></tr>
-            <tr><td><b>ICT (bed-of-nails)</b></td><td>Shorts, opens, wrong values, missing parts</td><td>Needs test points and a fixture; checks parts, not the whole function</td><td>High volume</td></tr>
-            <tr><td><b>Flying probe</b></td><td>Same as ICT, no fixture</td><td>Slow</td><td>Prototypes, NPI, low volume</td></tr>
-            <tr><td><b>Boundary scan (JTAG)</b></td><td>Opens and shorts on digital nets without physical access</td><td>Needs JTAG-capable devices and a chain that works</td><td>Dense digital boards</td></tr>
-            <tr><td><b>FCT</b></td><td>Power rails, clocks, interfaces, firmware boot, key functions</td><td>Weak at pinpointing which part failed</td><td>Nearly every product</td></tr>
-            <tr><td><b>Burn-in / ESS</b></td><td>Early-life failures under stress</td><td>Long time, floor space, cost</td><td>High-reliability products</td></tr>
-            <tr><td><b>System / final</b></td><td>Integrated product, interfaces, configuration</td><td>Slow</td><td>Final stage</td></tr>
-          </tbody></table></div>
-        <p><b>A coverage model: PCOLA / SOQ.</b> List the defect classes: <b>P</b>resence, <b>C</b>orrectness, <b>O</b>rientation, <b>L</b>ive (the part works), <b>A</b>lignment, plus <b>S</b>horts, <b>O</b>pens and <b>Q</b>uality (marginal parts). For each class, mark which stage covers it. The empty cells are your risk.</p>
-        <div class="note"><p><b>Ask for DFT early.</b> Test points, probe access, a JTAG header, programming connectors and a sensible power-up sequence cost almost nothing in the design review. After the board is built they cost a respin.</p></div>
-      </div>
-    </details>
-
-    <details>
-      <summary>2 · Designing and fabricating the tester hardware <small>fixtures, interface boards, instruments</small></summary>
-      <div class="dd">
-        <ul>
-          <li><b>Contact.</b> Pogo-pin type, force and rated life are chosen for the pad size and the number of cycles. Poor contact is the classic cause of false fails. Make pin blocks replaceable and count the cycles.</li>
-          <li><b>Mechanics.</b> Alignment pins, clamping (manual, pneumatic or vacuum), a DUT-present sensor, easy loading for operators. Test it with real, slightly imperfect boards.</li>
-          <li><b>Interface board.</b> Routes fixture signals to instruments and carries any support circuits (loads, level shifters, relays). Keep analog and fast signals short and well grounded.</li>
-          <li><b>Instruments.</b> Pick accuracy much tighter than the limit it checks (a common rule of thumb is 4:1 or better), with enough channels and speed for the cycle time.</li>
-          <li><b>Safety.</b> E-stop, interlocks on guards, current limits before power-on, ESD protection, and a clear safe state.</li>
-          <li><b>Serviceability.</b> Label connectors, add a fixture ID so cycles and calibration can be tracked, keep spares.</li>
-        </ul>
-        <p><b>Typical build flow:</b> design, review with TE and MFG, order parts (start long-lead items early), machine and assemble, bring up, debug with golden units, document.</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>3 · Test software for the production line <small>structure that survives years on the line</small></summary>
-      <div class="dd">
-        <ul>
-          <li><b>Separate sequence, limits and drivers.</b> Limits live in a versioned data file. Drivers hide instrument details.</li>
-          <li><b>Simulate hardware.</b> A simulated instrument lets you develop and unit-test the software anywhere, and inject faults on purpose.</li>
-          <li><b>FAIL is not ERROR.</b> FAIL means the unit is bad. ERROR means the tester or process failed and the unit has not been judged. Mixing them up scraps good units or ships bad ones.</li>
-          <li><b>Nothing tested must never pass.</b> An empty or skipped result is an error.</li>
-          <li><b>Always leave a safe state.</b> Outputs off, even after an exception.</li>
-          <li><b>Log everything.</b> Serial number, station, software and limits version, timestamps, every measurement. Local copy first, then MES.</li>
-          <li><b>Wait for conditions, not for time.</b> Poll until the rail is stable instead of a fixed sleep. It is both faster and more reliable.</li>
-          <li><b>Release like a product.</b> Version control, tagged releases, a checksum, a change log.</li>
-        </ul>
-        <div class="cols">
-          <div><div class="label bad">Hard to maintain</div>
-<pre data-hl="python">def test_3v3():
-    psu.write("OUTP ON")
-    time.sleep(2)                       # why 2?
-    v = float(dmm.query("MEAS:VOLT:DC?"))
-    if v > 3.1 and v < 3.5:             # limits buried in code
-        print("PASS")
-    # exception? output stays ON</pre></div>
-          <div><div class="label good">Intent first</div>
-<pre data-hl="python">def step_rail_3v3(ctx):
-    ctx.psu.output(True)
-    v = ctx.dmm.read_stable("3V3", tol=0.005, timeout=2)
-    return ctx.check("VDD_3V3", v)      # limits from the
-                                        # versioned file</pre></div>
-        </div>
-      </div>
-    </details>
-
-    <details>
-      <summary>4 · Measurement quality and correlation <small>a pass is only worth the measurement behind it</small></summary>
-      <div class="dd">
-        <div class="table-wrap"><table>
-          <thead><tr><th>Term</th><th>Meaning</th><th>Why it matters</th></tr></thead>
-          <tbody>
-            <tr><td><b>Calibration</b></td><td>Instrument checked against a reference on a schedule</td><td>An uncalibrated instrument may be wrong by more than the limit</td></tr>
-            <tr><td><b>Repeatability</b></td><td>Same unit, same tester, same result</td><td>Noisy measurements cause false fails and false passes</td></tr>
-            <tr><td><b>GR&amp;R</b></td><td>Repeatability and reproducibility across testers, fixtures and operators</td><td>Proves the measurement system is fit to judge the tolerance</td></tr>
-            <tr><td><b>Golden unit</b></td><td>A known-good unit kept as a reference</td><td>Daily check that the tester still reads correctly. Pair it with a known-bad unit.</td></tr>
-            <tr><td><b>Correlation</b></td><td>Two testers (or two stages) agree on the same units</td><td>Lets you add a second tester or move the line without surprises</td></tr>
-            <tr><td><b>Guardband</b></td><td>Tightening the test limit inside the spec limit by the measurement uncertainty</td><td>Stops marginal units from escaping, at the price of some false fails</td></tr>
-            <tr><td><b>Cpk</b></td><td>How many 3-sigma widths fit between the mean and the nearest limit</td><td>One number for "is this measurement capable". Many programs ask for 1.33 or more.</td></tr>
-          </tbody></table></div>
-        <p>Set limits from <b>measured data</b> on real units, not from the datasheet alone, and review them with TE. See example 4 for a Cpk calculation.</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>5 · Yield and the numbers that matter <small>and the retest trap</small></summary>
-      <div class="dd">
-        <div class="table-wrap"><table>
-          <thead><tr><th>Metric</th><th>Meaning</th><th>Use it to</th></tr></thead>
-          <tbody>
-            <tr><td><b>First-pass yield (FPY)</b></td><td>Share of units that pass on the first attempt</td><td>See the real health of the process and the tester</td></tr>
-            <tr><td><b>Final yield</b></td><td>Share that pass eventually, after retests and repair</td><td>Compare with FPY: a big gap means lots of rework</td></tr>
-            <tr><td><b>Rolled throughput yield (RTY)</b></td><td>Product of the FPY of every stage</td><td>Four stages at 95% FPY each give 0.95<sup>4</sup> &asymp; 81%</td></tr>
-            <tr><td><b>Retest rate</b></td><td>Share of units tested more than once</td><td>Spot unstable fixtures and contact problems</td></tr>
-            <tr><td><b>False-fail rate</b></td><td>Good units that fail the tester</td><td>Measure the tester's own contribution to loss</td></tr>
-            <tr><td><b>Test time / UPH</b></td><td>Seconds per unit, units per hour</td><td>Keep the tester from limiting the line</td></tr>
-            <tr><td><b>Escapes (DPPM)</b></td><td>Bad units that reached the customer, per million</td><td>Judge whether coverage is enough</td></tr>
-          </tbody></table></div>
-        <div class="note"><p><b>The retest trap.</b> "Retest until it passes" hides a bad fixture and inflates the final yield. Track FPY, run a Pareto of failing steps, and fix the top item. You will build the yield maths in exercise 3.</p></div>
-      </div>
-    </details>
-
-    <details>
-      <summary>6 · Writing a JDM proposal <small>winning the work with technology and manner</small></summary>
-      <div class="dd">
-        <p>In JDM the TDE, HPS and TE write a proposal for a customer who may be choosing between partners. The proposal shows <b>what we propose</b>, <b>how we work</b> and <b>what only we can do well</b>.</p>
-        <div class="table-wrap"><table>
-          <thead><tr><th>Section</th><th>The question it answers</th></tr></thead>
-          <tbody>
-            <tr><td><b>Understanding</b></td><td>Do you understand the product, volumes, quality target, cost target and schedule?</td></tr>
-            <tr><td><b>Test strategy and technology</b></td><td>Which stages and which technology will you use to reach the coverage, and why?</td></tr>
-            <tr><td><b>Our capability</b></td><td>What do you already have: reusable tester platforms, modules, automation, local fabrication, relevant past programs?</td></tr>
-            <tr><td><b>Way of working</b></td><td>How will we run the project: design reviews, reporting, communication, decision points?</td></tr>
-            <tr><td><b>Scope</b></td><td>What do you design, build and deliver, and what must the customer provide?</td></tr>
-            <tr><td><b>Plan</b></td><td>What are the milestones through NPI, and when is the tester ready for the line?</td></tr>
-            <tr><td><b>Cost</b></td><td>One-time development (NRE) versus cost of test per unit. What drives each?</td></tr>
-            <tr><td><b>Risks and assumptions</b></td><td>What could go wrong, and what are you assuming (test access, firmware readiness, volumes)?</td></tr>
-            <tr><td><b>Support</b></td><td>What happens after delivery: sustaining, maintenance, response times?</td></tr>
-          </tbody></table></div>
-        <p><b>Habits of a strong proposal:</b> numbers over adjectives (test time in seconds, expected coverage in percent), evidence over claims (a photo of a similar tester, results from a past program), and honest risks. A proposal that hides a risk loses trust the moment it appears.</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>7 · Handover to MFG and sustaining <small>after the tester leaves the lab</small></summary>
-      <div class="dd">
-        <ul>
-          <li><b>Acceptance criteria are agreed before the build</b>: run-at-rate, correlation and repeatability targets, maximum false-fail rate, uptime.</li>
-          <li><b>Training is part of the delivery.</b> Operators run it, technicians keep it alive. Both need material and practice.</li>
-          <li><b>Change control.</b> Every change to software, limits or hardware gets a version, a reason and a reviewer. Test an ECO's effect on the tester before it reaches the line.</li>
-          <li><b>Preventive maintenance.</b> Calibration dates, pin replacement by cycle count, golden-unit checks, spare parts stock.</li>
-          <li><b>Watch the data.</b> A slow drift in yield or measurement is usually the tester, not the product. Catch it before the line complains.</li>
-          <li><b>Plan for the future.</b> Instrument obsolescence, replicating testers for new lines, knowledge written down so that it survives staff changes.</li>
-        </ul>
-      </div>
-    </details>
-
-    <details>
-      <summary>8 · Shopfloor troubleshooting & 4M1E <small>when the tester fails on the line</small></summary>
-      <div class="dd">
-        <p>When false fails spike or a tester halts the production line, junior engineers often rush to edit software or widen test limits. <b>Never widen limits to silence a failure.</b> Follow a systematic 4M1E isolation procedure:</p>
-        <div class="table-wrap"><table>
-          <thead><tr><th>Category</th><th>Common root causes</th><th>What to check and fix</th></tr></thead>
-          <tbody>
-            <tr><td><b>Machine</b><br>(Tester & Fixture)</td><td>Pogo pins worn or oxidized, loose wiring, relay failure, instrument calibration drift</td><td>Run the Golden Unit. Measure contact resistance (&lt; 50 mΩ). Clean pins with isopropyl alcohol (IPA) or replace worn pin blocks.</td></tr>
-            <tr><td><b>Material</b><br>(DUT & Components)</td><td>PCB warpage, solder flux residue on test pads, new component lot / alternate vendor</td><td>Check test pad indentation under microscope. Inspect unpopulated or skewed parts. Verify if problem follows the board or the slot.</td></tr>
-            <tr><td><b>Method</b><br>(Test & Parameters)</td><td>Insufficient power settling time, limits too tight for process drift, floating inputs</td><td>Add settling delay before analog sampling. Check if rail voltage is measured before inrush current finishes. Review Cpk history.</td></tr>
-            <tr><td><b>Man</b><br>(Operator / Process)</td><td>Board loaded tilted, clamp closed improperly, ESD strap unplugged, barcode scan misread</td><td>Observe operator loading sequence. Verify mechanical guide pins and sensor interlocks. Re-train with Standard Work Instruction (SWI).</td></tr>
-          </tbody></table></div>
-        <p><b>The Golden Rule of Isolation:</b> Swap one variable at a time. If unit fails on Tester A, test it on Tester B. If it passes on Tester B, the problem is <em>Tester A</em>, not the product.</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>9 · Hardware safety & electrical golden rules <small>protecting the operator and the DUT</small></summary>
-      <div class="dd">
-        <ul>
-          <li><b>Hardware E-Stop over Software Stop.</b> Emergency Stop (E-Stop) buttons and fixture lid safety switches must break power physically through approved safety relays and contactors. Never rely on a software command (e.g. <code>psu.write("OUTP OFF")</code>) for operator safety.</li>
-          <li><b>Set Compliance (Current Limit) before Power-On.</b> When writing instrument drivers or test sequences, always configure both voltage and current compliance limit <em>before</em> commanding output ON. If a shorted DUT is plugged in, current compliance prevents PCB traces from vaporizing or catching fire.</li>
-          <li><b>Discharge Residual Capacitance.</b> High-capacitance power rails (e.g. 12V bulk input caps) hold energy after power-off. Always engage a bleeding resistor or active discharge circuit before fixture release, otherwise arcing will pit pogo pin tips and degrade contact life.</li>
-          <li><b>Verify Grounding & ESD Protection.</b> All metallic fixture parts and chassis must be bonded to earth ground (&lt; 1 Ω). Test stations must have monitored wrist strap jacks and continuous ESD bench mat grounding.</li>
-          <li><b>Isolation Relays for Programming & Sensitive Nets.</b> Sensitive programming interfaces (SWD, JTAG, I2C) must be disconnected via relays or multiplexers before powering high-voltage functional stages to prevent back-powering MCU pins through internal ESD clamping diodes.</li>
-        </ul>
-      </div>
-    </details>
-  </div>
-</section>
 
 <!-- ============================================================ 6. EXAMPLES -->
 <section class="block view" id="examples">

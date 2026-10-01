@@ -2,6 +2,9 @@
 (() => {
   "use strict";
 
+  /* hooks filled in by the builders and by setupNavigation() */
+  const TDEUI = (window.TDEUI = { sync() {}, refreshNav() {}, selectExample: null, openExercise: null, selectGlossary: null });
+
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -197,6 +200,7 @@
       const bar = $("#progress-bar");
       if (bar) bar.style.setProperty("--p", `${(n / total) * 100}%`);
       $$("[data-ex-id]").forEach((b) => b.classList.toggle("done", !!this.done[b.dataset.exId]));
+      TDEUI.refreshNav();
     },
   };
 
@@ -217,7 +221,7 @@
 
     TDE.EXAMPLES.forEach((ex, i) => {
       const tab = el("button", { role: "tab", type: "button", "data-id": ex.id, id: `tab-${ex.id}`, "aria-controls": `panel-${ex.id}` }, ex.title);
-      tab.addEventListener("click", () => select(ex.id));
+      tab.addEventListener("click", () => { select(ex.id); TDEUI.sync("examples", ex.id); });
       tab.addEventListener("keydown", (e) => {
         const all = $$("[role=tab]", tabs);
         const idx = all.indexOf(tab);
@@ -225,7 +229,7 @@
         if (next == null) return;
         e.preventDefault();
         const target = all[(next + all.length) % all.length];
-        target.focus(); select(target.dataset.id);
+        target.focus(); select(target.dataset.id); TDEUI.sync("examples", target.dataset.id);
       });
       tabs.append(tab);
 
@@ -249,6 +253,7 @@
       panels.append(panel);
       if (i === 0) select(ex.id);
     });
+    TDEUI.selectExample = (id) => { if (TDE.EXAMPLES.some((e) => e.id === id)) select(id); };
   }
 
   /* ------------------------------------------------------------ exercises */
@@ -260,7 +265,7 @@
     const levelClass = { Easy: "easy", Medium: "medium", Hard: "hard" };
 
     TDE.EXERCISES.forEach((ex, i) => {
-      list.append(el("li", {}, el("button", { type: "button", class: "ex-item", "data-ex-id": ex.id, onclick: () => open(i) },
+      list.append(el("li", {}, el("button", { type: "button", class: "ex-item", "data-ex-id": ex.id, onclick: () => { open(i); TDEUI.sync("practice", ex.id); } },
         el("span", { class: "num" }, String(i + 1)),
         el("span", { class: "ex-title" }, ex.title, el("small", {}, ex.summary)),
         el("span", { class: `chip ${levelClass[ex.level]}` }, ex.level),
@@ -293,7 +298,7 @@
         if (res.passed) {
           progress.mark(ex.id);
           if (index + 1 < TDE.EXERCISES.length) {
-            out.append(el("button", { class: "btn primary next", type: "button", onclick: () => { open(index + 1); panel.scrollIntoView({ behavior: "smooth", block: "start" }); } }, "Next exercise →"));
+            out.append(el("button", { class: "btn primary next", type: "button", onclick: () => { open(index + 1); TDEUI.sync("practice", TDE.EXERCISES[index + 1].id); panel.scrollIntoView({ behavior: "smooth", block: "start" }); } }, "Next exercise →"));
           } else {
             out.append(el("p", { class: "finish" }, "That was the last one. You have finished the course. 🎉"));
           }
@@ -331,6 +336,7 @@
         hintBox, solBox, out);
     }
 
+    TDEUI.openExercise = (id) => { const i = TDE.EXERCISES.findIndex((e) => e.id === id); if (i >= 0) open(i); };
     open(Math.min(store.get("tde.lastExercise", 0), TDE.EXERCISES.length - 1));
   }
 
@@ -382,7 +388,7 @@
         topic = g.id; store.set("tde.glossaryTopic", topic);
         search.value = "";
         apply();
-        if (matchMedia("(max-width: 899px)").matches) root.scrollIntoView({ block: "start" });
+        TDEUI.sync("glossary", g.id);
       });
       filters.append(b);
       return b;
@@ -415,6 +421,10 @@
       count.textContent = q ? `${shown} of ${total} terms match, across all topics` : `${total} terms in ${groups.length} topics`;
     }
     search.addEventListener("input", apply);
+    TDEUI.selectGlossary = (id) => {
+      if (!TDE.GLOSSARY.some((g) => g.id === id)) return;
+      topic = id; store.set("tde.glossaryTopic", topic); search.value = ""; apply();
+    };
     apply();
   }
 
@@ -490,63 +500,277 @@
     paint();
   }
 
-  /* Each top-level section is its own "page". Hash routing keeps one document,
-     so the Python runtime stays loaded when you move between pages. */
-  function setupViews() {
+  /* ------------------------------------------------------------ navigation
+     Left sidebar: category > page > sub-page, with full-text search.
+     Every top-level <section class="view"> is a page. Long pages are split
+     into sub-pages (#page/sub). One document, so the Python runtime stays
+     loaded when you move around. */
+  const CATEGORIES = [
+    { id: "start", title: "Start", pages: ["top"] },
+    { id: "job", title: "The job", pages: ["role", "models", "lifecycle"] },
+    { id: "systems", title: "Test systems", pages: ["diagrams", "deep-dive"] },
+    { id: "ocp", title: "OCP rack and cooling", pages: ["ocp", "cooling"] },
+    { id: "practice", title: "Learn by doing", pages: ["examples", "practice"] },
+    { id: "ref", title: "Reference", pages: ["glossary"] },
+  ];
+  const PAGE_LABELS = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", ocp: "OCP rack", cooling: "Cooling", examples: "Examples", practice: "Practice", glossary: "Glossary" };
+
+  function setupNavigation() {
+    const html = document.documentElement;
+    html.classList.add("js-views");
     const views = $$("section.view");
     const ids = views.map((v) => v.id);
-    const labels = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", ocp: "OCP rack", cooling: "Cooling", "deep-dive": "Deep dive", examples: "Examples", practice: "Practice", glossary: "Glossary" };
-    const links = $$(".nav-links a");
-    document.documentElement.classList.add("js-views");
+    const tree = $("#nav-tree"), results = $("#nav-results"), input = $("#nav-search");
+    const toggleBtn = $("#sb-toggle"), backdrop = $("#sb-backdrop");
 
-    views.forEach((v, i) => {
-      const prev = ids[i - 1], next = ids[i + 1];
-      const pager = el("nav", { class: "pager", "aria-label": "Page navigation" },
-        prev ? el("a", { class: "prev", href: `#${prev}` }, el("small", {}, "← Previous"), el("b", {}, labels[prev])) : null,
-        next ? el("a", { class: "next", href: `#${next}` }, el("small", {}, "Next →"), el("b", {}, labels[next])) : null);
-      (v.querySelector(".container") || v).append(pager);
+    const plain = (h) => String(h).replace(/<[^>]+>/g, " ").replace(/&[a-z#0-9]+;/gi, " ").replace(/\s+/g, " ").trim();
+    const slugOf = (s, used) => {
+      let base = s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40).replace(/-+$/, "") || "section";
+      let slug = base, n = 2;
+      while (used.has(slug)) slug = `${base}-${n++}`;
+      used.add(slug);
+      return slug;
+    };
 
-      // long pages are split into sub-pages: #page/sub
-      const subs = $$(".subpage[data-sub]", v);
-      if (subs.length) {
-        const nav = el("nav", { class: "subnav", "aria-label": `${labels[v.id]} sections` },
-          subs.map((sub, n) => el("a", { href: `#${v.id}/${sub.dataset.sub}`, "data-sub": sub.dataset.sub }, el("span", {}, String(n + 1)), sub.dataset.title)));
-        subs[0].before(nav);
+    /* ---- 1. work out the sub-pages of every page */
+    const subsOf = {};
+    views.forEach((v) => {
+      const container = v.querySelector(".container");
+      if (!container || v.id === "top") return;
+      let subs = $$(".subpage[data-sub]", v).map((s) => ({ id: s.dataset.sub, title: s.dataset.title, el: s }));
+
+      if (!subs.length) {
+        const used = new Set();
+        const kids = [...container.children];
+        const detailsList = kids.filter((k) => k.tagName === "DETAILS");
+        if (detailsList.length) {
+          // each accordion topic becomes its own sub-page
+          subs = detailsList.map((d) => {
+            const summary = d.querySelector("summary");
+            const small = summary.querySelector("small");
+            const hint = small ? small.textContent.trim() : "";
+            const clone = summary.cloneNode(true);
+            const sm = clone.querySelector("small"); if (sm) sm.remove();
+            const title = clone.textContent.trim().replace(/^\d+\s*·\s*/, "");
+            const wrap = el("div", { class: "subpage", "data-sub": slugOf(title, used), "data-title": title },
+              el("h3", {}, title), hint ? el("p", { class: "tag" }, hint) : null, [...d.querySelector(".dd").childNodes]);
+            d.replaceWith(wrap);
+            return { id: wrap.dataset.sub, title, el: wrap };
+          });
+        } else if (!["examples", "practice", "glossary"].includes(v.id)) {
+          // split at <h3>: an "Overview" for what comes before the first one
+          let i = 0;
+          while (i < kids.length && kids[i].matches(".kicker, h2, .lead")) i++;
+          const groups = [];
+          let cur = null;
+          kids.slice(i).forEach((k) => {
+            if (k.tagName === "H3") { cur = { title: plain(k.innerHTML), nodes: [k] }; groups.push(cur); }
+            else if (cur) cur.nodes.push(k);
+            else { if (!groups.length || groups[0].title !== "Overview") groups.unshift({ title: "Overview", nodes: [] }); groups[0].nodes.push(k); }
+          });
+          if (groups.length >= 2) {
+            subs = groups.map((g) => {
+              const wrap = el("div", { class: "subpage", "data-sub": slugOf(g.title, used), "data-title": g.title });
+              g.nodes[0].before(wrap);
+              g.nodes.forEach((n) => wrap.append(n));
+              return { id: wrap.dataset.sub, title: g.title, el: wrap };
+            });
+          }
+        }
+      }
+      if (subs.length) subsOf[v.id] = subs.map((s) => ({ ...s, dom: true, raw: plain(s.el.innerHTML) }));
+    });
+
+    // pages whose sub-pages come from data (their own UI shows the selected item)
+    subsOf.examples = TDE.EXAMPLES.map((e) => ({ id: e.id, title: e.title.replace(/^\d+\.\s*/, ""), raw: plain(`${e.intro} ${e.code}`), note: e.runnable ? "▶" : "" }));
+    subsOf.practice = TDE.EXERCISES.map((e) => ({ id: e.id, title: e.title, raw: plain(`${e.summary} ${e.brief}`), exercise: true }));
+    subsOf.glossary = TDE.GLOSSARY.map((g) => ({ id: g.id, title: g.title, raw: `${g.intro} ${g.items.map((it) => plain(it.join(" "))).join(" ")}` }));
+    Object.values(subsOf).forEach((list) => list.forEach((s) => (s.text = `${s.title} ${s.raw}`.toLowerCase())));
+
+    /* ---- 2. flat reading order for the Previous / Next buttons */
+    const flat = [];
+    ids.forEach((pid) => {
+      const subs = subsOf[pid];
+      if (subs && subs[0].dom) subs.forEach((s) => flat.push({ pid, sub: s.id, title: s.title }));
+      else flat.push({ pid, sub: undefined, title: PAGE_LABELS[pid] });
+    });
+    const hrefOf = (pid, sub) => `#${pid}${sub ? `/${sub}` : ""}`;
+
+    views.forEach((v) => {
+      const container = v.querySelector(".container") || v;
+      container.append(el("nav", { class: "pager", "aria-label": "Previous and next" }));
+      // from the second sub-page on, the heading names the sub-page instead of repeating the page intro
+      if (subsOf[v.id] && subsOf[v.id][0].dom) {
+        const kicker = container.querySelector(".kicker");
+        const h = el("h2", { class: "subhead" });
+        if (kicker) kicker.after(h); else container.prepend(h);
       }
     });
 
-    let current = null, currentSub = null;
+    function updatePager(view, pid, sub) {
+      const idx = flat.findIndex((f) => f.pid === pid && f.sub === sub);
+      const item = (f, cls, label) => f && el("a", { class: cls, href: hrefOf(f.pid, f.sub) },
+        el("small", {}, label), el("b", {}, f.title), f.sub ? el("small", { class: "where" }, PAGE_LABELS[f.pid]) : null);
+      $(".pager", view).replaceChildren(...[item(flat[idx - 1], "prev", "← Previous"), item(flat[idx + 1], "next", "Next →")].filter(Boolean));
+    }
+
+    /* ---- 3. sidebar tree */
+    let state = { id: "top", sub: undefined };
+    const collapsed = new Set(store.get("tde.navCollapsed", []));
+
+    function renderTree() {
+      const subsFor = (pid) => subsOf[pid] || [];
+      tree.replaceChildren(...CATEGORIES.map((cat) => {
+        const isClosed = collapsed.has(cat.id) && !cat.pages.includes(state.id);
+        const btn = el("button", { type: "button", class: "nav-cat-btn", "aria-expanded": String(!isClosed) }, el("span", {}, cat.title), el("i", { class: "chev", "aria-hidden": "true" }));
+        btn.addEventListener("click", () => {
+          if (collapsed.has(cat.id)) collapsed.delete(cat.id); else collapsed.add(cat.id);
+          store.set("tde.navCollapsed", [...collapsed]);
+          renderTree();
+        });
+        const list = el("ul", { class: "nav-pages", hidden: isClosed }, cat.pages.map((pid) => {
+          const here = pid === state.id, subs = subsFor(pid);
+          const pageActive = here && (!subs.length || !state.sub);
+          const li = el("li", {}, el("a", { class: "nav-page", href: `#${pid}`, "aria-current": pageActive ? "page" : false }, el("span", {}, PAGE_LABELS[pid]), subs.length ? el("em", {}, String(subs.length)) : null));
+          if (here && subs.length) {
+            li.append(el("ul", { class: "nav-subs" }, subs.map((s) => el("li", {}, el("a", {
+              href: hrefOf(pid, s.id), class: `${s.exercise && progress.done[s.id] ? "done" : ""}`, "aria-current": state.sub === s.id ? "page" : false,
+            }, el("span", {}, s.title), s.exercise && progress.done[s.id] ? el("i", { "aria-label": "solved" }, "✓") : null)))));
+          }
+          return li;
+        }));
+        return el("section", { class: "nav-cat" }, btn, list);
+      }));
+      const cur = $('#nav-tree [aria-current="page"]');
+      if (cur) cur.scrollIntoView({ block: "nearest" });
+    }
+    TDEUI.refreshNav = renderTree;
+
+    /* ---- 4. open / close the sidebar */
+    const wide = matchMedia("(min-width: 1000px)");
+    let open = wide.matches ? store.get("tde.sidebar", true) : false;
+    function setOpen(v, persist = true) {
+      open = v;
+      html.classList.toggle("sb-open", v);
+      toggleBtn.setAttribute("aria-expanded", v);
+      toggleBtn.setAttribute("aria-label", v ? "Hide navigation" : "Show navigation");
+      if (persist && wide.matches) store.set("tde.sidebar", v);
+    }
+    toggleBtn.addEventListener("click", () => setOpen(!open));
+    backdrop.addEventListener("click", () => setOpen(false, false));
+    wide.addEventListener("change", () => setOpen(wide.matches ? store.get("tde.sidebar", true) : false, false));
+    setOpen(open, false);
+
+    /* ---- 5. full-text search */
+    const entries = [];
+    CATEGORIES.forEach((cat) => cat.pages.forEach((pid) => {
+      const trail = `${cat.title} › ${PAGE_LABELS[pid]}`;
+      const subs = subsOf[pid];
+      if (subs) subs.forEach((s) => entries.push({ pid, sub: s.id, title: s.title, trail, raw: s.raw, text: s.text }));
+      else {
+        const v = $(`#${pid}`);
+        const raw = plain(v.innerHTML);
+        entries.push({ pid, sub: undefined, title: PAGE_LABELS[pid], trail, raw, text: `${PAGE_LABELS[pid]} ${raw}`.toLowerCase() });
+      }
+    }));
+
+    function runSearch() {
+      const q = input.value.trim().toLowerCase();
+      if (q.length < 2) { results.hidden = true; tree.hidden = false; results.replaceChildren(); return; }
+      const terms = q.split(/\s+/);
+      const hits = entries.map((e) => {
+        let score = 0;
+        for (const term of terms) {
+          const inTitle = e.title.toLowerCase().includes(term);
+          let count = 0, from = 0;
+          while (count < 15 && (from = e.text.indexOf(term, from)) >= 0) { count++; from += term.length; }
+          if (!inTitle && !count) return null;
+          score += (inTitle ? 50 : 0) + count;
+        }
+        return { e, score };
+      }).filter(Boolean).sort((a, b) => b.score - a.score).slice(0, 30);
+
+      const snippet = (e) => {
+        const i = e.raw.toLowerCase().indexOf(terms[0]);
+        if (i < 0) return esc(e.raw.slice(0, 90));
+        const s = Math.max(0, i - 40), end = Math.min(e.raw.length, i + terms[0].length + 70);
+        const piece = e.raw.slice(s, end);
+        const k = i - s;
+        return `${s > 0 ? "…" : ""}${esc(piece.slice(0, k))}<mark>${esc(piece.slice(k, k + terms[0].length))}</mark>${esc(piece.slice(k + terms[0].length))}${end < e.raw.length ? "…" : ""}`;
+      };
+      results.hidden = false; tree.hidden = true;
+      results.replaceChildren(
+        el("p", { class: "nav-count", "aria-live": "polite" }, hits.length ? `${hits.length} result${hits.length === 1 ? "" : "s"}` : "No results. Try a shorter word or an acronym."),
+        ...hits.map(({ e }) => el("a", { class: "nav-hit", href: hrefOf(e.pid, e.sub) },
+          el("b", {}, e.title), el("small", {}, e.trail), el("span", { html: snippet(e) }))));
+    }
+    input.addEventListener("input", runSearch);
+    input.addEventListener("keydown", (ev) => {
+      if (ev.key === "Escape") { input.value = ""; runSearch(); }
+      if (ev.key === "Enter") { const first = $(".nav-hit", results); if (first) { location.hash = first.getAttribute("href"); } }
+    });
+    results.addEventListener("click", (ev) => { if (ev.target.closest(".nav-hit") && !wide.matches) setOpen(false, false); });
+    tree.addEventListener("click", (ev) => { if (ev.target.closest("a") && !wide.matches) setOpen(false, false); });
+    document.addEventListener("keydown", (ev) => {
+      if (ev.key === "/" && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) {
+        ev.preventDefault(); setOpen(true, false); input.focus();
+      } else if (ev.key === "Escape" && !wide.matches && open && document.activeElement !== input) setOpen(false, false);
+    });
+
+    /* ---- 6. routing */
+    const titleOf = (id, sub) => {
+      if (id === "top") return "TDE Training – Test Development Engineer";
+      const s = (subsOf[id] || []).find((x) => x.id === sub);
+      return `${s ? `${s.title} · ` : ""}${PAGE_LABELS[id]} · TDE Training`;
+    };
+    let current = null;
+
     function show() {
-      const [rawId, rawSub] = location.hash.slice(1).split("/");
+      const [rawId, rawSub] = decodeURIComponent(location.hash.slice(1)).split("/");
       const id = ids.includes(rawId) ? rawId : "top";
       const view = $(`#${id}`);
-      const subs = $$(".subpage[data-sub]", view);
-      const names = subs.map((s) => s.dataset.sub);
-      const sub = subs.length ? (names.includes(rawSub) ? rawSub : names[0]) : null;
-      // tidy up links such as #top/undefined or #cooling/bogus
-      const clean = sub ? `#${id}/${sub}` : `#${id}`;
-      if (rawSub !== undefined && (!sub || sub !== rawSub)) history.replaceState(null, "", clean);
-      if (id === current && sub === currentSub) return;
+      const subs = subsOf[id] || [];
+      let sub;
+      if (subs.length) {
+        const found = subs.find((s) => s.id === rawSub);
+        sub = found ? found.id : (subs[0].dom ? subs[0].id : undefined);
+      }
+      // tidy links such as #top/undefined or #cooling/bogus
+      if (rawSub !== undefined && sub !== rawSub) history.replaceState(null, "", hrefOf(id, sub));
 
       const first = current === null, viewChanged = id !== current;
-      current = id; currentSub = sub;
-      if (viewChanged) {
-        views.forEach((v) => v.classList.toggle("active", v.id === id));
-        links.forEach((a) => (a.getAttribute("href") === `#${id}` ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
-        const active = links.find((a) => a.getAttribute("aria-current"));
-        if (active) active.scrollIntoView({ block: "nearest", inline: "center" });
-        document.title = id === "top" ? "TDE Training – Test Development Engineer" : `${labels[id]} · TDE Training`;
+      current = id;
+      state = { id, sub };
+      if (viewChanged) views.forEach((v) => v.classList.toggle("active", v.id === id));
+      if (subs.length && subs[0].dom) {
+        subs.forEach((s) => s.el.classList.toggle("active", s.id === sub));
+        const n = subs.findIndex((s) => s.id === sub);
+        view.dataset.subIndex = n;
+        $(".subhead", view).textContent = subs[n].title;
       }
-      if (sub) {
-        subs.forEach((s) => s.classList.toggle("active", s.dataset.sub === sub));
-        $$(".subnav a", view).forEach((a) => (a.dataset.sub === sub ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
+      else if (sub) {
+        if (id === "examples") TDEUI.selectExample && TDEUI.selectExample(sub);
+        if (id === "practice") TDEUI.openExercise && TDEUI.openExercise(sub);
+        if (id === "glossary") TDEUI.selectGlossary && TDEUI.selectGlossary(sub);
       }
+      document.title = titleOf(id, sub);
+      renderTree();
+      updatePager(view, id, subs.length && !subs[0].dom ? undefined : sub);
+      if (!wide.matches) setOpen(false, false);
       window.scrollTo({ top: 0, behavior: "instant" });
       if (!first) {
-        const h = $("h1, h2", view);
+        const h = $$("h1, h2", view).find((x) => x.offsetParent !== null);
         if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
       }
     }
+
+    // the example, exercise and glossary UIs call this when the user picks an item
+    TDEUI.sync = (id, sub) => {
+      state = { id, sub };
+      history.replaceState(null, "", hrefOf(id, sub));
+      document.title = titleOf(id, sub);
+      renderTree();
+    };
     window.addEventListener("hashchange", show);
     show();
   }
@@ -575,6 +799,6 @@
     buildGlossary();
     buildCooling();
     progress.paint();
-    setupViews();
+    setupNavigation();
   });
 })();

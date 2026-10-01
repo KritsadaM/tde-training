@@ -70,6 +70,19 @@ There are two exercise kinds:
 | 10 | Medium | implement | `heat_load_kw`, `required_flow_lpm`, `heat_balance_ok`: heat balance of a coolant loop |
 | 11 | Easy | implement | `usable_capacity_kw`, `redundancy_ok`, `bbu_runtime_s`: N+1 power shelf and battery ride-through |
 
+## Navigation
+
+A collapsible **left sidebar** (a drawer on phones) groups the course as **category > page > sub-page** and has full-text search (press `/` to focus it). Everything is one HTML document routed by hash: `#page` or `#page/sub-page`, for example `#cooling/compare`, `#examples/cpk`, `#practice/leak-decay`, `#glossary/hardware`.
+
+* **Categories and page names:** edit `CATEGORIES` and `PAGE_LABELS` in `assets/app.js`.
+* **Sub-pages are created automatically:**
+  * a page that already contains `<div class="subpage" data-sub="id" data-title="Title">` blocks uses them;
+  * `<details>` accordions (Deep dive) become one sub-page each;
+  * any other page is split at each `<h3>`; content before the first `<h3>` becomes "Overview";
+  * Examples, Practice and Glossary list their items from `assets/content.js`.
+* **Adding a page:** add a `<section class="block view" id="my-page">` in `index.html` (keep the order in the file the same as the order in `CATEGORIES`), then add its id and label to `CATEGORIES` / `PAGE_LABELS`.
+* Do not use the CSS class `sub` for anything new: the hero subtitle already uses it. Sub-pages use `subpage`.
+
 ## Project layout
 
 ```
