@@ -68,6 +68,7 @@ There are two exercise kinds:
 | 8 | Medium | implement | `calc_cpk`: sample mean, standard deviation, one/two-sided limits, Cpk threshold |
 | 9 | Medium | implement | `evaluate_leak_test`: pressure-decay leak test for a liquid loop |
 | 10 | Medium | implement | `heat_load_kw`, `required_flow_lpm`, `heat_balance_ok`: heat balance of a coolant loop |
+| 11 | Easy | implement | `usable_capacity_kw`, `redundancy_ok`, `bbu_runtime_s`: N+1 power shelf and battery ride-through |
 
 ## Project layout
 

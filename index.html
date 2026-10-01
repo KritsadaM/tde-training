@@ -36,7 +36,7 @@
       <a href="#practice">Practice</a>
       <a href="#glossary">Glossary</a>
     </nav>
-    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/10</span></span>
+    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/11</span></span>
     <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">☾</button>
   </div>
   <div id="progress-bar" aria-hidden="true"></div>
@@ -54,9 +54,9 @@
       <a class="btn" href="#practice">Jump to practice</a>
     </div>
     <ul class="stats">
-      <li><b>6</b><span>interactive diagrams</span></li>
+      <li><b>7</b><span>interactive diagrams</span></li>
       <li><b>11</b><span>code examples</span></li>
-      <li><b>10</b><span>graded exercises</span></li>
+      <li><b>11</b><span>graded exercises</span></li>
       <li><b>0</b><span>installs needed</span></li>
     </ul>
 
@@ -66,11 +66,11 @@
       <a class="card link" href="#models"><span class="num">2</span><h4>CM vs JDM</h4><p>The two program types and where the TDE joins each.</p></a>
       <a class="card link" href="#lifecycle"><span class="num">3</span><h4>NPI to sustaining</h4><p>The life of a tester, from proposal to maintenance.</p></a>
       <a class="card link" href="#diagrams"><span class="num">4</span><h4>Diagrams</h4><p>Test stages on the line and the anatomy of a tester.</p></a>
-      <a class="card link" href="#ocp"><span class="num">5</span><h4>OCP rack</h4><p>What is new in an Open Rack: power, busbar, manifold, and how to test one.</p></a>
+      <a class="card link" href="#ocp"><span class="num">5</span><h4>OCP rack</h4><p>Open Rack basics, power, safety, test stands, troubleshooting and a 30-day plan.</p></a>
       <a class="card link" href="#cooling"><span class="num">6</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
       <a class="card link" href="#deep-dive"><span class="num">7</span><h4>Deep dive</h4><p>Strategy, hardware, software, 4M1E, safety, yield, proposals.</p></a>
       <a class="card link" href="#examples"><span class="num">8</span><h4>Examples</h4><p>Eleven Python examples. Seven run in your browser.</p></a>
-      <a class="card link" href="#practice"><span class="num">9</span><h4>Practice</h4><p>Ten graded exercises with hints and solutions.</p></a>
+      <a class="card link" href="#practice"><span class="num">9</span><h4>Practice</h4><p>Eleven graded exercises with hints and solutions.</p></a>
       <a class="card link" href="#glossary"><span class="num">10</span><h4>Glossary</h4><p>150+ acronyms grouped by topic, with search.</p></a>
     </div>
   </div>
@@ -350,7 +350,7 @@
     <h2>The OCP rack: what is different</h2>
     <p class="lead">OCP racks are new to the team, so start here. <b>OCP</b> (Open Compute Project) is a community that publishes open hardware designs for data centres. Its <b>Open Rack</b> changes how a rack is built, powered and cooled, and with it, how a rack is tested.</p>
 
-    <div class="sub" data-sub="different" data-title="What is different">
+    <div class="subpage" data-sub="different" data-title="What is different">
     <div class="grid g3">
       <div class="card"><div class="ico">⚡</div><h4>Shared power</h4>
         <ul><li>One power shelf feeds a DC busbar for the whole rack</li><li>Nodes plug into the busbar, no AC supply in each server</li><li>A battery shelf (BBU) rides through short outages</li></ul></div>
@@ -367,7 +367,7 @@
         <tbody>
           <tr><td><b>Equipment width</b></td><td>19 inches</td><td>21 inches</td></tr>
           <tr><td><b>Height unit</b></td><td>1U = 44.45 mm</td><td>OpenU (OU) = 48 mm</td></tr>
-          <tr><td><b>Power</b></td><td>An AC power supply in every server, fed from PDUs</td><td>Shared power shelf feeding a DC busbar. 12 V in V1 and V2, <b>48 V in V3</b></td></tr>
+          <tr><td><b>Power</b></td><td>An AC power supply in every server, fed from PDUs</td><td>Shared power shelf feeding a DC busbar. A 12 V-class busbar in V1 and V2, <b>48 V in V3</b></td></tr>
           <tr><td><b>Connection</b></td><td>Power and network cables at the rear of each server</td><td>Blind-mate connection to the busbar. In liquid-cooled racks, also to the coolant manifold</td></tr>
           <tr><td><b>Cooling</b></td><td>Fans in each server</td><td>Air, or direct-to-chip liquid through a rack manifold. Immersion uses a different mechanical format</td></tr>
           <tr><td><b>Management</b></td><td>A BMC in each server</td><td>A BMC in each node, plus telemetry from power shelves and battery shelves</td></tr>
@@ -378,7 +378,7 @@
     <div class="note"><p><b>Do not assume 19-inch fixtures, cable lengths or tester interfaces carry over.</b> Get the mechanical drawings of the exact Open Rack version for the program.</p></div>
     </div>
 
-    <div class="sub" data-sub="anatomy" data-title="Anatomy and power">
+    <div class="subpage" data-sub="anatomy" data-title="Anatomy and power">
     <h3>Anatomy of an Open Rack</h3>
     <p>A typical arrangement, seen from the front, with the shared services that run at the rear. Real racks vary by design and program. Click any part.</p>
     <div class="diagram">
@@ -416,7 +416,122 @@
     <p>The BBU sits on the same busbar and bridges outages. <b>The numbers:</b> a 30 kW rack at 48 V carries about 625 A. At 12 V it would be about 2,500 A. Four times less current means sixteen times less resistive loss in the same copper, which is why Open Rack V3 moved to 48 V. It is still a lot of current, so contact resistance, heating and safe hot-plugging are real test topics.</p>
     </div>
 
-    <div class="sub" data-sub="testing" data-title="Rack test plan">
+    <div class="subpage" data-sub="power" data-title="Power in depth">
+    <h3>From the facility to the chip</h3>
+    <p>Every conversion step wastes some energy as heat, so an Open Rack keeps the chain short: one shared AC (or HVDC) to 48 V DC conversion in the power shelf, then on-board converters in each node.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Part</th><th>What it does</th><th>What a TDE cares about</th></tr></thead>
+        <tbody>
+          <tr><td><b>Power shelf</b></td><td>Hot-swappable rectifier modules convert the input to 48 V DC. Redundancy is N+1 (or N+N) so a failed module does not drop the rack.</td><td>Output at all load levels, efficiency, module failover, alarms, telemetry, power-cap behaviour</td></tr>
+          <tr><td><b>Busbar</b></td><td>Copper bar carrying the full rack current. In some designs it is split into zones, each fed by its own shelf.</td><td>Contact resistance and temperature rise at maximum current, insertion-cycle wear</td></tr>
+          <tr><td><b>Node power stage</b></td><td>On-board converters step 48 V down to the voltages the chips need. A hot-swap controller limits the inrush current when a node is inserted.</td><td>Inrush at insertion and no dip on neighbouring nodes, protection behaviour (over-current, over-voltage, over-temperature)</td></tr>
+          <tr><td><b>BBU</b></td><td>Battery modules on the busbar. Charge from the busbar and carry the load for a short time after power loss.</td><td>Charge, ride-through time under load, switch-over without a dropout, temperature, cell health</td></tr>
+          <tr><td><b>Telemetry</b></td><td>Shelves, BBUs and nodes report voltage, current, temperature and faults, typically over a management bus or the network (for example PMBus).</td><td>Readings agree with an external meter. A stale or missing reading is a failure</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Two worked examples</h3>
+    <div class="grid g2">
+      <div class="card"><h4>Is N+1 really protecting the rack?</h4>
+        <ul><li>Six 5.5 kW modules = 33 kW installed.</li><li>Lose one: 27.5 kW remain.</li><li>A 30 kW load now exceeds capacity, so the shelf is overloaded and nodes drop or are power-capped.</li><li>Fix: add a seventh module (38.5 kW, 33 kW after a failure) or cap the load. You will code this check in exercise 11.</li></ul></div>
+      <div class="card"><h4>How big a battery for 2 minutes?</h4>
+        <ul><li>30 kW for 2 minutes = 30 &times; 2 / 60 = 1 kWh.</li><li>If only 80% of the battery is usable, nominal energy is 1 / 0.8 = 1.25 kWh.</li><li>Runtime scales inversely with load: at 15 kW the same battery lasts about 4 minutes.</li><li>These are illustration numbers. The real ride-through requirement comes from the program.</li></ul></div>
+    </div>
+
+    <h3>Power tests for a rack</h3>
+    <div class="card">
+      <ul class="checklist">
+        <li><b>Efficiency</b> at several load points, measured with calibrated meters</li>
+        <li><b>Redundancy:</b> pull one module under load. The rack must stay up</li>
+        <li><b>Hot-plug:</b> insert a node under load, record the inrush, check neighbours for dips</li>
+        <li><b>Power cap:</b> overload the shelf and check that nodes throttle as designed</li>
+        <li><b>BBU:</b> charge, discharge under load, measure ride-through and the switch-over transient</li>
+        <li><b>Busbar:</b> temperature rise at maximum current (thermal camera), contact resistance</li>
+        <li><b>Telemetry:</b> compare reported voltage and current with an external meter</li>
+        <li><b>Protections:</b> over-current, over-voltage and over-temperature trip as designed</li>
+      </ul>
+    </div>
+    </div>
+
+    <div class="subpage" data-sub="safety" data-title="Handling and safety">
+    <p class="lead">An OCP rack combines a lot of weight, a lot of current and, with liquid cooling, a lot of water. Safety rules from the program and from EHS always come first. This page lists the hazards a TDE should recognise.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Hazard</th><th>Why it matters</th><th>Typical controls</th></tr></thead>
+        <tbody>
+          <tr><td><b>Weight and tipping</b></td><td>A fully loaded AI rack can weigh over a tonne, and more with coolant. Heavy sleds are awkward to insert</td><td>Rated lifting and moving equipment, levelling feet, lift assist for nodes, floor loading checked in the test area, trained people</td></tr>
+          <tr><td><b>High current (48 V busbar)</b></td><td>48 V is below the 60 V DC level commonly treated as extra-low voltage, but the busbar can supply hundreds of amps. A short circuit can cause burns, arcing and molten metal</td><td>Insulated tools, no jewellery, covers and shrouds in place, current limits on test supplies, lockout / tagout before maintenance</td></tr>
+          <tr><td><b>Mains input to the power shelf</b></td><td>The shelf input is AC mains or high-voltage DC. That is a shock hazard</td><td>Qualified people only, lockout / tagout, grounding checks, safety tests per spec</td></tr>
+          <tr><td><b>Battery shelf (BBU)</b></td><td>Stays energised even when the AC is off. Batteries have fire, thermal and shipping rules</td><td>Treat as live at all times, follow the battery handling and storage rules, the right fire equipment, temperature monitoring</td></tr>
+          <tr><td><b>Liquid</b></td><td>Spills make floors slippery and put water near electrics. Coolant additives need safe handling</td><td>Safety data sheets, spill kit, drip trays, leak sensors, eye protection, wet and electrical zones kept apart</td></tr>
+          <tr><td><b>Pressure</b></td><td>A pressurised loop can release fluid suddenly if a fitting fails</td><td>Relief valve, test pressure from the spec, no one near couplings during a pressure test, controlled depressurising</td></tr>
+          <tr><td><b>Heat</b></td><td>Cold plates, hoses and heat exchangers can be hot after a soak test</td><td>Cool-down before service, warnings, heat-resistant gloves</td></tr>
+          <tr><td><b>ESD</b></td><td>Nodes are static sensitive</td><td>Wrist straps, mats, grounded stations</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><p><b>Lockout / tagout is not optional.</b> Isolate the power shelf and the battery shelf and verify that the busbar is dead before reaching into the rack. Remember that the battery shelf can keep the busbar live.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="stands" data-title="Test stands">
+    <p class="lead">A TDE rarely tests a node by plugging it into a full rack. That would take a rack's worth of space, power and money for one node. Instead the TDE designs <b>test stands</b> that emulate the rack. This is the hardware design and fabrication part of the job.</p>
+
+    <h3>A node test stand</h3>
+    <p>The stand supplies what the rack would: power, management, liquid and a thermal load. Click any block.</p>
+    <div class="diagram">
+      <div class="diagram-scroll">
+        <svg id="svg-stand" viewBox="0 0 960 500" role="group" aria-label="Node test stand block diagram">
+          <g class="node" data-key="controller"><rect class="shape" x="330" y="20" width="300" height="60" rx="10"/><text class="t" x="480" y="46" text-anchor="middle">Station controller</text><text class="s" x="480" y="66" text-anchor="middle">PC / PLC · sequence · logs · MES</text></g>
+          <path class="axis" d="M480 80 V105 H120 V128" marker-end="url(#arrow)"/><path class="axis" d="M480 80 V105 H360 V128" marker-end="url(#arrow)"/><path class="axis" d="M480 80 V105 H600 V128" marker-end="url(#arrow)"/><path class="axis" d="M480 80 V105 H840 V128" marker-end="url(#arrow)"/>
+          <g class="node" data-key="dcsource"><rect class="shape" x="20" y="130" width="200" height="96" rx="12"/><text class="t" x="120" y="164" text-anchor="middle">Power</text><text class="s" x="120" y="188" text-anchor="middle">programmable DC source</text><text class="s" x="120" y="206" text-anchor="middle">48 V, high current</text></g>
+          <g class="node" data-key="mgmt"><rect class="shape" x="260" y="130" width="200" height="96" rx="12"/><text class="t" x="360" y="164" text-anchor="middle">Management</text><text class="s" x="360" y="188" text-anchor="middle">BMC · Redfish</text><text class="s" x="360" y="206" text-anchor="middle">serial console</text></g>
+          <g class="node cool" data-key="liquid"><rect class="shape" x="500" y="130" width="200" height="96" rx="12"/><text class="t" x="600" y="164" text-anchor="middle">Liquid loop</text><text class="s" x="600" y="188" text-anchor="middle">mini CDU · pump · chiller</text><text class="s" x="600" y="206" text-anchor="middle">flow · &Delta;P · temperature</text></g>
+          <g class="node" data-key="load"><rect class="shape" x="740" y="130" width="200" height="96" rx="12"/><text class="t" x="840" y="164" text-anchor="middle">Thermal load</text><text class="s" x="840" y="188" text-anchor="middle">stress tool</text><text class="s" x="840" y="206" text-anchor="middle">or heaters</text></g>
+          <line class="axis" x1="120" y1="228" x2="120" y2="268" marker-end="url(#arrow)"/><line class="axis" x1="360" y1="228" x2="360" y2="268" marker-end="url(#arrow)"/><line class="axis" x1="600" y1="228" x2="600" y2="268" marker-end="url(#arrow)"/><line class="axis" x1="840" y1="228" x2="840" y2="268" marker-end="url(#arrow)"/>
+          <g class="node" data-key="interface" style="--tint:14%"><rect class="shape" x="20" y="270" width="920" height="64" rx="12"/><text class="t" x="480" y="298" text-anchor="middle">Rack-emulating interface</text><text class="s" x="480" y="320" text-anchor="middle">busbar-style power contacts · blind-mate quick disconnects · guides · presence sensing</text></g>
+          <line class="axis" x1="480" y1="336" x2="480" y2="370" marker-end="url(#arrow)"/>
+          <g class="node" data-key="dut"><rect class="shape dashed" x="330" y="372" width="300" height="56" rx="10"/><text class="t" x="480" y="406" text-anchor="middle">Node under test (DUT)</text></g>
+          <g class="node" data-key="safety"><rect class="shape" x="20" y="444" width="920" height="44" rx="10"/><text class="t" x="40" y="472">Safety</text><text class="s" x="130" y="472">e-stop · interlocks · leak sensor · drip tray · hardware current and temperature trips</text></g>
+        </svg>
+      </div>
+      <div class="detail" id="panel-stand" aria-live="polite"></div>
+    </div>
+
+    <h3>Node stand or rack stand?</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>Node test stand</th><th>Rack test stand</th></tr></thead>
+        <tbody>
+          <tr><td><b>Tests</b></td><td>One node at a time, before it is racked</td><td>The assembled rack as one product</td></tr>
+          <tr><td><b>Power</b></td><td>Programmable DC source standing in for the busbar</td><td>The real power shelf, fed from a facility-like AC or HVDC source with a metering and protection panel</td></tr>
+          <tr><td><b>Liquid</b></td><td>Mini loop with a small chiller</td><td>Larger loop or a real CDU with a heat sink big enough for the full rack load</td></tr>
+          <tr><td><b>Load</b></td><td>Node stress software or heaters</td><td>Stress software on all nodes, sometimes load banks</td></tr>
+          <tr><td><b>Throughput</b></td><td>Many stands in parallel, minutes to hours per node</td><td>One or a few stands, hours to a day per rack</td></tr>
+          <tr><td><b>Catches</b></td><td>Node defects early, where they are cheap to fix</td><td>Integration defects: busbar, manifold, network, firmware mix, thermal balance</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Design checklist for a new stand</h3>
+    <div class="card">
+      <ul class="checklist">
+        <li>Source rated for the <b>maximum</b> node current, with margin</li>
+        <li>Connectors and cables rated, and their temperature monitored</li>
+        <li><b>Cycle counters</b> on contacts and quick disconnects, with replaceable parts</li>
+        <li>Interface alignment checked with a <b>golden node</b></li>
+        <li>Pressure and flow sensors with the range and accuracy the limits need</li>
+        <li>Fill, purge and drain points that are easy to reach</li>
+        <li>Hardware safety trips independent of the software</li>
+        <li>Calibration plan for meters and sensors</li>
+        <li>Spare parts for the wear items</li>
+        <li>Safety review with EHS before first power-on</li>
+      </ul>
+    </div>
+    </div>
+
+    <div class="subpage" data-sub="testing" data-title="Rack test plan">
     <h3>A rack-level test plan</h3>
     <p>Node tests still happen first. Then the assembled rack is tested as one product. This is a typical plan. The program's test specification decides the real list and limits.</p>
     <div class="table-wrap">
@@ -453,6 +568,60 @@
       </ul>
     </div>
     </div>
+
+    <div class="subpage" data-sub="trouble" data-title="Troubleshooting">
+    <p class="lead">When a rack or node fails a test, work from the symptom to the likely causes, and check the cheapest thing first. Use a <b>golden node or golden rack</b> and the <b>swap method</b> (move the suspect to another station, or a known-good part to this one) to separate a product problem from a tester problem.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Symptom</th><th>Likely causes</th><th>Check first</th></tr></thead>
+        <tbody>
+          <tr><td><b>Node does not power on</b></td><td>Busbar contact not seated. Shelf off or in fault. Power cap or policy in the BMC. Presence interlock</td><td>Shelf telemetry and LEDs, reseat the node, BMC log</td></tr>
+          <tr><td><b>Power shelf alarm</b></td><td>Load above capacity after a module failure. Input problem. Over-temperature</td><td>Compare load with the usable capacity (exercise 11), check input and fans</td></tr>
+          <tr><td><b>Busbar contact runs hot</b></td><td>Worn or dirty contact. Overload. Loose fixing</td><td>Thermal image under load, contact resistance, cycle count</td></tr>
+          <tr><td><b>BBU low runtime or not charging</b></td><td>Ageing or imbalanced cells. Temperature. Fault</td><td>BBU telemetry, a controlled discharge test</td></tr>
+          <tr><td><b>Low flow alarm</b></td><td>Closed valve. Air lock. Clogged filter or cold plate. Quick disconnect not fully mated. Pump problem</td><td>Valve states, flow and &Delta;P trend, purge, filter, re-mate the quick disconnects</td></tr>
+          <tr><td><b>High &Delta;P</b></td><td>Kinked hose. Clogged filter. Debris. Very cold glycol mix (more viscous)</td><td>Inspect the path, compare with the golden rack</td></tr>
+          <tr><td><b>Leak sensor trips</b></td><td>A real leak. Condensation (supply below dew point). Contaminated sensor</td><td>Look and feel first, then humidity and supply temperature. Dry the sensor and retest</td></tr>
+          <tr><td><b>Chip hot at normal flow</b></td><td>Cold plate mounting or thermal paste. Air bubble. Sensor error. Fan failure</td><td>Compare with the golden node, purge, re-seat the cold plate</td></tr>
+          <tr><td><b>Pressure decays in the leak test</b></td><td>Leak at a coupling, fitting or hose. Fluid temperature changing. Air compressing. Leak in the <em>fixture</em></td><td>Test the fixture alone first. Wait for thermal equilibrium. Isolate sections</td></tr>
+          <tr><td><b>Network link down</b></td><td>Wrong optic or cable type. Dirty fibre. Port configuration</td><td>Swap with a known-good cable and optic, clean, check speed settings</td></tr>
+          <tr><td><b>BMC unreachable</b></td><td>Management network or IP conflict. BMC firmware hang</td><td>Serial console, cabling, reset the BMC</td></tr>
+          <tr><td><b>Fails on one station only</b></td><td>Worn contacts. Calibration drift. Software or limits version</td><td>Golden-unit check, swap the node to another station, compare versions</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><p><b>Work the 4M1E list</b> (Man, Machine, Material, Method, Environment) before blaming the product. Most "product" failures at a new station turn out to be the station.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="ecosystem" data-title="Ecosystem and first 30 days">
+    <h3>What OCP is</h3>
+    <p>OCP is an open community where large operators, vendors and manufacturers publish hardware designs and specifications, so data-centre equipment can be built to shared designs instead of one-off ones. Work is organised in project areas, for example <b>Rack and Power</b>, <b>Server</b>, <b>Networking</b>, <b>Advanced Cooling Solutions</b>, <b>Hardware Management</b> and <b>Data Center Facilities</b>.</p>
+    <div class="note"><p>You may hear <b>OCP Accepted</b> (a product that meets an OCP specification and passed review) and <b>OCP Inspired</b> (based on OCP designs but not fully conformant). Ask which one the program is, and whether the customer adds its own variant on top.</p></div>
+
+    <h3>Documents to collect at the start</h3>
+    <div class="card">
+      <ul class="checklist">
+        <li><b>Rack specification</b>, with the exact version</li>
+        <li><b>Power shelf and BBU</b> specifications</li>
+        <li><b>Node (sled)</b> mechanical, power connector and management specifications</li>
+        <li><b>Liquid cooling:</b> manifold, quick-disconnect and CDU specifications</li>
+        <li><b>Customer test specification:</b> tests, limits, test pressure, load profile</li>
+        <li><b>BMC interface</b> document (Redfish schema, sensor names, firmware)</li>
+        <li><b>Safety and compliance</b> requirements for the program</li>
+        <li><b>Labelling and traceability</b> requirements (serial numbers, records per rack)</li>
+      </ul>
+    </div>
+    <p><b>Reading a specification:</b> separate the requirements ("shall") from the explanations, note the version and any errata, and check whether a customer addendum overrides something. When two documents disagree, write it down and ask. Do not pick one silently.</p>
+
+    <h3>A first-30-days plan</h3>
+    <div class="week">
+      <div class="day"><b>Week 1</b><p>Read the rack, power and node specifications. Walk through a sample rack with the safety briefing. List the variants in the program.</p></div>
+      <div class="day"><b>Week 2</b><p>Bring up a node on a stand: power and management only. Learn the BMC and Redfish commands. Read sensors and logs.</p></div>
+      <div class="day"><b>Week 3</b><p>Liquid basics on a sample loop: fill, purge, leak test, read flow and &Delta;P. Learn what each alarm means and trigger one on purpose.</p></div>
+      <div class="day"><b>Week 4</b><p>Dry-run the rack test plan. Write a gap list (missing access, specs, fixtures) and propose the first stand design.</p></div>
+    </div>
+    <p class="tag">Use the Glossary page (group "OCP rack and cooling") whenever a term is new.</p>
+    </div>
   </div>
 </section>
 
@@ -463,7 +632,7 @@
     <h2>Cooling: fan, water or immersion?</h2>
     <p class="lead">Every watt a rack uses becomes heat that has to go somewhere. As chips get hotter, air runs out of capacity and liquid takes over. This page compares the options, then goes deep on <b>water cooling</b>, the one an OCP rack is most likely to use.</p>
 
-    <div class="sub" data-sub="why" data-title="Why liquid?">
+    <div class="subpage" data-sub="why" data-title="Why liquid?">
     <h3>Why liquid? Heat per volume</h3>
     <p>Heat removed = mass flow &times; specific heat &times; temperature rise. Water holds about 3,500 times more heat than the same volume of air, so a thin pipe does the work of a huge airflow. Try it:</p>
     <div class="card calc" id="cooling-calc">
@@ -481,7 +650,7 @@
     </div>
     </div>
 
-    <div class="sub" data-sub="compare" data-title="Compare methods">
+    <div class="subpage" data-sub="compare" data-title="Compare methods">
     <h3>Compare the methods</h3>
     <p>Pick the methods to put side by side (on a phone, swipe the table sideways). The ranges are indicative. Real limits come from the design and the program specification.</p>
     <div id="cmp-chips" class="cmp-chips" role="group" aria-label="Methods to compare"></div>
@@ -489,7 +658,7 @@
     <div class="note"><p><b>Where OCP racks fit:</b> Open Racks are normally air-cooled or direct-to-chip liquid-cooled through a rack manifold, and the OCP Advanced Cooling Solutions project works on specifications for the liquid parts. Immersion tanks are usually a different mechanical format from an Open Rack, so check what the program really uses.</p></div>
     </div>
 
-    <div class="sub" data-sub="water" data-title="Water cooling">
+    <div class="subpage" data-sub="water" data-title="Water cooling">
     <h3>Water cooling in an OCP rack</h3>
     <p>Heat travels left to right: from the chip into the coolant, through the CDU into the facility water, and out of the building. Two loops keep the clean rack coolant apart from building water. Click any part.</p>
     <div class="diagram">
@@ -528,7 +697,7 @@
     </div>
     </div>
 
-    <div class="sub" data-sub="testing" data-title="What a TDE tests">
+    <div class="subpage" data-sub="testing" data-title="What a TDE tests">
     <h3>What a TDE tests on a water-cooled rack</h3>
     <div class="table-wrap">
       <table>
@@ -744,7 +913,7 @@
 <section class="block view" id="practice">
   <div class="container">
     <span class="kicker">09 · Practice</span>
-    <h2>Prove it: ten exercises</h2>
+    <h2>Prove it: eleven exercises</h2>
     <p class="lead">Two kinds of challenge. In <b>Implement</b> exercises you write a function and hidden tests grade it. In <b>Write the tests</b> exercises the code already exists in one correct and several buggy versions, and your tests must tell them apart, because a tester that cannot spot a planted bug will not spot a real one. Progress and code are saved in this browser.</p>
     <div id="practice-root"></div>
   </div>

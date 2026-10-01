@@ -507,7 +507,7 @@
       (v.querySelector(".container") || v).append(pager);
 
       // long pages are split into sub-pages: #page/sub
-      const subs = $$(".sub", v);
+      const subs = $$(".subpage[data-sub]", v);
       if (subs.length) {
         const nav = el("nav", { class: "subnav", "aria-label": `${labels[v.id]} sections` },
           subs.map((sub, n) => el("a", { href: `#${v.id}/${sub.dataset.sub}`, "data-sub": sub.dataset.sub }, el("span", {}, String(n + 1)), sub.dataset.title)));
@@ -520,9 +520,12 @@
       const [rawId, rawSub] = location.hash.slice(1).split("/");
       const id = ids.includes(rawId) ? rawId : "top";
       const view = $(`#${id}`);
-      const subs = $$(".sub", view);
+      const subs = $$(".subpage[data-sub]", view);
       const names = subs.map((s) => s.dataset.sub);
       const sub = subs.length ? (names.includes(rawSub) ? rawSub : names[0]) : null;
+      // tidy up links such as #top/undefined or #cooling/bogus
+      const clean = sub ? `#${id}/${sub}` : `#${id}`;
+      if (rawSub !== undefined && (!sub || sub !== rawSub)) history.replaceState(null, "", clean);
       if (id === current && sub === currentSub) return;
 
       const first = current === null, viewChanged = id !== current;
@@ -565,6 +568,7 @@
     bindDiagram("svg-line", "panel-line", TDE.DIAGRAMS.line, "fct");
     bindDiagram("svg-tester", "panel-tester", TDE.DIAGRAMS.tester, "drivers");
     bindDiagram("svg-rack", "panel-rack", TDE.DIAGRAMS.rack, "busbar");
+    bindDiagram("svg-stand", "panel-stand", TDE.DIAGRAMS.stand, "interface");
     bindDiagram("svg-loop", "panel-loop", TDE.DIAGRAMS.loop, "cdu");
     buildExamples();
     buildExercises();

@@ -330,6 +330,63 @@ TDE.DIAGRAMS = {
         <li><b>TDE checks:</b> follow the fill procedure, record the fluid batch, drain and dry before shipping if the program requires it.</li></ul>`,
     },
   },
+
+  stand: {
+    controller: {
+      title: "Station controller",
+      body: `<p>A PC or PLC that runs the test sequence and coordinates everything else: power, management network, liquid loop and load.</p>
+        <ul><li>Runs the sequence as a state machine with interlocks. Power and load never start before the loop is full and leak-tight.</li>
+        <li>Logs every step and uploads to MES, keyed by the node serial number.</li>
+        <li>Same structure as exercise 7, with more instruments.</li></ul>`,
+    },
+    dcsource: {
+      title: "Power: programmable DC source",
+      body: `<p>Stands in for the rack's power shelf and busbar. It must supply the node's full current, which for a multi-kW node at 48 V is over a hundred amps.</p>
+        <ul><li>Set voltage and current limits <em>before</em> enabling the output.</li>
+        <li>Measure inrush when the node is powered, and measure efficiency with accurate meters.</li>
+        <li><b>Watch out:</b> cables and connectors heat up at these currents. Use rated parts and watch their temperature.</li></ul>`,
+    },
+    mgmt: {
+      title: "Management network",
+      body: `<p>Gives the station access to the node's BMC and console.</p>
+        <ul><li>Redfish or IPMI for sensors, firmware version, power control and logs. A serial console for boot messages.</li>
+        <li>Keep it on its own network with a known IP, and keep clocks in sync (NTP) so records have trustworthy timestamps.</li>
+        <li>A node that powers on but cannot be managed is a failed node.</li></ul>`,
+    },
+    liquid: {
+      title: "Liquid loop (mini CDU)",
+      body: `<p>A small cooling system of its own: pump, chiller or heat exchanger to set the supply temperature, filter, reservoir, and sensors for flow, pressure and temperature. It connects to the node through blind-mate quick disconnects.</p>
+        <ul><li>Fill, purge and leak test happen here before any heat is applied.</li>
+        <li>Needs a relief valve, a drip tray and a leak sensor.</li></ul>`,
+    },
+    load: {
+      title: "Thermal load",
+      body: `<p>Makes the node produce heat in a controlled way: the node's own stress software (CPU and GPU burn), or electrical heaters standing in for chips.</p>
+        <ul><li>Apply load in a ramp, wait until readings are stable, then compare the electrical power with the heat carried away by the coolant (exercise 10).</li>
+        <li>Watch for thermal throttling. It hides a cooling problem.</li></ul>`,
+    },
+    interface: {
+      title: "Rack-emulating interface",
+      body: `<p>The part that physically mimics the rack: busbar-style power contacts, blind-mate quick disconnects, guide rails, and presence sensing.</p>
+        <ul><li><b>Wear items.</b> Contacts and QDs have a limited number of mating cycles. Count the cycles and make the parts replaceable.</li>
+        <li>Alignment decides whether every insertion is the same. Check it with a golden node.</li>
+        <li>A drip tray and protective caps keep spills off the electronics.</li></ul>`,
+    },
+    dut: {
+      title: "Node under test (DUT)",
+      body: `<p>The sled being tested. Scan its serial number first and record its firmware versions.</p>
+        <ul><li>Handle it according to its weight (lift assist for heavy nodes).</li>
+        <li>After a liquid test, drain and dry it if the program requires, and cap the quick disconnects.</li></ul>`,
+    },
+    safety: {
+      title: "Safety",
+      body: `<p>High current, liquid and heat share one station.</p>
+        <ul><li>Emergency stop that removes power (and stops the pump if the program says so).</li>
+        <li>Interlocks on guards and covers. A leak sensor under the rig that stops pump and power.</li>
+        <li><b>Hardware</b> trips for over-current and over-temperature that work even if the software hangs.</li>
+        <li>Pressure relief valve, drip tray, clear indicator lamps.</li></ul>`,
+    },
+  },
 };
 
 /* ------------------------------------------------------------------ examples */
@@ -1935,6 +1992,117 @@ def test_balance_needs_a_positive_applied_load():
         heat_balance_ok(0, 1)
 `,
   },
+
+  /* --------------------------------------------------------------------- 11 */
+  {
+    id: "power-budget",
+    level: "Easy",
+    kind: "implement",
+    title: "Power shelf redundancy and BBU ride-through",
+    summary: "Does the rack survive a failed module, and how long can the battery carry it?",
+    brief: `<p>An Open Rack power shelf holds several rectifier modules. With <b>N+1</b> redundancy the rack must keep running when one module fails. A battery shelf (BBU) bridges short outages. Implement three functions (all numbers in kW, kWh or seconds):</p>
+      <ul>
+        <li><code>usable_capacity_kw(modules_kw, failed=1)</code>: total capacity that is left when the <code>failed</code> <b>largest</b> modules are lost. <code>ValueError</code> if <code>failed</code> is negative or larger than the number of modules.</li>
+        <li><code>redundancy_ok(modules_kw, load_kw, failed=1)</code>: <code>True</code> when the usable capacity is at least the load (equal passes). <code>ValueError</code> if <code>load_kw</code> is negative.</li>
+        <li><code>bbu_runtime_s(energy_kwh, load_kw, usable_pct=80)</code>: seconds the battery can carry the load, using only <code>usable_pct</code> percent of its energy. <code>ValueError</code> if energy is negative, load is not positive, or <code>usable_pct</code> is not in the range 0 &lt; pct &le; 100.</li>
+      </ul>
+      <p class="note">Example: six 5.5 kW modules give 33 kW, but with one lost only 27.5 kW remain. A 30 kW rack is then <em>not</em> protected. The rack needs a seventh module, or a power cap. These are illustration numbers, not a specification.</p>`,
+    starter: String.raw`def usable_capacity_kw(modules_kw, failed=1):
+    raise NotImplementedError
+
+def redundancy_ok(modules_kw, load_kw, failed=1):
+    raise NotImplementedError
+
+def bbu_runtime_s(energy_kwh, load_kw, usable_pct=80):
+    raise NotImplementedError
+`,
+    hints: [
+      "Sort the module ratings. Losing the <em>largest</em> ones is the worst case, so keep <code>sorted(modules)[: len(modules) - failed]</code>.",
+      "<code>redundancy_ok</code> can call <code>usable_capacity_kw</code> and compare with <code>&gt;=</code>.",
+      "Runtime in seconds = <code>energy_kwh * usable_pct / 100 / load_kw * 3600</code>. Validate the inputs first.",
+    ],
+    solution: String.raw`def usable_capacity_kw(modules_kw, failed=1):
+    if failed < 0 or failed > len(modules_kw):
+        raise ValueError("failed must be between 0 and the number of modules")
+    keep = sorted(modules_kw)[: len(modules_kw) - failed]   # drop the largest ones
+    return float(sum(keep))
+
+def redundancy_ok(modules_kw, load_kw, failed=1):
+    if load_kw < 0:
+        raise ValueError("load must not be negative")
+    return usable_capacity_kw(modules_kw, failed) >= load_kw
+
+def bbu_runtime_s(energy_kwh, load_kw, usable_pct=80):
+    if energy_kwh < 0:
+        raise ValueError("energy must not be negative")
+    if load_kw <= 0:
+        raise ValueError("load must be positive")
+    if not (0 < usable_pct <= 100):
+        raise ValueError("usable_pct must be in (0, 100]")
+    return energy_kwh * usable_pct / 100 / load_kw * 3600
+`,
+    tests: String.raw`import pytest
+
+def test_losing_one_of_six_equal_modules():
+    assert usable_capacity_kw([5.5] * 6, failed=1) == pytest.approx(27.5)
+
+def test_no_failures_means_full_capacity():
+    assert usable_capacity_kw([5.5] * 6, failed=0) == pytest.approx(33.0)
+
+def test_the_largest_modules_are_the_ones_lost():
+    assert usable_capacity_kw([3, 5, 5, 7], failed=1) == pytest.approx(13)
+    assert usable_capacity_kw([3, 5, 5, 7], failed=2) == pytest.approx(8)
+
+def test_losing_every_module_leaves_nothing():
+    assert usable_capacity_kw([4, 4], failed=2) == pytest.approx(0)
+
+@pytest.mark.parametrize("failed", [-1, 3])
+def test_bad_failed_count_is_rejected(failed):
+    with pytest.raises(ValueError):
+        usable_capacity_kw([4, 4], failed=failed)
+
+def test_the_input_list_is_not_modified():
+    mods = [7, 3, 5]
+    usable_capacity_kw(mods)
+    assert mods == [7, 3, 5]
+
+def test_six_modules_do_not_protect_a_30_kw_rack():
+    assert redundancy_ok([5.5] * 6, 30) is False
+
+def test_seven_modules_do_protect_it():
+    assert redundancy_ok([5.5] * 7, 30) is True
+
+def test_capacity_equal_to_load_passes_and_just_above_fails():
+    assert redundancy_ok([5, 5, 5], 10) is True
+    assert redundancy_ok([5, 5, 5], 10.01) is False
+
+def test_more_failures_tolerated_when_asked():
+    assert redundancy_ok([5] * 6, 15, failed=3) is True
+    assert redundancy_ok([5] * 6, 16, failed=3) is False
+
+def test_negative_load_is_rejected():
+    with pytest.raises(ValueError):
+        redundancy_ok([5, 5], -1)
+
+def test_bbu_runtime_example():
+    # 1.25 kWh, 80% usable = 1 kWh, at 30 kW: 2 minutes
+    assert bbu_runtime_s(1.25, 30, 80) == pytest.approx(120)
+
+def test_bbu_runtime_with_all_energy_usable():
+    assert bbu_runtime_s(2, 10, 100) == pytest.approx(720)
+
+def test_bbu_default_usable_is_80_percent():
+    assert bbu_runtime_s(1.25, 30) == pytest.approx(120)
+
+def test_empty_battery_runs_zero_seconds():
+    assert bbu_runtime_s(0, 10) == pytest.approx(0)
+
+@pytest.mark.parametrize("args", [(-1, 10), (1, 0), (1, -5), (1, 10, 0), (1, 10, 101)])
+def test_bbu_rejects_bad_input(args):
+    with pytest.raises(ValueError):
+        bbu_runtime_s(*args)
+`,
+  },
 ];
 
 /* ------------------------------------------------------------------ glossary */
@@ -2119,7 +2287,7 @@ TDE.GLOSSARY = [
     intro: "Terms for OCP racks, power and liquid cooling.",
     items: [
       ["OCP", "Open Compute Project", "A community that publishes open hardware designs for data centres: racks, servers, power, networking and cooling."],
-      ["ORv3", "Open Rack Version 3", "The third-generation OCP rack, with a 48 V DC busbar. Earlier versions used 12 V."],
+      ["ORv3", "Open Rack Version 3", "The third-generation OCP rack, with a 48 V DC busbar. Earlier versions used a 12 V-class busbar."],
       ["OU / OpenU", "Open Unit", "Height unit of an Open Rack: 48 mm, against 44.45 mm for a standard 1U."],
       ["ToR", "Top of Rack", "The switch at the top of a rack that links its nodes to the network."],
       ["BBU", "Battery Backup Unit", "A battery shelf that keeps the rack powered briefly after power loss."],
@@ -2146,6 +2314,13 @@ TDE.GLOSSARY = [
       ["HX", "Heat Exchanger", "A device that passes heat from one fluid to another."],
       ["ACS", "Advanced Cooling Solutions", "The OCP project that works on liquid-cooling specifications."],
       ["ASHRAE", "American Society of Heating, Refrigerating and Air-Conditioning Engineers", "Publishes data-centre thermal and liquid-cooling guidelines, including facility-water temperature classes."],
+      ["PMBus", "Power Management Bus", "An open standard, running over I2C, for monitoring and controlling power supplies and converters."],
+      ["SELV", "Safety Extra-Low Voltage", "Voltage levels (for DC, commonly up to 60 V) treated as low risk of shock. A 48 V busbar is below it but can still supply very high current."],
+      ["N+1 / N+N", "Redundancy schemes", "N modules carry the load and one (or N) spare modules take over if a module fails."],
+      ["GPU", "Graphics Processing Unit", "The accelerator chip used for AI work. Draws hundreds of watts each, which is why AI racks need liquid cooling."],
+      ["OAM", "OCP Accelerator Module", "An OCP-defined module form factor for accelerators such as GPUs."],
+      ["NIC", "Network Interface Card", "The adapter that connects a node to the network."],
+      ["OCP Accepted / Inspired", "OCP recognition levels", "Accepted: the product meets an OCP specification and passed OCP review. Inspired: based on OCP designs but not fully conformant."],
       ["PFAS", "Per- and polyfluoroalkyl substances", "A chemical family under regulatory scrutiny. Some two-phase cooling fluids contain them."],
     ],
   },

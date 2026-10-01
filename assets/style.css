@@ -369,13 +369,19 @@ table.cmp tr.hl th { background: var(--accent-soft); color: var(--accent); }
 @media (max-width: 640px) { table.cmp { --first: 6.5rem; --col: 14rem; } table.cmp tbody th { font-size: .7rem; } }
 
 /* ---------------------------------------------------------------- sub-pages inside a long page */
-.js-views .sub { display: none; }
-.js-views .sub.active { display: block; animation: view-in .2s ease-out; }
+.js-views .subpage { display: none; }
+.js-views .subpage.active { display: block; animation: view-in .2s ease-out; }
 .subnav { display: flex; gap: 6px; overflow-x: auto; margin: 22px 0 6px; padding-bottom: 8px; border-bottom: 1px solid var(--line); scrollbar-width: thin; }
 .subnav a { display: flex; align-items: center; gap: 8px; flex: none; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-weight: 600; font-size: .92rem; text-decoration: none; white-space: nowrap; }
 .subnav a span { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); font: 700 .72rem var(--mono); }
 .subnav a:hover { color: var(--ink); border-color: var(--accent); }
 .subnav a[aria-current] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .subnav a[aria-current] span { background: rgba(255, 255, 255, .25); color: inherit; }
-.sub > h3:first-child { margin-top: 24px; }
-@media print { .js-views .sub { display: block !important; } .subnav { display: none; } }
+.subpage > h3:first-child { margin-top: 24px; }
+@media print { .js-views .subpage { display: block !important; } .subnav { display: none; } }
+
+/* wide text tables scroll sideways on phones instead of crushing their columns */
+@media (max-width: 640px) {
+  .table-wrap > table:not(.cmp):not(.spec) { min-width: 38rem; }
+  .table-wrap > table:not(.cmp):not(.spec) th:first-child, .table-wrap > table:not(.cmp):not(.spec) td:first-child { min-width: 7.5rem; }
+}
