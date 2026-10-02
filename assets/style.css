@@ -170,7 +170,7 @@ table.spec { width: auto; margin: 8px 0 16px; border: 1px solid var(--line); bor
 .hint-line { font-size: .88rem; color: var(--muted); margin: 6px 0 0; }
 svg text { fill: var(--ink); }
 svg .t { font-size: 16px; font-weight: 650; }
-#svg-phases .t, #svg-line .t, #svg-nodeflow .t { font-size: 14.5px; }
+#svg-phases .t, #svg-line .t, #svg-nodeflow .t, #svg-fab .t { font-size: 14.5px; }
 svg .s { font-size: 13.5px; fill: var(--muted); }
 svg .cap { font-size: 14px; fill: var(--muted); }
 svg .big { font-size: 14px; font-weight: 600; fill: var(--muted); }
@@ -448,3 +448,16 @@ button.cell { width: 42px; height: 34px; border-radius: 8px; border: 1px solid v
 button.cell:hover { border-color: var(--accent); }
 button.cell.lv1 { background: var(--medium-bg); color: var(--medium); border-color: transparent; }
 button.cell.lv2 { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+
+/* ---------------------------------------------------------------- build verification checklist */
+.fab-root { display: grid; gap: 14px; margin: 14px 0; }
+.fab-group { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 18px; }
+.fab-group h4 { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+.fab-prog { font: 700 .78rem var(--mono); color: var(--muted); background: var(--surface-2); padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+.fab-prog.full { background: var(--easy-bg); color: var(--easy); }
+.fab-group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.fab-group label { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; padding: 7px 6px; border-radius: 8px; cursor: pointer; line-height: 1.45; }
+.fab-group label:hover { background: var(--surface-2); }
+.fab-group input[type=checkbox] { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--accent); cursor: pointer; }
+.fab-group input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--muted) 50%, transparent); }
+@media print { .fab-group input { appearance: auto; } .fab-group input:checked + span { text-decoration: none; color: inherit; } }

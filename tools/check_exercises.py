@@ -94,6 +94,8 @@ criteria = [k for k, _ in tde["COOLING"]["criteria"]]
 for m in tde["COOLING"]["methods"]:
     missing = [k for k in criteria if not m.get(k, "").strip()]
     check(f"cooling method {m['id']} has every criterion", not missing, ", ".join(missing))
+for grp in tde.get("FAB_CHECKS", []):
+    check(f"checklist group {grp['id']} has items", len(grp["items"]) >= 3 and all(isinstance(i, str) and i.strip() for i in grp["items"]))
 for dname, d in tde["DIAGRAMS"].items():
     check(f"diagram {dname} has detail text", all(v["title"] and v["body"] for v in d.values()))
 

@@ -630,6 +630,77 @@
     fixture();
   }
 
+  /* ------------------------------------------------------------ fabrication: power budget + build checklist */
+  function buildFabrication() {
+    if (!$("#pb-calc")) return;
+    const num = (id) => parseFloat($(`#${id}`).value);
+    const set = (id, text) => { $(`#${id}`).textContent = text; };
+    const fmt = (n, d = 0) => n.toLocaleString("en-US", { maximumFractionDigits: d, minimumFractionDigits: d });
+
+    /* --- rack power budget */
+    function budget() {
+      const watts = [1, 2, 3, 4, 5].map((n) => num(`pb-w${n}`));
+      const v = num("pb-v"), pf = num("pb-pf"), cb = num("pb-cb"), lim = num("pb-lim") / 100;
+      if (watts.some((w) => !(w >= 0)) || !(v > 0) || !(pf > 0 && pf <= 1) || !(cb > 0) || !(lim > 0 && lim <= 1)) {
+        ["pb-total", "pb-amps", "pb-head", "pb-heat"].forEach((id) => set(id, "–")); set("pb-verdict", "Check the inputs."); return;
+      }
+      const total = watts.reduce((a, b) => a + b, 0);
+      const va = total / pf, amps = va / v, allowed = cb * lim;
+      set("pb-total", `${fmt(total)} W`);
+      set("pb-va", `${fmt(va)} VA at power factor ${pf}`);
+      set("pb-amps", `${fmt(amps, 1)} A`);
+      set("pb-allow", `limit ${fmt(allowed, 1)} A (${fmt(lim * 100)}% of a ${fmt(cb)} A breaker)`);
+      set("pb-head", `${fmt(((allowed - amps) / allowed) * 100)}%`);
+      set("pb-verdict", amps > allowed ? "OVER the limit: split the load or use a bigger circuit" : amps > allowed * 0.9 ? "within the limit but tight" : "within the limit");
+      set("pb-heat", `${fmt(total * 3.412)} BTU/h`);
+    }
+    ["pb-w1", "pb-w2", "pb-w3", "pb-w4", "pb-w5", "pb-v", "pb-pf", "pb-cb", "pb-lim"].forEach((id) => $(`#${id}`).addEventListener("input", budget));
+    budget();
+
+    /* --- interactive build verification checklist */
+    const root = $("#fab-checklist");
+    if (!root || !TDE.FAB_CHECKS) return;
+    let done = new Set(store.get("tde.fabchecks", []));
+    const keyOf = (g, i) => `${g.id}-${i}`;
+    const all = TDE.FAB_CHECKS.flatMap((g) => g.items.map((_, i) => keyOf(g, i)));
+    done = new Set([...done].filter((k) => all.includes(k)));
+
+    function paint() {
+      let total = 0, ticked = 0, next = null;
+      TDE.FAB_CHECKS.forEach((g) => {
+        const n = g.items.filter((_, i) => done.has(keyOf(g, i))).length;
+        total += g.items.length; ticked += n;
+        if (!next && n < g.items.length) next = g.title;
+        const head = $(`#fab-g-${g.id} .fab-prog`);
+        if (head) { head.textContent = `${n}/${g.items.length}`; head.classList.toggle("full", n === g.items.length); }
+      });
+      set("fab-total", `${fmt((ticked / total) * 100)}%`);
+      set("fab-count", `${ticked} of ${total} items`);
+      set("fab-next", next ? next.split(" (")[0] : "All done");
+    }
+
+    root.replaceChildren(...TDE.FAB_CHECKS.map((g) => el("section", { class: "fab-group", id: `fab-g-${g.id}` },
+      el("h4", {}, g.title, el("span", { class: "fab-prog" }, "")),
+      el("ul", {}, g.items.map((text, i) => {
+        const key = keyOf(g, i);
+        const box = el("input", { type: "checkbox", id: `fab-${key}` });
+        box.checked = done.has(key);
+        box.addEventListener("change", () => {
+          if (box.checked) done.add(key); else done.delete(key);
+          store.set("tde.fabchecks", [...done]);
+          paint();
+        });
+        return el("li", {}, el("label", { for: `fab-${key}` }, box, el("span", {}, text)));
+      })))));
+    $("#fab-reset").addEventListener("click", () => {
+      if (!confirm("Clear every tick in the checklist?")) return;
+      done.clear(); store.set("tde.fabchecks", []);
+      $$("#fab-checklist input[type=checkbox]").forEach((b) => (b.checked = false));
+      paint();
+    });
+    paint();
+  }
+
   /* ------------------------------------------------------------ theme + nav */
   function setupTheme() {
     const root = document.documentElement;
@@ -654,12 +725,13 @@
     { id: "start", title: "Start", pages: ["top"] },
     { id: "job", title: "The job", pages: ["role", "models", "lifecycle"] },
     { id: "systems", title: "Test systems", pages: ["diagrams", "deep-dive", "planning", "tools"] },
+    { id: "build", title: "Build and fabricate", pages: ["fabrication"] },
     { id: "ocp", title: "OCP rack and cooling", pages: ["ocp", "cooling", "servertest"] },
     { id: "software", title: "Software", pages: ["py-guide", "py-examples", "py-practice", "sequencer"] },
     { id: "practice", title: "TDE examples and practice", pages: ["examples", "practice"] },
     { id: "ref", title: "Reference", pages: ["glossary"] },
   ];
-  const PAGE_LABELS = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", ocp: "OCP rack", cooling: "Cooling", sequencer: "Test sequencer", planning: "Capacity and cost", tools: "Strategy tools", servertest: "Node test", examples: "Examples", practice: "Practice", "py-guide": "Python guide", "py-examples": "Python examples", "py-practice": "Python practice", glossary: "Glossary" };
+  const PAGE_LABELS = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", ocp: "OCP rack", cooling: "Cooling", sequencer: "Test sequencer", planning: "Capacity and cost", tools: "Strategy tools", fabrication: "Fabricate a rack", servertest: "Node test", examples: "Examples", practice: "Practice", "py-guide": "Python guide", "py-examples": "Python examples", "py-practice": "Python practice", glossary: "Glossary" };
 
   function setupNavigation() {
     const html = document.documentElement;
@@ -949,6 +1021,7 @@
     bindDiagram("svg-rack", "panel-rack", TDE.DIAGRAMS.rack, "busbar");
     bindDiagram("svg-stand", "panel-stand", TDE.DIAGRAMS.stand, "interface");
     bindDiagram("svg-nodeflow", "panel-nodeflow", TDE.DIAGRAMS.nodeflow, "firmware");
+    bindDiagram("svg-fab", "panel-fab", TDE.DIAGRAMS.fab, "instructions");
     bindDiagram("svg-loop", "panel-loop", TDE.DIAGRAMS.loop, "cdu");
     buildExamples(TDE.EXAMPLES, "examples-root", "examples");
     buildExamples(TDE.PY_EXAMPLES, "py-examples-root", "py-examples");
@@ -958,6 +1031,7 @@
     buildCooling();
     buildPlanning();
     buildTools();
+    buildFabrication();
     progress.paint();
     setupNavigation();
   });

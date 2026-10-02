@@ -438,6 +438,62 @@ TDE.DIAGRAMS = {
         <li>Packed or staged safely. In the rack it meets the power, liquid and thermal tests of the rack test plan.</li></ul>`,
     },
   },
+
+  fab: {
+    design: {
+      title: "Design package",
+      body: `<p>Everything the build needs, released and reviewed <em>before</em> parts are ordered.</p>
+        <ul><li><b>Contains:</b> system block diagram, schematics, wire list, cable and harness drawings, general arrangement (where each item sits in the rack), BOM, power budget.</li>
+        <li><b>Reviewed with:</b> TE (does it prove what must be proven?), EHS (is it safe?), the technician who will build it (can it be built?).</li>
+        <li><b>Output:</b> a released revision. The build uses that revision and no other.</li></ul>`,
+    },
+    kitting: {
+      title: "Parts and kitting",
+      body: `<p>Collect, check and label parts so the build is not interrupted.</p>
+        <ul><li>Check every item against the BOM: model, rating, quantity. Record serial numbers of instruments.</li>
+        <li>Incoming inspection of critical parts. Check calibration certificates of instruments and sensors.</li>
+        <li>Kit by build step (cables, ferrules, labels, fasteners, tools) so the technician has what each step needs.</li>
+        <li><b>Watch out:</b> long-lead items such as instruments and special connectors. Order them at concept time.</li></ul>`,
+    },
+    instructions: {
+      title: "Wiring diagrams and instructions",
+      body: `<p>Turn the design into steps a technician can follow without guessing.</p>
+        <ul><li>Work instruction with safety notes, tools, torque values, photos or drawing references, and an acceptance check at every hold point.</li>
+        <li><b>Walk it through with the technician</b> before the build. They will find the unclear step, the missing tool and the cable that cannot be reached.</li>
+        <li>Print the released revision. Remove the old ones from the floor.</li></ul>`,
+    },
+    build: {
+      title: "Build: mechanical and wiring",
+      body: `<p>The technician builds to the instruction, and records what they did.</p>
+        <ul><li>Mechanical first: rails, shelves, instruments, grounding bar, trays. Then power wiring, then signal wiring.</li>
+        <li>Hold points: stop and get a check before closing up or powering anything.</li>
+        <li><b>Any deviation</b> from the drawing is written on the drawing (a red-line) and approved, not just done.</li>
+        <li><b>Stop work</b> when an instruction is unclear or unsafe. Asking is the correct behaviour.</li></ul>`,
+    },
+    inspect: {
+      title: "Inspect",
+      body: `<p>A second person checks the build against the drawing, with the rack still de-energised.</p>
+        <ul><li>Everything present and in the right place. Labels match the drawing. Torque marks, ferrules, strain relief, cable routing.</li>
+        <li>Protective earth bonded everywhere. No loose hardware or metal debris inside.</li>
+        <li>Record the result and the inspector. A build that only the builder has checked is not inspected.</li></ul>`,
+    },
+    verify: {
+      title: "Verify: power-up and test",
+      body: `<p>Prove the rack, in stages, from the safest check to the most realistic.</p>
+        <ul><li>Ring-out (wiring against the wire list), protective earth continuity, insulation test where required.</li>
+        <li>Staged first power-up, one subsystem at a time, with limits on current.</li>
+        <li>Safety functions (e-stop, interlocks), instrument self-tests and communication, I/O, then a golden unit and a known-bad unit through the real sequence.</li>
+        <li>Calibration records, then a soak run. The interactive checklist on this page lists all of it.</li></ul>`,
+    },
+    handover: {
+      title: "Hand over: as-built and sign-off",
+      body: `<p>The rack is delivered with the evidence that it is right.</p>
+        <ul><li>As-built drawings and wire list with every red-line included.</li>
+        <li>Test records, calibration certificates, punch list closed or accepted in writing.</li>
+        <li>Training for operators and technicians, work instruction and maintenance plan, spare parts and contacts.</li>
+        <li>Sign-off by MFG and TE. After that, the rack is in sustaining.</li></ul>`,
+    },
+  },
 };
 
 /* ------------------------------------------------------------------ examples */
@@ -981,6 +1037,51 @@ def test_overlapping_ranges_produce_duplicate_macs():
     batch_a = [mac_from_index(OUI, i) for i in range(0, 5)]
     batch_b = [mac_from_index(OUI, i) for i in range(4, 8)]     # starts one too early
     assert find_duplicates(batch_a + batch_b) == ["02:11:22:00:00:04"]
+`,
+  },
+  {
+    id: "ringout",
+    title: "13. Ring-out: expected vs measured connections",
+    runnable: true,
+    intro: "After wiring, a technician or an automatic tester <b>rings out</b> the harness: it checks that every wire in the wire list conducts (no <em>open</em>) and that nothing else is connected (no <em>short</em>). Pins are written as <code>connector-pin</code>. A pair is the same in either direction. Exercise 15 extends this to chains of connections.",
+    code: String.raw`def normalise(pairs):
+    """Each pair in a canonical order, duplicates removed."""
+    return {tuple(sorted(p)) for p in pairs}
+
+def ring_out(expected, measured):
+    exp, meas = normalise(expected), normalise(measured)
+    return {
+        "opens": sorted(exp - meas),      # in the wire list, not measured
+        "shorts": sorted(meas - exp),     # measured, not in the wire list
+    }
+
+WIRE_LIST = [("J1-1", "J2-1"), ("J1-2", "J2-2"), ("J1-3", "J2-3")]
+
+def test_a_correct_harness_has_no_findings():
+    assert ring_out(WIRE_LIST, WIRE_LIST) == {"opens": [], "shorts": []}
+
+def test_direction_does_not_matter():
+    reversed_pairs = [(b, a) for a, b in WIRE_LIST]
+    assert ring_out(WIRE_LIST, reversed_pairs) == {"opens": [], "shorts": []}
+
+def test_a_missing_connection_is_an_open():
+    measured = [("J1-1", "J2-1"), ("J1-3", "J2-3")]
+    assert ring_out(WIRE_LIST, measured) == {"opens": [("J1-2", "J2-2")], "shorts": []}
+
+def test_an_extra_connection_is_a_short():
+    measured = WIRE_LIST + [("J1-1", "J1-2")]
+    assert ring_out(WIRE_LIST, measured) == {"opens": [], "shorts": [("J1-1", "J1-2")]}
+
+def test_a_swapped_pair_shows_as_an_open_and_a_short():
+    # wires 1 and 2 crossed at connector J2
+    measured = [("J1-1", "J2-2"), ("J1-2", "J2-1"), ("J1-3", "J2-3")]
+    result = ring_out(WIRE_LIST, measured)
+    assert result["opens"] == [("J1-1", "J2-1"), ("J1-2", "J2-2")]
+    assert result["shorts"] == [("J1-1", "J2-2"), ("J1-2", "J2-1")]
+
+def test_duplicate_readings_are_ignored():
+    measured = WIRE_LIST + WIRE_LIST + [("J2-1", "J1-1")]
+    assert ring_out(WIRE_LIST, measured) == {"opens": [], "shorts": []}
 `,
   },
 ];
@@ -2577,6 +2678,112 @@ def test_the_two_burnin_functions_work_together():
 def test_burnin_hours_rejects_bad_input(args):
     with pytest.raises(ValueError):
         burnin_hours(*args)
+`,
+  },
+
+  /* --------------------------------------------------------------------- 15 */
+  {
+    id: "harness-ringout",
+    level: "Hard",
+    kind: "implement",
+    title: "Ring out a harness: opens and shorts",
+    summary: "Compare expected and measured nets with union-find.",
+    brief: `<p>A harness is checked with a switch matrix that reports which pins conduct to each other. Implement <code>ring_out(wire_list, measured)</code>. Both arguments are lists of pin pairs such as <code>("J1-1", "J2-1")</code>. A pair means the two pins are connected, in either direction. Chains join: <code>("A","B")</code> and <code>("B","C")</code> put A, B and C in <b>one net</b>.</p>
+      <ul>
+        <li>Build the nets of the <b>wire list</b> and the nets of the <b>measured</b> connections. A pin that appears in only one of them is its own net in the other.</li>
+        <li><code>"opens"</code>: every pair from the wire list whose two pins are <b>not</b> in the same measured net. Each pair is a tuple in sorted order, without duplicates, and the list is sorted.</li>
+        <li><code>"shorts"</code>: every pair of pins that are in the <b>same measured net</b> but in <b>different wire-list nets</b>. Again sorted tuples, no duplicates, list sorted.</li>
+        <li>Return <code>{"opens": [...], "shorts": [...]}</code>. Duplicate or reversed pairs in the input change nothing.</li>
+      </ul>
+      <p class="note">This is exactly what a ring-out reports. A swapped pair of wires appears as two opens and two shorts. Example 13 does the simple version without chains.</p>`,
+    starter: String.raw`def ring_out(wire_list, measured):
+    raise NotImplementedError
+`,
+    hints: [
+      "Union-find (a dict that maps each pin to a parent) gives you the net of every pin. Write a small <code>find</code> that follows parents, and a <code>union</code> for each pair.",
+      "Build one structure for the wire list and one for the measured list. Then a pair is <em>open</em> if <code>find_measured(a) != find_measured(b)</code>.",
+      "For shorts, look at every pair of pins in the same measured net (<code>itertools.combinations</code> on the sorted pins of each net) and keep those whose wire-list nets differ.",
+    ],
+    solution: String.raw`from itertools import combinations
+
+def _nets(pairs):
+    parent = {}
+    def find(x):
+        parent.setdefault(x, x)
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    for a, b in pairs:
+        parent[find(a)] = find(b)
+    return find
+
+def ring_out(wire_list, measured):
+    expected_find = _nets(wire_list)
+    measured_find = _nets(measured)
+
+    opens = sorted({tuple(sorted(pair)) for pair in wire_list
+                    if measured_find(pair[0]) != measured_find(pair[1])})
+
+    groups = {}
+    for a, b in measured:
+        for pin in (a, b):
+            groups.setdefault(measured_find(pin), set()).add(pin)
+
+    shorts = set()
+    for pins in groups.values():
+        for a, b in combinations(sorted(pins), 2):
+            if expected_find(a) != expected_find(b):
+                shorts.add((a, b))
+    return {"opens": opens, "shorts": sorted(shorts)}
+`,
+    tests: String.raw`WIRES = [("J1-1", "J2-1"), ("J1-2", "J2-2")]
+
+def test_a_correct_harness():
+    assert ring_out(WIRES, WIRES) == {"opens": [], "shorts": []}
+
+def test_order_and_duplicates_do_not_matter():
+    measured = [("J2-2", "J1-2"), ("J2-1", "J1-1"), ("J1-1", "J2-1")]
+    assert ring_out(WIRES + WIRES, measured) == {"opens": [], "shorts": []}
+
+def test_a_missing_wire_is_an_open():
+    assert ring_out(WIRES, [("J1-1", "J2-1")]) == {"opens": [("J1-2", "J2-2")], "shorts": []}
+
+def test_a_chain_is_one_net_so_one_missing_link_is_one_open():
+    wires = [("A", "B"), ("B", "C")]
+    assert ring_out(wires, [("A", "B")]) == {"opens": [("B", "C")], "shorts": []}
+
+def test_a_chain_measured_end_to_end_only_is_still_open_in_the_middle():
+    wires = [("A", "B"), ("B", "C")]
+    assert ring_out(wires, [("A", "C")]) == {"opens": [("A", "B"), ("B", "C")], "shorts": []}
+
+def test_an_extra_connection_between_two_wires_is_a_short():
+    measured = WIRES + [("J1-1", "J1-2")]
+    result = ring_out(WIRES, measured)
+    assert result["opens"] == []
+    assert result["shorts"] == [
+        ("J1-1", "J1-2"), ("J1-1", "J2-2"), ("J1-2", "J2-1"), ("J2-1", "J2-2")]
+
+def test_a_short_to_a_pin_that_is_not_in_the_wire_list():
+    result = ring_out([("A", "B")], [("A", "B"), ("B", "X")])
+    assert result == {"opens": [], "shorts": [("A", "X"), ("B", "X")]}
+
+def test_crossed_wires_give_opens_and_shorts():
+    measured = [("J1-1", "J2-2"), ("J1-2", "J2-1")]
+    result = ring_out(WIRES, measured)
+    assert result["opens"] == [("J1-1", "J2-1"), ("J1-2", "J2-2")]
+    assert result["shorts"] == [("J1-1", "J2-2"), ("J1-2", "J2-1")]
+
+def test_nothing_measured_means_every_wire_is_open():
+    assert ring_out(WIRES, []) == {"opens": sorted(WIRES), "shorts": []}
+
+def test_empty_inputs():
+    assert ring_out([], []) == {"opens": [], "shorts": []}
+
+def test_the_results_are_sorted_tuples():
+    result = ring_out([("Z", "A")], [])
+    assert result["opens"] == [("A", "Z")]
+    assert isinstance(result["opens"][0], tuple)
 `,
   },
 ];
@@ -5180,6 +5387,27 @@ TDE.GLOSSARY = [
     ],
   },
   {
+    id: "fab", title: "Fabrication and wiring",
+    intro: "Terms for building and checking a tester rack.",
+    items: [
+      ["PE", "Protective Earth", "The safety ground conductor (green and yellow in most countries). Every conductive part is bonded to it."],
+      ["MCB", "Miniature Circuit Breaker", "A resettable breaker that protects a circuit and its wire from overcurrent."],
+      ["RCD / ELCB", "Residual Current Device / Earth Leakage Circuit Breaker", "Trips when current leaks to earth, which protects people from shock."],
+      ["AWG", "American Wire Gauge", "A wire-size standard. A smaller number means a thicker wire. Metric sizes are given in mm squared."],
+      ["GA drawing", "General Arrangement drawing", "Shows where every item sits in the rack."],
+      ["Harness", "Wire harness", "A bundle of wires and connectors made as one assembly to a drawing."],
+      ["Ferrule", "Wire-end ferrule", "A small metal sleeve crimped on a stranded wire end so it clamps well in a terminal."],
+      ["Hi-pot", "High-potential (dielectric withstand) test", "Applies a high voltage between circuits and earth to prove the insulation. Done only by qualified people."],
+      ["FOD", "Foreign Object Debris", "Loose items such as screws, clippings or metal shavings left inside equipment."],
+      ["FAT / SAT", "Factory / Site Acceptance Test", "Acceptance tests at the builder's factory and again where the equipment is installed."],
+      ["Red-line", "Marked-up drawing", "A change to the drawing written during the build and approved. It becomes the as-built record."],
+      ["As-built", "As-built documentation", "Drawings and lists updated to show exactly what was built."],
+      ["Punch list", "List of open items", "Remaining defects or tasks to close before sign-off."],
+      ["IEC 60204-1", "Safety of machinery: electrical equipment of machines", "A widely used standard for electrical design of machine control cabinets."],
+      ["IEC 61010-1", "Safety requirements for electrical equipment for measurement, control and laboratory use", "A standard that applies to test and measurement equipment."],
+    ],
+  },
+  {
     id: "ocp", title: "OCP rack and cooling",
     intro: "Terms for OCP racks, power and liquid cooling.",
     items: [
@@ -5326,3 +5554,69 @@ TDE.COOLING = {
     },
   ],
 };
+
+/* ------------------------------------------------------------------ build verification checklist */
+/* Typical checks for a finished tester rack. Follow the applicable standard and your own EHS rules. */
+TDE.FAB_CHECKS = [
+  {
+    id: "before", title: "A. Before power (rack de-energised)",
+    items: [
+      "The drawing and wire-list revision matches the released build package. The revision is recorded",
+      "Every BOM item is present and correct. Model and serial numbers of instruments are recorded",
+      "The rack is levelled and secured. Panels, doors and blanking panels fit. No sharp edges",
+      "No loose hardware, wire clippings or metal debris inside the rack",
+      "Terminals and fasteners are torqued to the specified values and marked",
+      "Wires have the right gauge and colour. Ferrules are fitted and crimps checked. No bare copper beyond the terminal",
+      "Strain relief is fitted. Cables are not under tension and the bend radius is respected",
+      "Power and signal cables are separated. Nothing is pinched by doors, slides or covers",
+      "Every wire, cable, connector, breaker and instrument is labelled as drawn. Warning labels are fitted",
+      "Every conductive part is bonded to protective earth. Earth continuity is measured and recorded",
+      "Ring-out: every wire is checked against the wire list, with no unintended connections between power, ground and signals",
+      "Fuses and breakers have the ratings on the drawing",
+      "Insulation or dielectric test done where the applicable standard requires it, by a qualified person",
+    ],
+  },
+  {
+    id: "power", title: "B. First power-up (staged)",
+    items: [
+      "A second person is present. Everyone knows where the emergency stop is. The area is clear",
+      "First power is applied through a current-limited or metered source where possible",
+      "One subsystem is switched on at a time and its supply voltages are measured at the test points",
+      "Checked for heat, smell, noise and abnormal current. Stop at the first anomaly",
+      "Emergency stop, door interlocks and safety relays act as designed",
+      "Fans and cooling work in the right direction and temperatures settle",
+    ],
+  },
+  {
+    id: "function", title: "C. Function",
+    items: [
+      "Every instrument powers up and passes its self-test. Firmware versions are recorded",
+      "Communication with every instrument and with the controller works",
+      "Every input and output channel is exercised",
+      "The fixture interface mates correctly. A golden board reads correctly. Cycle counters and IDs are read",
+      "The correct software release is installed. The limits-file version and the station ID are recorded",
+      "The real sequence runs on a golden unit (expect PASS) and on a known-bad unit (expect FAIL)",
+      "Repeatability: the same unit measured many times stays within the allowed spread",
+      "Fault injection: unplugging an instrument or the DUT gives ERROR, never PASS",
+    ],
+  },
+  {
+    id: "cal", title: "D. Calibration and soak",
+    items: [
+      "Calibration certificates are valid and recorded for every instrument and sensor",
+      "A soak run at typical load for the agreed time, watching temperatures and errors",
+      "Critical connections are re-checked for torque after the soak (thermal cycling can loosen them)",
+    ],
+  },
+  {
+    id: "handover", title: "E. Handover",
+    items: [
+      "As-built drawings and wire list include every red-line change",
+      "Test records are stored: continuity, earth, insulation if required, power-up, function, soak",
+      "The punch list is closed, or every open item is accepted in writing",
+      "Operators and technicians are trained. The work instruction and maintenance plan are released",
+      "Spare parts list and support contacts are delivered",
+      "Sign-off by MFG and TE",
+    ],
+  },
+];

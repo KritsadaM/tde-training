@@ -7,9 +7,9 @@
   <title>TDE Training – Test Development Engineer</title>
   <meta name="description" content="Interactive training for Test Development Engineers in electronics manufacturing: CM and JDM programs, NPI and sustaining, tester hardware and software, diagrams, Python examples and hands-on exercises that run in your browser.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c7a6f'/%3E%3Cpath d='M8 17l5 5 11-12' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="assets/style.css?v=cfa4cefaff">
-  <script src="assets/content.js?v=cfa4cefaff" defer></script>
-  <script src="assets/app.js?v=cfa4cefaff" defer></script>
+  <link rel="stylesheet" href="assets/style.css?v=dad44a6d36">
+  <script src="assets/content.js?v=dad44a6d36" defer></script>
+  <script src="assets/app.js?v=dad44a6d36" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -25,7 +25,7 @@
   <div class="container">
     <button class="icon-btn" id="sb-toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide navigation"><span aria-hidden="true">☰</span></button>
     <a class="brand" href="#top"><span class="logo">TDE</span> Training</a>
-    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/24</span></span>
+    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/25</span></span>
     <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">☾</button>
   </div>
   <div id="progress-bar" aria-hidden="true"></div>
@@ -50,9 +50,9 @@
       <a class="btn" href="#practice">Jump to practice</a>
     </div>
     <ul class="stats">
-      <li><b>8</b><span>interactive diagrams</span></li>
-      <li><b>26</b><span>code examples</span></li>
-      <li><b>24</b><span>graded exercises</span></li>
+      <li><b>9</b><span>interactive diagrams</span></li>
+      <li><b>27</b><span>code examples</span></li>
+      <li><b>25</b><span>graded exercises</span></li>
       <li><b>0</b><span>installs needed</span></li>
     </ul>
 
@@ -65,16 +65,17 @@
       <a class="card link" href="#deep-dive"><span class="num">5</span><h4>Deep dive</h4><p>Strategy, hardware, fixtures, JTAG, software, retest policy, safety and more.</p></a>
       <a class="card link" href="#planning"><span class="num">6</span><h4>Capacity and cost</h4><p>How many testers, what a test costs, with calculators.</p></a>
       <a class="card link" href="#tools"><span class="num">7</span><h4>Strategy tools</h4><p>Coverage matrix, guardbands, burn-in time and fixture force.</p></a>
-      <a class="card link" href="#ocp"><span class="num">8</span><h4>OCP rack</h4><p>Open Rack basics, power, safety, test stands, troubleshooting and a 30-day plan.</p></a>
-      <a class="card link" href="#cooling"><span class="num">9</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
-      <a class="card link" href="#servertest"><span class="num">10</span><h4>Node test</h4><p>Testing server nodes: flow, tools, BMC and Redfish, golden configuration.</p></a>
-      <a class="card link" href="#py-guide"><span class="num">11</span><h4>Python guide</h4><p>Software: references, constructors, inheritance, class variables, overloading and overriding, abstract driver classes, Big O.</p></a>
-      <a class="card link" href="#py-examples"><span class="num">12</span><h4>Python examples</h4><p>Fourteen predict-then-run examples of what Python really does.</p></a>
-      <a class="card link" href="#py-practice"><span class="num">13</span><h4>Python practice</h4><p>Ten graded exercises, including a bug hunt and a driver design.</p></a>
-      <a class="card link" href="#sequencer"><span class="num">14</span><h4>Test sequencer</h4><p>Software: what a sequencer does, how to write steps, and a first-week plan for ISS3.</p></a>
-      <a class="card link" href="#examples"><span class="num">15</span><h4>TDE examples</h4><p>Twelve test-engineering examples. Eight run in your browser.</p></a>
-      <a class="card link" href="#practice"><span class="num">16</span><h4>TDE practice</h4><p>Fourteen graded test-engineering exercises with hints and solutions.</p></a>
-      <a class="card link" href="#glossary"><span class="num">17</span><h4>Glossary</h4><p>180+ acronyms grouped by topic, with search.</p></a>
+      <a class="card link" href="#fabrication"><span class="num">8</span><h4>Fabricate a rack</h4><p>Wiring diagrams, work instructions, precautions, build verification, working with technicians.</p></a>
+      <a class="card link" href="#ocp"><span class="num">9</span><h4>OCP rack</h4><p>Open Rack basics, power, safety, test stands, troubleshooting and a 30-day plan.</p></a>
+      <a class="card link" href="#cooling"><span class="num">10</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
+      <a class="card link" href="#servertest"><span class="num">11</span><h4>Node test</h4><p>Testing server nodes: flow, tools, BMC and Redfish, golden configuration.</p></a>
+      <a class="card link" href="#py-guide"><span class="num">12</span><h4>Python guide</h4><p>Software: references, constructors, inheritance, class variables, overloading and overriding, abstract driver classes, Big O.</p></a>
+      <a class="card link" href="#py-examples"><span class="num">13</span><h4>Python examples</h4><p>Fourteen predict-then-run examples of what Python really does.</p></a>
+      <a class="card link" href="#py-practice"><span class="num">14</span><h4>Python practice</h4><p>Ten graded exercises, including a bug hunt and a driver design.</p></a>
+      <a class="card link" href="#sequencer"><span class="num">15</span><h4>Test sequencer</h4><p>Software: what a sequencer does, how to write steps, and a first-week plan for ISS3.</p></a>
+      <a class="card link" href="#examples"><span class="num">16</span><h4>TDE examples</h4><p>Thirteen test-engineering examples. Nine run in your browser.</p></a>
+      <a class="card link" href="#practice"><span class="num">17</span><h4>TDE practice</h4><p>Fifteen graded test-engineering exercises with hints and solutions.</p></a>
+      <a class="card link" href="#glossary"><span class="num">18</span><h4>Glossary</h4><p>195+ acronyms grouped by topic, with search.</p></a>
     </div>
   </div>
 </section>
@@ -167,7 +168,7 @@
       </div>
     </div>
 
-    <div class="note"><p><b>Lost in acronyms?</b> The <a href="#glossary">Glossary</a> groups 180+ of them by topic: company, MFG, test, quality, software, Python, hardware, interfaces, server and node test, OCP rack and cooling, IT and safety. It is searchable.</p></div>
+    <div class="note"><p><b>Lost in acronyms?</b> The <a href="#glossary">Glossary</a> groups 195+ of them by topic: company, MFG, test, quality, software, Python, fabrication and wiring, hardware, interfaces, server and node test, OCP rack and cooling, IT and safety. It is searchable.</p></div>
   </div>
 </section>
 
@@ -634,6 +635,7 @@
             <tr><td><b>Cracked or damaged boards</b></td><td>Too much force, missing support pins</td><td>Reduce force, add supports</td></tr>
           </tbody></table></div>
         <p>Use the Fixture force calculator on the <a href="#tools/fixture">Strategy tools</a> page to check the numbers.</p>
+        <p>Building the rack that carries the fixture and instruments is covered on the <a href="#fabrication">Fabricate a rack</a> page.</p>
       </div>
     </details>
 
@@ -913,10 +915,330 @@ testers = round up ( needed / one tester gives )</code></pre>
   </div>
 </section>
 
+<!-- ============================================================ FABRICATE A RACK -->
+<section class="block view" id="fabrication">
+  <div class="container">
+    <span class="kicker">08 · Fabricate a rack</span>
+    <h2>Building a tester rack with technicians</h2>
+    <p class="lead">A TDE designs the tester and also <b>gets it built</b>: a rack of instruments, power supplies, a controller and a fixture interface, assembled by technicians and handed to Manufacturing. This page follows the work in order: <b>wiring diagrams</b>, <b>work instructions</b>, <b>precautions</b>, and then <b>how to test the finished rack</b>. The same flow applies to an OCP-style compute rack.</p>
+
+    <div class="subpage" data-sub="flow" data-title="From design to a working rack">
+      <h3>The flow</h3>
+      <p>Each step has an owner and an output. The loop at the bottom is the important one: when a build goes wrong, fix the <em>instruction and the drawing</em>, not only this rack. Click any step.</p>
+      <div class="diagram">
+        <div class="diagram-scroll">
+          <svg id="svg-fab" viewBox="0 0 960 215" role="group" aria-label="From design to handover">
+            <text class="s" x="72" y="40" text-anchor="middle">drawings, BOM</text><text class="s" x="208" y="40" text-anchor="middle">parts ready</text><text class="s" x="344" y="40" text-anchor="middle">released, walked through</text><text class="s" x="480" y="40" text-anchor="middle">technician</text><text class="s" x="616" y="40" text-anchor="middle">second person</text><text class="s" x="752" y="40" text-anchor="middle">staged tests</text><text class="s" x="888" y="40" text-anchor="middle">evidence</text>
+            <g class="node" data-key="design"><rect class="shape" x="16" y="50" width="112" height="76" rx="12"/><text class="t" x="72" y="84" text-anchor="middle">Design</text><text class="t" x="72" y="104" text-anchor="middle">package</text></g>
+            <g class="node" data-key="kitting"><rect class="shape" x="152" y="50" width="112" height="76" rx="12"/><text class="t" x="208" y="84" text-anchor="middle">Parts and</text><text class="t" x="208" y="104" text-anchor="middle">kitting</text></g>
+            <g class="node" data-key="instructions" style="--tint:12%"><rect class="shape" x="288" y="50" width="112" height="76" rx="12"/><text class="t" x="344" y="84" text-anchor="middle">Wiring +</text><text class="t" x="344" y="104" text-anchor="middle">instructions</text></g>
+            <g class="node" data-key="build" style="--tint:12%"><rect class="shape" x="424" y="50" width="112" height="76" rx="12"/><text class="t" x="480" y="84" text-anchor="middle">Build</text><text class="t" x="480" y="104" text-anchor="middle">the rack</text></g>
+            <g class="node" data-key="inspect"><rect class="shape" x="560" y="50" width="112" height="76" rx="12"/><text class="t" x="616" y="84" text-anchor="middle">Inspect</text><text class="t" x="616" y="104" text-anchor="middle">de-energised</text></g>
+            <g class="node" data-key="verify" style="--tint:12%"><rect class="shape" x="696" y="50" width="112" height="76" rx="12"/><text class="t" x="752" y="84" text-anchor="middle">Verify</text><text class="t" x="752" y="104" text-anchor="middle">power + test</text></g>
+            <g class="node" data-key="handover"><rect class="shape" x="832" y="50" width="112" height="76" rx="12"/><text class="t" x="888" y="84" text-anchor="middle">Hand over</text><text class="t" x="888" y="104" text-anchor="middle">to MFG</text></g>
+            <line class="axis" x1="130" y1="88" x2="150" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="266" y1="88" x2="286" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="402" y1="88" x2="422" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="538" y1="88" x2="558" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="674" y1="88" x2="694" y2="88" marker-end="url(#arrow)"/><line class="axis" x1="810" y1="88" x2="830" y2="88" marker-end="url(#arrow)"/>
+            <path class="axis" d="M752 140 V170 H344 V142" marker-end="url(#arrow)"/>
+            <text class="big" x="548" y="196" text-anchor="middle">Feedback: fix the instruction and the drawing, not only this rack</text>
+          </svg>
+        </div>
+        <div class="detail" id="panel-fab" aria-live="polite"></div>
+      </div>
+
+      <h3>Who does what</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Role</th><th>Does</th><th>Owns</th></tr></thead>
+        <tbody>
+          <tr><td><b>TDE</b></td><td>Designs the rack, writes the wiring diagrams and instructions, plans the verification, accepts the result</td><td>The design and the instructions</td></tr>
+          <tr><td><b>Technician</b></td><td>Builds to the instruction, records what was done, raises every unclear or unsafe point</td><td>The quality of the build. Has the right to stop work</td></tr>
+          <tr><td><b>TE</b></td><td>Says what the tester must prove, reviews the design and the acceptance results</td><td>The test requirements</td></tr>
+          <tr><td><b>EHS and quality</b></td><td>Reviews safety, the quality system and calibration</td><td>Compliance</td></tr>
+          <tr><td><b>MFG and maintenance</b></td><td>Receives the rack, gets trained, signs off</td><td>Running and maintaining it afterwards</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><p><b>The technician is not an executor of your drawing, but a reviewer of it.</b> They know what can be reached, what tool is missing and where a cable will chafe. A build that surprises the technician is a design-package problem.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="wiring" data-title="Wiring diagrams">
+      <h3>The drawings a build needs</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Drawing</th><th>Shows</th><th>Used for</th></tr></thead>
+        <tbody>
+          <tr><td><b>Block diagram</b></td><td>The whole system: power, controller, instruments, fixture, DUT</td><td>Everyone understands the system before the details</td></tr>
+          <tr><td><b>Power distribution diagram</b></td><td>Mains in, breakers and fuses, power supplies, protective earth</td><td>Safety review and the power budget</td></tr>
+          <tr><td><b>Schematic</b></td><td>Electrical connections with component symbols and ratings</td><td>Design review and fault finding</td></tr>
+          <tr><td><b>Wire list</b></td><td>Every wire with its two ends (from, to), gauge, colour and length</td><td>The technician builds from it, and the ring-out checks against it</td></tr>
+          <tr><td><b>Cable and harness drawings</b></td><td>Connectors, pinouts, lengths, shielding, labels</td><td>Making or ordering cables</td></tr>
+          <tr><td><b>General arrangement (GA)</b></td><td>Where every item sits in the rack, with heights and weights</td><td>Mechanical build, weight balance, airflow</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>A wire list the technician can use</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Wire ID</th><th>From</th><th>To</th><th>Type / size</th><th>Colour</th><th>Length</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>W001</td><td>MCB1-2</td><td>PSU1-L</td><td>Power, 1.5 mm&sup2;</td><td>Brown</td><td>0.8 m</td><td>Ferrule. Strain relief at the PSU</td></tr>
+          <tr><td>W002</td><td>MCB1-4</td><td>PSU1-N</td><td>Power, 1.5 mm&sup2;</td><td>Blue</td><td>0.8 m</td><td>Ferrule</td></tr>
+          <tr><td>W003</td><td>PE-BAR-1</td><td>PSU1-PE</td><td>Earth, 2.5 mm&sup2;</td><td>Green / yellow</td><td>0.6 m</td><td>Ring lug. Tighten and mark</td></tr>
+          <tr><td>W010</td><td>PSU1-V+</td><td>DUT-IF-1</td><td>DC, 4 mm&sup2;</td><td>Red</td><td>1.2 m</td><td>Use two wires in parallel for 40 A</td></tr>
+          <tr><td>W011</td><td>PSU1-V&minus;</td><td>DUT-IF-2</td><td>DC, 4 mm&sup2;</td><td>Black</td><td>1.2 m</td><td>Keep the pair together</td></tr>
+          <tr><td>W020</td><td>DMM1-HI</td><td>MUX1-3</td><td>Signal, shielded</td><td>White</td><td>0.5 m</td><td>Shield to ground at one end only</td></tr>
+        </tbody>
+      </table></div>
+      <p class="tag">An illustration. Real sizes, colours and ratings come from the design, the applicable standard and the electrician. State the colour convention on the drawing.</p>
+
+      <h3>Rules for good wiring drawings</h3>
+      <ul>
+        <li><b>Every wire has a unique ID</b>, printed on a label at <em>both</em> ends. The label, the drawing and the wire list use the same ID.</li>
+        <li><b>Protect every circuit</b> with a breaker or fuse sized for the <em>wire</em>, not only for the load.</li>
+        <li><b>One protective-earth route:</b> every conductive part is bonded to a single earth bar, and the bar to the supply earth.</li>
+        <li><b>Separate</b> mains, DC power and sensitive signals. Cross them at right angles where they must meet.</li>
+        <li><b>Measurement grounding</b> is decided on the drawing (for example a single reference point), and shields are terminated as drawn.</li>
+        <li><b>Leave spare terminals</b> (roughly a fifth) and spare cable length for changes and repairs.</li>
+        <li><b>Revision control:</b> a revision number, date, author and reviewer on every sheet. Changes during the build are red-lined and become the as-built drawing.</li>
+        <li>Mains connections are designed and made according to the local electrical code, by a qualified electrician.</li>
+      </ul>
+
+      <h3>Quick rack power budget</h3>
+      <p>Before the design is released, check that the rack does not ask for more than its supply circuit can give. Change the numbers. This is a training estimator: the electrician and the electrical code decide the real limits.</p>
+      <div class="card calc" id="pb-calc">
+        <div class="calc-grid">
+          <label>Controller PC (W)<input id="pb-w1" type="number" min="0" step="10" value="300" inputmode="decimal"></label>
+          <label>Programmable DC supply (W, input power)<input id="pb-w2" type="number" min="0" step="10" value="1200" inputmode="decimal"></label>
+          <label>Electronic load (W)<input id="pb-w3" type="number" min="0" step="10" value="500" inputmode="decimal"></label>
+          <label>Instruments: DMM, matrix, scope (W)<input id="pb-w4" type="number" min="0" step="10" value="250" inputmode="decimal"></label>
+          <label>Fans, lighting, other (W)<input id="pb-w5" type="number" min="0" step="10" value="120" inputmode="decimal"></label>
+          <label>Supply voltage (V)<input id="pb-v" type="number" min="1" step="1" value="230" inputmode="decimal"></label>
+          <label>Power factor<input id="pb-pf" type="number" min="0.1" max="1" step="0.05" value="0.9" inputmode="decimal"></label>
+          <label>Circuit breaker (A)<input id="pb-cb" type="number" min="1" step="1" value="16" inputmode="decimal"></label>
+          <label>Continuous-load limit (% of breaker)<input id="pb-lim" type="number" min="10" max="100" step="5" value="80" inputmode="decimal"></label>
+        </div>
+        <div class="calc-out">
+          <div class="hl"><span>Total power</span><b id="pb-total">–</b><small id="pb-va"></small></div>
+          <div><span>Current</span><b id="pb-amps">–</b><small id="pb-allow"></small></div>
+          <div><span>Headroom</span><b id="pb-head">–</b><small id="pb-verdict"></small></div>
+          <div><span>Heat to remove</span><b id="pb-heat">–</b><small>all electrical power ends up as heat</small></div>
+        </div>
+        <p class="tag">Switch-on currents can be several times the running current. Stagger the power-up of large supplies, and ask the electrician about the breaker curve.</p>
+      </div>
+
+      <h3>Review checklist for a wiring package</h3>
+      <div class="card">
+        <ul class="checklist">
+          <li>The block diagram matches the schematic and the wire list</li>
+          <li>Every wire has an ID, two ends, a size and a colour</li>
+          <li>Breaker and fuse ratings are protecting the wires</li>
+          <li>Protective earth reaches every conductive part</li>
+          <li>Connector pinouts are checked against the datasheets</li>
+          <li>Power and signals are separated on the layout</li>
+          <li>Weights and heights are on the GA drawing</li>
+          <li>Airflow and heat load are considered</li>
+          <li>The technician has reviewed the package</li>
+          <li>The revision is released, and old ones are withdrawn</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="subpage" data-sub="instructions" data-title="Work instructions">
+      <h3>The goal</h3>
+      <p>A technician who has never seen this rack should be able to build it correctly from the instruction, without asking you, and without guessing. If they must ask, the instruction is not finished.</p>
+
+      <h3>What a work instruction contains</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Section</th><th>Content</th></tr></thead>
+        <tbody>
+          <tr><td><b>Header</b></td><td>Title, document number, revision, date, author, reviewer, product or rack ID</td></tr>
+          <tr><td><b>Purpose and scope</b></td><td>What is built, and what is not covered</td></tr>
+          <tr><td><b>Safety</b></td><td>The hazards of this job and the controls (see Precautions). Placed <em>before</em> the steps</td></tr>
+          <tr><td><b>Tools and materials</b></td><td>Every tool (with calibration status for torque tools and crimpers), part, label, consumable</td></tr>
+          <tr><td><b>Drawings</b></td><td>The exact drawings and revisions to use</td></tr>
+          <tr><td><b>Steps</b></td><td>One action per step, with the reference to a drawing or photo, values, and an expected result</td></tr>
+          <tr><td><b>Hold points</b></td><td>Places where work stops until a check is signed</td></tr>
+          <tr><td><b>Acceptance criteria</b></td><td>How to tell the step is right: a number, a photo or a measured value</td></tr>
+          <tr><td><b>Records</b></td><td>What to write down (serial numbers, torque, readings) and where</td></tr>
+          <tr><td><b>If something is wrong</b></td><td>Who to call, and when to stop</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>A step, written well and written badly</h3>
+      <div class="cols">
+        <div><div class="label bad">Ambiguous</div>
+<pre class="code"><code>7. Connect the power supply cables
+   and tighten.</code></pre></div>
+        <div><div class="label good">Clear</div>
+<pre class="code"><code>7. Connect wire W010 (red, 4 mm2) from
+   PSU1 terminal V+ to DUT-IF terminal 1.
+   Fit the ferrule. Tighten to 1.2 Nm
+   with the torque screwdriver T-04.
+   Apply a torque stripe.
+   CHECK: no bare copper visible.
+   RECORD: tool ID and your initials.</code></pre></div>
+      </div>
+      <p class="tag">The torque value here is only an illustration. Use the value from the terminal's datasheet.</p>
+
+      <h3>Rules for writing instructions</h3>
+      <ul>
+        <li><b>One action per step,</b> in the imperative: "Fit", "Tighten", "Measure". Not "should be fitted".</li>
+        <li><b>Numbers with units</b> instead of words: "1.2 Nm", not "firmly".</li>
+        <li><b>A picture or a drawing reference</b> for anything that can be mistaken: orientation, which terminal, which cable.</li>
+        <li><b>Each step ends with how to know it is right,</b> not just what to do.</li>
+        <li><b>Safety first and again at the risky step,</b> not only on page one.</li>
+        <li><b>Names for parts</b> that match the labels on the parts and on the drawing.</li>
+        <li><b>Short.</b> Split a long job into stages with a hold point between them.</li>
+        <li><b>Versioned.</b> Only the released revision is on the floor. The old ones are removed.</li>
+      </ul>
+
+      <h3>A skeleton to start from</h3>
+<pre class="code"><code>WI-RACK-014  rev C      Build of tester rack T-12
+Purpose / scope
+Safety           (hazards and controls for this job)
+Tools            torque screwdriver T-04 (cal. valid), crimper C-02, ...
+Drawings         WD-T12 rev C (wiring), GA-T12 rev B (arrangement)
+
+Stage 1  Mechanical
+  1.1  Level the rack ...                     CHECK: ...   RECORD: ...
+  1.2  Mount the earth bar ...
+  HOLD POINT 1: inspector checks stage 1       sign: ____  date: ____
+
+Stage 2  Power wiring
+  2.1  ...
+  HOLD POINT 2: inspector checks ALL power wiring before any power
+
+If something is wrong or unclear: stop and call (name, number)</code></pre>
+
+      <h3>Test the instruction before you release it</h3>
+      <ul class="checklist">
+        <li>Walk through it with the technician, on the real parts</li>
+        <li>Build the <b>first rack with the TDE present</b> and note every question</li>
+        <li>Time the stages. Fix the long and awkward ones</li>
+        <li>Revise it after the first build, then release the new revision</li>
+        <li>Train every technician who will use it, and record the training</li>
+      </ul>
+    </div>
+
+    <div class="subpage" data-sub="precautions" data-title="Precautions">
+      <p class="lead">Building a rack combines mains electricity, heavy equipment, sharp metal and sensitive electronics. These are the hazards a TDE writes into the instruction, and the technician must never be left to remember. EHS rules and the local electrical code always come first.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Hazard</th><th>Why it matters</th><th>Typical controls</th></tr></thead>
+        <tbody>
+          <tr><td><b>Mains and stored energy</b></td><td>Shock and burns. Capacitors can stay charged after power is off</td><td>Mains connections only by qualified electricians. Work de-energised with lockout and tagout. <b>Verify dead</b> with a meter. Wait for stored energy to discharge</td></tr>
+          <tr><td><b>High-current DC</b></td><td>A short circuit can melt tools and cause burns and arcs, even at low voltage</td><td>Insulated tools, no jewellery, covers and shrouds, current limits, correct fuses</td></tr>
+          <tr><td><b>Missing or wrong protective earth</b></td><td>A fault can leave a touchable part live</td><td>Connect earth first, measure continuity, never remove or bypass an earth lead</td></tr>
+          <tr><td><b>Wrong fuse or breaker</b></td><td>The wire overheats before the protection acts</td><td>Fit exactly what the drawing says. Label the rating. Never "temporarily" use a bigger one</td></tr>
+          <tr><td><b>Interlocks and emergency stops</b></td><td>The rack looks safe but protection is off</td><td>Never bypass. Test them before the rack is used</td></tr>
+          <tr><td><b>Weight and tipping</b></td><td>Racks and instruments are heavy. A top-heavy rack can fall</td><td>Heavy items low, rack levelled and secured, rated lifting aids, two people for heavy items, one slide or drawer open at a time</td></tr>
+          <tr><td><b>Sharp edges and tools</b></td><td>Cuts</td><td>Deburr, gloves and eye protection where the instruction says</td></tr>
+          <tr><td><b>ESD</b></td><td>Static damages instruments and boards, with no visible sign</td><td>Wrist straps, grounded mats, handle by the edges, ESD bags</td></tr>
+          <tr><td><b>Foreign objects (FOD)</b></td><td>A dropped screw or wire clipping shorts a terminal later</td><td>Count tools and fasteners, vacuum before closing, no open containers over wiring</td></tr>
+          <tr><td><b>Liquid (water-cooled racks)</b></td><td>Water near electrics</td><td>Wet and electrical work separated, drip trays, leak checks before power (see the cooling pages)</td></tr>
+          <tr><td><b>Chemicals</b></td><td>Solder, flux, cleaners, thread locker</td><td>Safety data sheets, ventilation, the right gloves</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Good practice that prevents quality problems</h3>
+      <div class="grid g2">
+        <div class="card"><h4>Terminals and crimps</h4><ul><li>Tighten to the manufacturer's torque with a <b>calibrated</b> torque tool, then apply a torque stripe</li><li>Use ferrules on stranded wire and the correct crimp tool and die for the size</li><li>Pull-test a sample of crimps. Reject any with strands outside the sleeve</li><li>No bare copper beyond the terminal</li></ul></div>
+        <div class="card"><h4>Cables and routing</h4><ul><li>Respect the minimum bend radius</li><li>Fit strain relief. Nothing hangs from a terminal</li><li>Keep power and signal cables apart</li><li>Keep cables clear of fans, hinges, slides and sharp edges</li><li>Leave a service loop</li></ul></div>
+        <div class="card"><h4>Labels and records</h4><ul><li>Label both ends of every wire and cable as drawn</li><li>Warning labels where hazards remain</li><li>Record serial numbers, tool IDs and torque in the instruction</li></ul></div>
+        <div class="card"><h4>Airflow and heat</h4><ul><li>Fit blanking panels so air goes through the equipment, not around it</li><li>Keep vents clear and equipment spaced as specified</li><li>Heavy heat sources low, intake and exhaust paths separated</li></ul></div>
+      </div>
+
+      <h3>Stop-work triggers</h3>
+      <div class="note"><p><b>Stop and call</b> when: an instruction is unclear, a part does not match the drawing, a tool is missing or out of calibration, a wire or terminal looks damaged, a protective device is not the specified rating, a smell or heat appears, or anything feels unsafe. Nobody is ever blamed for stopping. Everyone is accountable for continuing when they should have stopped.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="verify" data-title="Build verification">
+      <p class="lead">When the technician says "finished", the rack is only <em>built</em>. It is not yet <em>verified</em>. Verification goes in stages from the safest check to the most realistic, and each stage must pass before the next begins. Use the checklist below as a record, and keep the completed copy with the rack.</p>
+
+      <h3>The stages</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Stage</th><th>What it proves</th><th>Typical method</th></tr></thead>
+        <tbody>
+          <tr><td><b>1 · Inspection</b></td><td>The rack matches the drawing</td><td>Visual check by a second person: parts, labels, torque marks, ferrules, routing</td></tr>
+          <tr><td><b>2 · Ring-out</b></td><td>The wiring matches the wire list. No opens, no unintended shorts</td><td>Continuity check of every wire, checked by a switch matrix or a meter (see example 13 and exercise 15)</td></tr>
+          <tr><td><b>3 · Protective earth</b></td><td>Every conductive part is bonded</td><td>Low-resistance continuity measurement from the earth point to each part. The limit comes from the applicable standard, and is often very small, around 0.1 ohm</td></tr>
+          <tr><td><b>4 · Insulation</b></td><td>Circuits are isolated from earth and from each other</td><td>Insulation resistance or dielectric withstand test <b>where the standard requires it</b>, by a qualified person. Disconnect sensitive parts first</td></tr>
+          <tr><td><b>5 · Staged power-up</b></td><td>Each subsystem powers up safely</td><td>Current-limited or metered first power, one subsystem at a time, supply voltages measured at test points</td></tr>
+          <tr><td><b>6 · Safety functions</b></td><td>The protection works</td><td>Operate the emergency stop and the door interlocks and confirm the response</td></tr>
+          <tr><td><b>7 · Function</b></td><td>Every instrument and I/O channel works</td><td>Self-tests, an identify query for each instrument, channel-by-channel checks</td></tr>
+          <tr><td><b>8 · Real sequence</b></td><td>The tester gives the right verdicts</td><td>A golden unit (PASS), a known-bad unit (FAIL), and fault injection (ERROR, never PASS)</td></tr>
+          <tr><td><b>9 · Calibration and soak</b></td><td>Readings are traceable and the rack is stable</td><td>Valid certificates, then a soak at typical load watching temperatures and errors</td></tr>
+          <tr><td><b>10 · Documents</b></td><td>The evidence exists</td><td>As-built drawings, records, punch list, training, sign-off</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Build verification checklist</h3>
+      <p>Tick items as you complete them. Your progress is saved in this browser. This is a typical list: follow the applicable standard, your EHS rules and the program's test specification, and add or remove items to match.</p>
+      <div class="card calc"><div class="calc-out">
+        <div class="hl"><span>Overall progress</span><b id="fab-total">–</b><small id="fab-count"></small></div>
+        <div><span>Next group to finish</span><b id="fab-next">–</b><small>work the groups in order</small></div>
+      </div></div>
+      <div id="fab-checklist" class="fab-root"></div>
+      <div class="actions"><button class="btn" type="button" id="fab-reset">Reset the checklist</button></div>
+
+      <h3>Records to keep with the rack</h3>
+      <ul class="checklist">
+        <li>Completed checklist, signed and dated</li>
+        <li>Ring-out results and earth continuity readings</li>
+        <li>Insulation test results, where required</li>
+        <li>Power-up log with the measured voltages</li>
+        <li>Golden-unit and known-bad-unit results</li>
+        <li>Calibration certificates and instrument serial numbers</li>
+        <li>Software release and limits-file version</li>
+        <li>Soak run log</li>
+      </ul>
+    </div>
+
+    <div class="subpage" data-sub="technicians" data-title="Working with technicians">
+      <h3>Before the build</h3>
+      <div class="card">
+        <p><b>A pre-build meeting</b> with the technician who will lead the build. About half an hour, with the drawings in hand.</p>
+        <ul class="checklist">
+          <li>Walk through the system, the drawings and the wire list</li>
+          <li>Go through the instruction step by step. Ask: "What would you change?"</li>
+          <li>Agree the tools, the workspace, the kits and who inspects</li>
+          <li>Agree the hold points and who can sign them</li>
+          <li>Agree how deviations are handled (red-line and approval)</li>
+          <li>Agree who to call, and when to stop</li>
+        </ul>
+      </div>
+
+      <h3>During the build</h3>
+      <ul>
+        <li><b>First rack with the TDE nearby.</b> Not hovering, but available. The first build finds most of the problems.</li>
+        <li><b>Any change is written on the drawing</b> (a red-line), approved by the TDE, and dated. The technician never has to decide alone whether a change is "small".</li>
+        <li><b>Answer questions fast.</b> A question that waits a day is a rack that waits a day.</li>
+        <li><b>Look at the work, not only the paper.</b> Spend time at the bench. Many improvements are visible in five minutes.</li>
+      </ul>
+
+      <h3>After the build</h3>
+      <ul>
+        <li><b>Debrief:</b> what was unclear, what took too long, what almost went wrong.</li>
+        <li><b>Revise the instruction and the drawings,</b> and release the new revision. Remove the old one from the floor.</li>
+        <li><b>Share the verification results</b> with the technician. They should see how their build tested.</li>
+        <li><b>Train</b> everyone who will build or maintain the next one, and record the training.</li>
+      </ul>
+
+      <h3>Common friction and how to fix it</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Problem</th><th>Usual cause</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>The technician keeps asking the same question</td><td>The instruction does not answer it</td><td>Fix the instruction, not the technician</td></tr>
+          <tr><td>The rack does not match the drawing</td><td>A change was made and not recorded</td><td>Red-line rule: nothing changes without a mark-up and approval</td></tr>
+          <tr><td>Parts missing during the build</td><td>Kitting was incomplete</td><td>Kit by step and check the kit before the build starts</td></tr>
+          <tr><td>The wire cannot be reached or routed</td><td>The design never saw the real rack</td><td>Review the GA drawing with the technician. Allow service loops</td></tr>
+          <tr><td>Verification finds many wiring errors</td><td>Unclear labels or an ambiguous wire list</td><td>Fix the labelling scheme. Add a hold point for an inspection before verification</td></tr>
+          <tr><td>The same defect appears on every rack</td><td>A design or instruction flaw, not a person</td><td>Change the design or the step. Do not rely on being careful</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><p><b>Respect the skill.</b> A good technician has built hundreds of racks. Ask for their judgement on access, tools and sequence, and credit it in the revision history. The best instruction is the one the technician helped to write.</p></div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================================================ 5. OCP RACK -->
 <section class="block view" id="ocp">
   <div class="container">
-    <span class="kicker">08 · OCP rack</span>
+    <span class="kicker">09 · OCP rack</span>
     <h2>The OCP rack: what is different</h2>
     <p class="lead">OCP racks are new to the team, so start here. <b>OCP</b> (Open Compute Project) is a community that publishes open hardware designs for data centres. Its <b>Open Rack</b> changes how a rack is built, powered and cooled, and with it, how a rack is tested.</p>
 
@@ -1198,7 +1520,7 @@ testers = round up ( needed / one tester gives )</code></pre>
 <!-- ============================================================ 6. COOLING -->
 <section class="block view" id="cooling">
   <div class="container">
-    <span class="kicker">09 · Cooling</span>
+    <span class="kicker">10 · Cooling</span>
     <h2>Cooling: fan, water or immersion?</h2>
     <p class="lead">Every watt a rack uses becomes heat that has to go somewhere. As chips get hotter, air runs out of capacity and liquid takes over. This page compares the options, then goes deep on <b>water cooling</b>, the one an OCP rack is most likely to use.</p>
 
@@ -1296,7 +1618,7 @@ testers = round up ( needed / one tester gives )</code></pre>
 <!-- ============================================================ NODE TEST -->
 <section class="block view" id="servertest">
   <div class="container">
-    <span class="kicker">10 · Node test</span>
+    <span class="kicker">11 · Node test</span>
     <h2>Testing a server node</h2>
     <p class="lead">Before a node goes into an OCP rack it is tested on its own. The tests combine what you know about boards (power, firmware, measurements) with how servers are managed (a BMC, Linux tools, Redfish). This page is the map.</p>
 
@@ -1401,7 +1723,7 @@ curl -sk -u "$BMC_USER:$BMC_PASS" "https://$BMC/redfish/v1/UpdateService/Firmwar
 <!-- ============================================================ PYTHON GUIDE -->
 <section class="block view" id="py-guide">
   <div class="container">
-    <span class="kicker">11 · Python guide</span>
+    <span class="kicker">12 · Python guide</span>
     <h2>Python: the parts that surprise people</h2>
     <p class="lead">Short explanations of the Python behaviours that cause the most mistakes, written as <b>"what people believe"</b> against <b>"what Python really does"</b>. Each topic links to a runnable example (predict, then run) and a graded practice exercise. This guide is the first part of the Software section.</p>
 
@@ -1758,7 +2080,7 @@ class ScpiDmm(DmmDriver):
 <!-- ============================================================ PYTHON EXAMPLES -->
 <section class="block view" id="py-examples">
   <div class="container">
-    <span class="kicker">12 · Python examples</span>
+    <span class="kicker">13 · Python examples</span>
     <h2>Python examples: predict, then run</h2>
     <p class="lead">Each example is a handful of tests that state what Python <em>really</em> does. <b>Read the code and predict</b> whether each test passes, then press <b>Run</b>. Change the code, break it on purpose, and run it again. All fourteen are editable and run in your browser. The <a href="#py-guide">Python guide</a> explains the ideas behind them.</p>
     <p class="runtime-note">The first run downloads the Python runtime (about 10 MB, then cached by your browser).</p>
@@ -1769,7 +2091,7 @@ class ScpiDmm(DmmDriver):
 <!-- ============================================================ PYTHON PRACTICE -->
 <section class="block view" id="py-practice">
   <div class="container">
-    <span class="kicker">13 · Python practice</span>
+    <span class="kicker">14 · Python practice</span>
     <h2>Python practice: ten exercises</h2>
     <p class="lead">Graded exercises on the Python behaviours from the guide. In <b>Implement</b> exercises you write or fix code and hidden tests grade it. In <b>Write the tests</b> you must catch bugs of the kind the guide warns about. Some exercises also practise design: operator overloading, dispatch by type, a driver on an abstract base class, and choosing a data structure by its Big O. Progress and code are saved in this browser.</p>
     <div id="py-practice-root" class="practice-grid"></div>
@@ -1779,7 +2101,7 @@ class ScpiDmm(DmmDriver):
 <!-- ============================================================ TEST SEQUENCER -->
 <section class="block view" id="sequencer">
   <div class="container">
-    <span class="kicker">14 · Test sequencer</span>
+    <span class="kicker">15 · Test sequencer</span>
     <h2>The test sequencer: the engine of a test station</h2>
     <p class="lead">The sequencer runs a test as an ordered list of steps, applies limits, decides the verdict and writes the record. In JDM programs the team mostly uses <b>ISS3</b> for this. The ideas on this page are the same in every sequencer, so they make ISS3 faster to learn, and they tell you what to ask about it.</p>
 
@@ -1922,9 +2244,9 @@ return status</pre></div>
 <!-- ============================================================ 6. EXAMPLES -->
 <section class="block view" id="examples">
   <div class="container">
-    <span class="kicker">15 · Programming examples</span>
+    <span class="kicker">16 · Programming examples</span>
     <h2>Tester software, ready to run</h2>
-    <p class="lead">Python with a pytest-style API, applied to production test. Eight of the twelve examples are <b>editable and run in your browser</b>: change the code, break it on purpose and see how a failure looks. The read-only ones show real instrument control, a station loop, a release pipeline and a liquid test sequence. If your stations use LabVIEW, TestStand or C#, the structure is the same.</p>
+    <p class="lead">Python with a pytest-style API, applied to production test. Nine of the thirteen examples are <b>editable and run in your browser</b>: change the code, break it on purpose and see how a failure looks. The read-only ones show real instrument control, a station loop, a release pipeline and a liquid test sequence. If your stations use LabVIEW, TestStand or C#, the structure is the same.</p>
     <p class="tag">These examples are about test engineering. For Python language behaviour (references, classes, inheritance) see the <a href="#py-guide">Python guide</a> in the Software section.</p>
     <p class="runtime-note">The first run downloads the Python runtime (about 10 MB, then cached by your browser).</p>
     <div id="examples-root"></div>
@@ -1934,8 +2256,8 @@ return status</pre></div>
 <!-- ============================================================ 7. PRACTICE -->
 <section class="block view" id="practice">
   <div class="container">
-    <span class="kicker">16 · Practice</span>
-    <h2>Prove it: fourteen exercises</h2>
+    <span class="kicker">17 · Practice</span>
+    <h2>Prove it: fifteen exercises</h2>
     <p class="lead">Two kinds of challenge. In <b>Implement</b> exercises you write a function and hidden tests grade it. In <b>Write the tests</b> exercises the code already exists in one correct and several buggy versions, and your tests must tell them apart, because a tester that cannot spot a planted bug will not spot a real one. Progress and code are saved in this browser.</p>
     <div id="practice-root" class="practice-grid"></div>
   </div>
@@ -1943,7 +2265,7 @@ return status</pre></div>
 <!-- ============================================================ 8. GLOSSARY -->
 <section class="block view" id="glossary">
   <div class="container">
-    <span class="kicker">17 · Reference</span>
+    <span class="kicker">18 · Reference</span>
     <h2>Glossary of acronyms</h2>
     <p class="lead">The acronyms you will meet, grouped by topic. Search by acronym or by meaning, or pick a topic. Some acronyms mean different things in different fields (for example <b>SPI</b>), so check the group.</p>
     <div class="gl-layout">
