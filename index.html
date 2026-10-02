@@ -7,9 +7,9 @@
   <title>TDE Training – Test Development Engineer</title>
   <meta name="description" content="Interactive training for Test Development Engineers in electronics manufacturing: CM and JDM programs, NPI and sustaining, tester hardware and software, diagrams, Python examples and hands-on exercises that run in your browser.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c7a6f'/%3E%3Cpath d='M8 17l5 5 11-12' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="assets/style.css?v=7ecdfaf1ad">
-  <script src="assets/content.js?v=7ecdfaf1ad" defer></script>
-  <script src="assets/app.js?v=7ecdfaf1ad" defer></script>
+  <link rel="stylesheet" href="assets/style.css?v=cfa4cefaff">
+  <script src="assets/content.js?v=cfa4cefaff" defer></script>
+  <script src="assets/app.js?v=cfa4cefaff" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -25,7 +25,7 @@
   <div class="container">
     <button class="icon-btn" id="sb-toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide navigation"><span aria-hidden="true">☰</span></button>
     <a class="brand" href="#top"><span class="logo">TDE</span> Training</a>
-    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/20</span></span>
+    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/24</span></span>
     <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">☾</button>
   </div>
   <div id="progress-bar" aria-hidden="true"></div>
@@ -51,8 +51,8 @@
     </div>
     <ul class="stats">
       <li><b>8</b><span>interactive diagrams</span></li>
-      <li><b>20</b><span>code examples</span></li>
-      <li><b>20</b><span>graded exercises</span></li>
+      <li><b>26</b><span>code examples</span></li>
+      <li><b>24</b><span>graded exercises</span></li>
       <li><b>0</b><span>installs needed</span></li>
     </ul>
 
@@ -68,9 +68,9 @@
       <a class="card link" href="#ocp"><span class="num">8</span><h4>OCP rack</h4><p>Open Rack basics, power, safety, test stands, troubleshooting and a 30-day plan.</p></a>
       <a class="card link" href="#cooling"><span class="num">9</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
       <a class="card link" href="#servertest"><span class="num">10</span><h4>Node test</h4><p>Testing server nodes: flow, tools, BMC and Redfish, golden configuration.</p></a>
-      <a class="card link" href="#py-guide"><span class="num">11</span><h4>Python guide</h4><p>Software: names and references, constructors, inheritance, class variables, public and private.</p></a>
-      <a class="card link" href="#py-examples"><span class="num">12</span><h4>Python examples</h4><p>Eight predict-then-run examples of what Python really does.</p></a>
-      <a class="card link" href="#py-practice"><span class="num">13</span><h4>Python practice</h4><p>Six graded exercises, including a bug hunt.</p></a>
+      <a class="card link" href="#py-guide"><span class="num">11</span><h4>Python guide</h4><p>Software: references, constructors, inheritance, class variables, overloading and overriding, abstract driver classes, Big O.</p></a>
+      <a class="card link" href="#py-examples"><span class="num">12</span><h4>Python examples</h4><p>Fourteen predict-then-run examples of what Python really does.</p></a>
+      <a class="card link" href="#py-practice"><span class="num">13</span><h4>Python practice</h4><p>Ten graded exercises, including a bug hunt and a driver design.</p></a>
       <a class="card link" href="#sequencer"><span class="num">14</span><h4>Test sequencer</h4><p>Software: what a sequencer does, how to write steps, and a first-week plan for ISS3.</p></a>
       <a class="card link" href="#examples"><span class="num">15</span><h4>TDE examples</h4><p>Twelve test-engineering examples. Eight run in your browser.</p></a>
       <a class="card link" href="#practice"><span class="num">16</span><h4>TDE practice</h4><p>Fourteen graded test-engineering exercises with hints and solutions.</p></a>
@@ -1582,6 +1582,176 @@ print(a.max_log, b.max_log, Station.max_log)    # 5 100 100</pre>
       </ul>
       <div class="note"><p><b>Try it:</b> <a href="#py-examples/py-classvar">Example 7: class vs instance variables</a>, <a href="#py-examples/py-private">Example 8: public, protected, private</a>, then <a href="#py-practice/py-classvar-station">Exercise: class variables done right</a> and <a href="#py-practice/py-cart-bugs">Exercise: hunt the bugs in a cart class</a>.</p></div>
     </div>
+    <div class="subpage" data-sub="overload" data-title="Overloading, overriding, overwriting">
+      <h3>Three words that sound alike</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Term</th><th>Meaning</th><th>In Python</th></tr></thead>
+        <tbody>
+          <tr><td><b>Overloading</b></td><td>Several functions with the same name and different parameter lists. The compiler picks one from the arguments</td><td><b>Not available for functions and methods.</b> A second <code>def</code> with the same name replaces the first. Python offers default arguments, <code>*args</code> and <code>**kwargs</code>, <code>functools.singledispatch</code>, and <code>@classmethod</code> alternative constructors. <b>Operator overloading</b> is supported through special methods such as <code>__add__</code> and <code>__eq__</code></td></tr>
+          <tr><td><b>Overriding</b></td><td>A subclass provides its own version of an inherited method</td><td>Supported, with no keyword. The subclass version is used for subclass objects and the parent is unchanged. Call <code>super()</code> to extend. Python 3.12 adds <code>typing.override</code>, so a type checker can catch a misspelt name</td></tr>
+          <tr><td><b>Overwriting</b></td><td>Replacing something that already exists</td><td>Happens <b>silently</b>: a repeated <code>def</code>, a variable that shadows a built-in, assigning to an existing key or attribute, patching a method at run time</td></tr>
+        </tbody>
+      </table></div>
+<pre data-hl="python"># OVERLOADING: not supported, the last def wins
+class Box:
+    def put(self, a): return "one"
+    def put(self, a, b): return "two"      # replaces the first
+# Box().put(1) now raises TypeError
+
+# what to use instead
+def measure(channel, samples=1, unit="V"): ...      # default arguments
+def total(*values): ...                             # any number of values
+
+# OVERRIDING: a subclass replaces an inherited method
+class Instrument:
+    def describe(self): return "instrument"
+class Dmm(Instrument):
+    def describe(self): return "dmm"                # no keyword needed
+
+# OVERWRITING: silent replacement of something that exists
+limits = {"low": 1}
+limits["low"] = 2                                   # no warning
+list = [1, 2, 3]                                    # shadows the built-in list</pre>
+
+      <h3>What people believe, and what Python really does</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Belief</th><th>What Python really does</th><th>See</th></tr></thead>
+        <tbody>
+          <tr><td>I can define two methods with the same name and different parameters</td><td>The last one wins. Calling the lost signature raises <code>TypeError</code></td><td><a href="#py-examples/py-overload">Example 9</a></td></tr>
+          <tr><td><code>print(1, 2)</code> and <code>print("a")</code> prove Python has overloading</td><td>That is one function with variable arguments</td><td><a href="#py-examples/py-overload">Example 9</a></td></tr>
+          <tr><td>Operator overloading is a hack</td><td>It is the designed way. Return <code>NotImplemented</code> for types you do not support, so Python can try the other operand or raise <code>TypeError</code></td><td><a href="#py-examples/py-overload">Example 9</a></td></tr>
+          <tr><td>Defining <code>__eq__</code> is enough for sets and dict keys</td><td>Defining <code>__eq__</code> removes the default <code>__hash__</code>. Define both</td><td><a href="#py-examples/py-overload">Example 9</a></td></tr>
+          <tr><td>Overriding needs a keyword</td><td>The same name is enough. A typo silently creates a new method instead</td><td><a href="#py-examples/py-override">Example 10</a></td></tr>
+          <tr><td>An inherited method that calls <code>self.describe()</code> uses the parent's version</td><td>It uses the override, because <code>self</code> is the subclass object</td><td><a href="#py-examples/py-override">Example 10</a></td></tr>
+          <tr><td>Python checks that an override keeps the parent's signature</td><td>It does not. Code written for the parent breaks when a subclass changes the parameters (the Liskov substitution principle)</td><td><a href="#py-examples/py-override">Example 10</a></td></tr>
+          <tr><td>Python warns when I overwrite something</td><td>No. A linter can catch some cases, such as a redefined function</td><td><a href="#py-examples/py-overwrite">Example 11</a></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Rules of thumb</h3>
+      <ul>
+        <li>Do not emulate overloading with chains of <code>isinstance</code>. Use <code>singledispatch</code>, differently named constructors (<code>from_text</code>, <code>from_file</code>) or default arguments.</li>
+        <li>Keep an override compatible with the parent: the same parameters and a compatible result. Call <code>super()</code> unless you really mean to replace.</li>
+        <li>Catch misspelt overrides with <code>@override</code> (Python 3.12) and a type checker, or with a test.</li>
+        <li>Never name a variable after a built-in (<code>list</code>, <code>dict</code>, <code>id</code>, <code>type</code>, <code>max</code>, <code>sum</code>, <code>input</code>).</li>
+        <li>Run a linter that flags redefinition, for example pyflakes or ruff (rule F811).</li>
+        <li>When you define <code>__eq__</code> for an object that must be hashable, define <code>__hash__</code> too.</li>
+      </ul>
+
+      <h3>Why a test engineer cares</h3>
+      <p>A test function defined twice by copy and paste means only the second one runs, and the first never fails. A driver subclass that changed a method's parameters breaks the sequence on one instrument only. A variable called <code>list</code> or <code>max</code> works until the line that needs the built-in. All of them are silent, so build the habit of reading for them.</p>
+      <div class="note"><p><b>Try it:</b> <a href="#py-examples/py-overload">Example 9</a>, <a href="#py-examples/py-override">Example 10</a>, <a href="#py-examples/py-overwrite">Example 11</a>, then <a href="#py-practice/py-operator">Exercise: a Voltage class</a> and <a href="#py-practice/py-dispatch">Exercise: overloading with singledispatch</a>.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="abc" data-title="Abstract classes and drivers">
+      <h3>Why a driver base class</h3>
+      <p>Test steps should depend on a <b>contract</b> ("measure a voltage on a channel"), not on an instrument model. An abstract base class (ABC) writes the contract down. Every real driver, every other model and the simulator implement it, so one sequence runs against any of them.</p>
+<pre data-hl="python">from abc import ABC, abstractmethod
+
+class DmmDriver(ABC):
+    CHANNELS = ("CH1", "CH2")
+
+    def measure_voltage(self, channel):          # the public contract: written ONCE
+        self._check_open()
+        if channel not in self.CHANNELS:
+            raise ValueError(f"unknown channel {channel!r}")
+        return float(self._query(f"MEAS:VOLT? {channel}"))
+
+    @abstractmethod
+    def _query(self, command):                   # each implementation provides only this
+        ...
+
+class ScpiDmm(DmmDriver):
+    def __init__(self, resource):                # the connection is passed IN
+        self._resource = resource                # a PyVISA resource, or a fake in tests
+    def _query(self, command):
+        return self._resource.query(command)</pre>
+
+      <h3>Best practices</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Practice</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td><b>Small interface in the language of the measurement</b> (<code>measure_voltage(channel)</code>), not the instrument's commands</td><td>Another model, with different commands, can implement it</td></tr>
+          <tr><td><b>Template method:</b> the base class validates, logs, translates errors and calls small abstract hooks (<code>_query</code>, <code>_open_connection</code>)</td><td>The shared behaviour is written once and cannot be forgotten by one driver</td></tr>
+          <tr><td><b>One error type</b> (<code>DriverError</code>, with <code>DriverTimeout</code> below it). Translate library errors into it</td><td>The sequencer can treat every communication problem as ERROR, never as FAIL</td></tr>
+          <tr><td><b>Open and close explicitly,</b> make <code>close()</code> safe to call twice, support <code>with</code></td><td>Resources are released and outputs are switched off even when a step fails</td></tr>
+          <tr><td><b>No I/O in <code>__init__</code></b></td><td>Objects can be created without hardware, so tests and simulators work</td></tr>
+          <tr><td><b>Inject the connection</b> (pass the resource in)</td><td>Tests supply a fake. The driver never builds its own</td></tr>
+          <tr><td><b>A simulator is a subclass</b> of the same ABC</td><td>Sequences are developed and unit-tested without the instrument</td></tr>
+          <tr><td><b>Clear units and types:</b> return volts as a <code>float</code>, document it, validate channel names and ranges before sending anything</td><td>A bad call is rejected early instead of reaching the instrument</td></tr>
+          <tr><td><b>Safe state in <code>close()</code>:</b> sources switch their output off</td><td>The DUT is protected after an error or a crash</td></tr>
+          <tr><td><b>A registry or factory</b> (<code>make_driver("sim")</code>) chooses the driver from configuration</td><td>Changing the instrument model does not change the sequence</td></tr>
+          <tr><td><b>Optional features in separate small interfaces</b> (for example <code>SupportsTrigger</code>)</td><td>Not every instrument has them, and the main contract stays small</td></tr>
+          <tr><td><b>Contract tests:</b> one test suite run against every implementation</td><td>A new driver is proven by the same tests as the old ones</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Pitfalls</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Pitfall</th><th>What happens</th><th>See</th></tr></thead>
+        <tbody>
+          <tr><td>Forgetting <code>@abstractmethod</code></td><td>The class can be created, and fails only when the method is called</td><td><a href="#py-examples/py-abc">Example 12</a></td></tr>
+          <tr><td>Expecting the ABC to check signatures</td><td>It checks only that the names exist</td><td><a href="#py-examples/py-abc">Example 12</a></td></tr>
+          <tr><td>Wrong decorator order on a property</td><td><code>@property</code> must be the outer one, <code>@abstractmethod</code> the inner</td><td><a href="#py-examples/py-abc">Example 12</a></td></tr>
+          <tr><td>Instrument commands in the contract</td><td>No other model can implement it</td><td></td></tr>
+          <tr><td>A huge base class</td><td>Every driver must implement things it does not have. Split it</td><td></td></tr>
+          <tr><td><code>except Exception</code> around driver calls</td><td>Real bugs are hidden. Catch <code>DriverError</code></td><td><a href="#py-examples/py-driver">Example 13</a></td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><p><b>Try it:</b> <a href="#py-examples/py-abc">Example 12: abstract base classes</a>, <a href="#py-examples/py-driver">Example 13: a driver contract</a>, then <a href="#py-practice/py-driver-abc">Exercise: implement a driver on an abstract base class</a>. The same ideas are in the Test sequencer page, where the sequencer relies on these drivers.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="bigo" data-title="Thinking in Big O">
+      <h3>What Big O says</h3>
+      <p><b>Big O</b> describes how the <em>work</em> grows as the input size <code>n</code> grows, ignoring constant factors. It answers "what happens when the data gets ten times bigger?", not "how many milliseconds is this?".</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Notation</th><th>Name</th><th>Typical example</th><th>Twice the data means</th></tr></thead>
+        <tbody>
+          <tr><td><code>O(1)</code></td><td>constant</td><td>dict lookup, list index</td><td>the same work</td></tr>
+          <tr><td><code>O(log n)</code></td><td>logarithmic</td><td>binary search (<code>bisect</code>)</td><td>one more step</td></tr>
+          <tr><td><code>O(n)</code></td><td>linear</td><td>scan a list, <code>x in some_list</code>, <code>sum</code></td><td>twice the work</td></tr>
+          <tr><td><code>O(n log n)</code></td><td>log-linear</td><td><code>sorted()</code></td><td>a little more than twice</td></tr>
+          <tr><td><code>O(n&sup2;)</code></td><td>quadratic</td><td>a loop inside a loop over the same data</td><td><b>four times</b> the work</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>What common Python operations cost</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Operation</th><th>Typical cost</th><th>Often better</th></tr></thead>
+        <tbody>
+          <tr><td><code>x in some_list</code></td><td>O(n)</td><td><code>x in some_set</code>: O(1) on average</td></tr>
+          <tr><td><code>list.append(x)</code></td><td>O(1) amortised</td><td></td></tr>
+          <tr><td><code>list.insert(0, x)</code>, <code>list.pop(0)</code></td><td>O(n)</td><td><code>collections.deque</code>: O(1) at both ends</td></tr>
+          <tr><td><code>d[key]</code>, <code>d[key] = v</code>, <code>key in d</code></td><td>O(1) on average</td><td></td></tr>
+          <tr><td><code>sorted(items)</code></td><td>O(n log n)</td><td>search an already sorted list with <code>bisect</code>: O(log n)</td></tr>
+          <tr><td><code>s += "x"</code> in a loop</td><td>can be O(n&sup2;)</td><td><code>"".join(parts)</code>: O(n)</td></tr>
+          <tr><td><code>items[:i]</code> (slice)</td><td>O(i): it copies</td><td>indexes or iterators</td></tr>
+          <tr><td><code>min</code>, <code>max</code>, <code>sum</code></td><td>O(n)</td><td></td></tr>
+          <tr><td>A loop inside a loop over the same data</td><td>O(n&sup2;)</td><td>build a set or a dict first</td></tr>
+        </tbody>
+      </table></div>
+      <p class="tag">The O(1) of sets and dicts is the <em>average</em> case and needs hashable keys (see the notes on <code>__hash__</code> above). Memory grows too: a set or dict costs space to save time.</p>
+
+      <h3>Count the work, not the seconds</h3>
+      <p>A stopwatch changes from run to run, and tells you about one machine. Counting operations (comparisons, instrument queries) gives the same answer every time, and shows the <em>shape</em> of the growth. The examples and the exercise on this site count comparisons with a small helper class.</p>
+
+      <h3>Where it matters in test software</h3>
+      <ul>
+        <li><b>Duplicate serial numbers in a lot of 100,000 units:</b> a list check is about 5,000,000,000 comparisons, a set is about 100,000.</li>
+        <li><b>Looking up each step's limits</b> by scanning a list for every step: O(steps&sup2;). Build a dict once: O(steps).</li>
+        <li><b>A big log file:</b> build an index once instead of scanning it for every question.</li>
+        <li><b>"N+1" instrument queries:</b> ask once for all channels, not once per channel in a loop. The slow part is the instrument, not Python.</li>
+      </ul>
+
+      <h3>When it does not matter</h3>
+      <ul>
+        <li>A sequence has tens of steps, not millions. A list of five step names is fine, and clearer than a set.</li>
+        <li>In a station, the cost is nearly always <b>waiting</b>: a rail that takes two seconds to settle outweighs any Python loop (see Capacity and cost).</li>
+        <li><b>Readability first.</b> Measure with <code>timeit</code> or a profiler before you optimise anything.</li>
+        <li>Analysis of thousands of units, large logs and data pipelines are where it does start to matter.</li>
+      </ul>
+      <div class="note"><p><b>Try it:</b> <a href="#py-examples/py-bigo">Example 14: Big O by counting</a>, then <a href="#py-practice/py-bigo-fix">Exercise: make the slow code linear</a>.</p></div>
+    </div>
   </div>
 </section>
 
@@ -1590,7 +1760,7 @@ print(a.max_log, b.max_log, Station.max_log)    # 5 100 100</pre>
   <div class="container">
     <span class="kicker">12 · Python examples</span>
     <h2>Python examples: predict, then run</h2>
-    <p class="lead">Each example is a handful of tests that state what Python <em>really</em> does. <b>Read the code and predict</b> whether each test passes, then press <b>Run</b>. Change the code, break it on purpose, and run it again. All eight are editable and run in your browser. The <a href="#py-guide">Python guide</a> explains the ideas behind them.</p>
+    <p class="lead">Each example is a handful of tests that state what Python <em>really</em> does. <b>Read the code and predict</b> whether each test passes, then press <b>Run</b>. Change the code, break it on purpose, and run it again. All fourteen are editable and run in your browser. The <a href="#py-guide">Python guide</a> explains the ideas behind them.</p>
     <p class="runtime-note">The first run downloads the Python runtime (about 10 MB, then cached by your browser).</p>
     <div id="py-examples-root"></div>
   </div>
@@ -1600,8 +1770,8 @@ print(a.max_log, b.max_log, Station.max_log)    # 5 100 100</pre>
 <section class="block view" id="py-practice">
   <div class="container">
     <span class="kicker">13 · Python practice</span>
-    <h2>Python practice: six exercises</h2>
-    <p class="lead">Graded exercises on the Python behaviours from the guide. In <b>Implement</b> exercises you write or fix code and hidden tests grade it. In <b>Write the tests</b> you must catch bugs of the kind the guide warns about. Progress and code are saved in this browser.</p>
+    <h2>Python practice: ten exercises</h2>
+    <p class="lead">Graded exercises on the Python behaviours from the guide. In <b>Implement</b> exercises you write or fix code and hidden tests grade it. In <b>Write the tests</b> you must catch bugs of the kind the guide warns about. Some exercises also practise design: operator overloading, dispatch by type, a driver on an abstract base class, and choosing a data structure by its Big O. Progress and code are saved in this browser.</p>
     <div id="py-practice-root" class="practice-grid"></div>
   </div>
 </section>

@@ -2978,6 +2978,490 @@ def test_mangling_keeps_a_parent_and_child_attribute_apart():
     assert c._Child__pin == "9999"
 `,
   },
+  {
+    id: "py-overload",
+    title: "9. Overloading: what Python has instead",
+    runnable: true,
+    intro: "<b>Overloading</b> means several functions with the same name but different parameters. Python does <em>not</em> have it for functions: the last <code>def</code> wins. It offers default arguments, <code>*args</code>, <code>functools.singledispatch</code>, and <em>operator</em> overloading through special methods.",
+    code: String.raw`import pytest
+from functools import singledispatch
+
+def test_the_second_def_replaces_the_first():
+    class Box:
+        def put(self, a):
+            return "one"
+        def put(self, a, b):           # same name: replaces the first put
+            return "two"
+    assert Box().put(1, 2) == "two"
+    with pytest.raises(TypeError):
+        Box().put(1)                   # the one-argument version is gone
+
+def test_default_arguments_cover_the_optional_case():
+    def measure(channel, samples=1, unit="V"):
+        return (channel, samples, unit)
+    assert measure("ch1") == ("ch1", 1, "V")
+    assert measure("ch1", 5) == ("ch1", 5, "V")
+
+def test_variadic_arguments_accept_any_number_of_values():
+    def total(*values):
+        return sum(values)
+    assert total() == 0
+    assert total(1) == 1
+    assert total(1, 2, 3) == 6
+
+def test_singledispatch_chooses_by_the_type_of_the_first_argument():
+    @singledispatch
+    def fmt(x):
+        raise TypeError("cannot format " + type(x).__name__)
+
+    @fmt.register
+    def _(x: int):
+        return f"{x} counts"
+
+    @fmt.register
+    def _(x: float):
+        return f"{x:.2f} V"
+
+    assert fmt(3) == "3 counts"
+    assert fmt(3.14159) == "3.14 V"
+    with pytest.raises(TypeError):
+        fmt("text")
+
+def test_operator_overloading_means_defining_special_methods():
+    class Mv:
+        def __init__(self, mv):
+            self.mv = mv
+        def __add__(self, other):
+            if not isinstance(other, Mv):
+                return NotImplemented  # let Python try the other operand, then raise TypeError
+            return Mv(self.mv + other.mv)
+        def __eq__(self, other):
+            if not isinstance(other, Mv):
+                return NotImplemented
+            return self.mv == other.mv
+        def __repr__(self):
+            return f"Mv({self.mv})"
+
+    assert Mv(3) + Mv(4) == Mv(7)
+    with pytest.raises(TypeError):
+        Mv(3) + 4
+    assert (Mv(3) == 3) is False
+
+def test_defining_eq_without_hash_makes_the_class_unhashable():
+    class Mv:
+        def __init__(self, mv):
+            self.mv = mv
+        def __eq__(self, other):
+            return self.mv == other.mv
+    with pytest.raises(TypeError):
+        hash(Mv(1))                    # also means it cannot be a dict key or set member
+
+def test_len_and_indexing_are_overloaded_operators_too():
+    class Scan:
+        def __init__(self, points):
+            self.points = list(points)
+        def __len__(self):
+            return len(self.points)
+        def __getitem__(self, i):
+            return self.points[i]
+    s = Scan([10, 20, 30])
+    assert len(s) == 3
+    assert s[1] == 20
+    assert list(s) == [10, 20, 30]     # iteration works through __getitem__
+`,
+  },
+  {
+    id: "py-override",
+    title: "10. Overriding methods",
+    runnable: true,
+    intro: "<b>Overriding</b> means a subclass supplies its own version of a method it inherits. There is no keyword. The subclass method is used for subclass objects, and the parent is unchanged. Python does not stop you from changing the <em>signature</em>, but callers will break.",
+    code: String.raw`import pytest
+
+class Instrument:
+    def describe(self):
+        return "instrument"
+    def measure(self, channel):
+        return 0.0
+    def tag(self):
+        return f"[{self.describe()}]"      # calls describe() through self
+
+class Dmm(Instrument):
+    def describe(self):                    # overrides
+        return "dmm"
+    def measure(self, channel):            # overrides
+        return 3.3
+
+class VerboseDmm(Dmm):
+    def describe(self):                    # extends with super()
+        return super().describe() + " (verbose)"
+
+def test_the_subclass_version_is_used_for_subclass_objects():
+    assert Instrument().describe() == "instrument"
+    assert Dmm().describe() == "dmm"
+    assert Dmm().measure("ch1") == 3.3
+
+def test_the_parent_is_not_changed_by_the_override():
+    Dmm()                                  # creating subclasses leaves Instrument alone
+    assert Instrument().describe() == "instrument"
+    assert Instrument().measure("ch1") == 0.0
+
+def test_inherited_methods_see_the_override_because_self_is_the_subclass_object():
+    assert Instrument().tag() == "[instrument]"
+    assert Dmm().tag() == "[dmm]"          # tag() is inherited, but describe() is looked up on the object
+    assert VerboseDmm().tag() == "[dmm (verbose)]"
+
+def test_an_inherited_method_is_the_same_function_object():
+    assert Dmm.tag is Instrument.tag       # not copied: found by walking up the MRO
+    assert Dmm.describe is not Instrument.describe
+
+def test_super_extends_instead_of_replacing():
+    assert VerboseDmm().describe() == "dmm (verbose)"
+
+def test_python_does_not_check_that_an_override_keeps_the_signature():
+    class Odd(Instrument):
+        def measure(self):                 # dropped the channel parameter
+            return 1.0
+    assert isinstance(Odd(), Instrument)   # still accepted as an Instrument ...
+    with pytest.raises(TypeError):
+        Odd().measure("ch1")               # ... but callers written for Instrument now break
+
+def test_a_typo_in_the_name_creates_a_new_method_not_an_override():
+    class Typo(Instrument):
+        def describ(self):                 # misspelt: nothing is overridden
+            return "typo"
+    assert Typo().describe() == "instrument"
+`,
+  },
+  {
+    id: "py-overwrite",
+    title: "11. Overwriting: silent replacement",
+    runnable: true,
+    intro: "<b>Overwriting</b> means replacing something that already exists: redefining a function, shadowing a built-in, assigning to an existing key or attribute, or patching a method. Python does it <b>silently</b>, which is why it hides bugs.",
+    code: String.raw`import pytest
+
+def test_a_later_def_overwrites_an_earlier_one_in_the_same_scope():
+    def limit():
+        return 3.5
+    def limit():                           # same name again: the first is gone
+        return 5.0
+    assert limit() == 5.0
+
+def test_assigning_to_a_builtin_name_shadows_it():
+    def broken():
+        list = [1, 2]                      # a local name now hides the built-in list
+        return list([3, 4])                # TypeError: 'list' object is not callable
+    with pytest.raises(TypeError):
+        broken()
+
+def test_dict_assignment_and_update_overwrite_without_a_warning():
+    d = {"low": 1}
+    d["low"] = 2
+    d.update({"low": 3})
+    assert d["low"] == 3
+    d.setdefault("low", 9)                 # setdefault keeps the existing value
+    assert d["low"] == 3
+
+def test_an_instance_attribute_can_hide_a_method_for_that_object_only():
+    class Sensor:
+        def read(self):
+            return "method"
+    a, b = Sensor(), Sensor()
+    a.read = lambda: "patched"             # an instance attribute shadows the class method
+    assert a.read() == "patched"
+    assert b.read() == "method"
+
+def test_patching_the_class_changes_every_instance():
+    class Sensor:
+        def read(self):
+            return "original"
+    a = Sensor()
+    Sensor.read = lambda self: "patched"   # monkey patching the class
+    assert a.read() == "patched"
+    assert Sensor().read() == "patched"
+
+def test_a_for_loop_variable_overwrites_an_outer_name_but_a_comprehension_does_not():
+    x = 10
+    [x for x in range(3)]                  # the comprehension has its own scope
+    assert x == 10
+    for x in range(3):                     # a for loop reuses the name
+        pass
+    assert x == 2
+`,
+  },
+  {
+    id: "py-abc",
+    title: "12. Abstract base classes",
+    runnable: true,
+    intro: "An <b>abstract base class</b> defines a contract that subclasses must fulfil. Python checks it when you <em>create an object</em>, not when you define the class, and it checks only that the names exist, not their signatures.",
+    code: String.raw`from abc import ABC, abstractmethod
+import pytest
+
+class Driver(ABC):
+    @abstractmethod
+    def connect(self):
+        ...
+    @abstractmethod
+    def measure_voltage(self, channel):
+        ...
+    def close(self):                       # concrete: shared behaviour for every driver
+        return "closed"
+
+class Sim(Driver):
+    def connect(self):
+        return "sim connected"
+    def measure_voltage(self, channel):
+        return 3.3
+
+class Half(Driver):                        # forgot measure_voltage
+    def connect(self):
+        return "x"
+
+def test_an_abstract_class_cannot_be_instantiated():
+    with pytest.raises(TypeError):
+        Driver()
+
+def test_a_subclass_must_implement_every_abstract_method():
+    with pytest.raises(TypeError, match="measure_voltage"):
+        Half()
+
+def test_a_complete_subclass_works_and_inherits_the_concrete_methods():
+    s = Sim()
+    assert isinstance(s, Driver)
+    assert s.close() == "closed"
+
+def test_the_check_happens_when_an_object_is_created_not_when_the_class_is_defined():
+    # defining Half above did not raise: we are running this test
+    assert Half.__abstractmethods__ == frozenset({"measure_voltage"})
+
+def test_abc_does_not_check_signatures():
+    class Odd(Driver):
+        def connect(self, extra, args):    # different from the base
+            return None
+        def measure_voltage(self):         # channel dropped
+            return 0.0
+    assert Odd() is not None               # accepted, but callers will break
+
+def test_without_the_decorator_there_is_no_protection():
+    class Loose(ABC):
+        def run(self):
+            raise NotImplementedError      # only fails when someone calls it
+    obj = Loose()                          # creating it is fine
+    with pytest.raises(NotImplementedError):
+        obj.run()
+
+def test_an_abstract_property_can_be_satisfied_by_a_class_attribute():
+    class Named(ABC):
+        @property
+        @abstractmethod
+        def model(self):
+            ...
+    with pytest.raises(TypeError):
+        Named()
+    class Dmm(Named):
+        model = "DMM-6500"
+    assert Dmm().model == "DMM-6500"
+`,
+  },
+  {
+    id: "py-driver",
+    title: "13. A driver contract: template method + simulator",
+    runnable: true,
+    intro: "Best practice for an instrument driver on an abstract base class: the <b>base class owns the public contract</b> (validation, error translation, safe behaviour), and subclasses supply only the small abstract hooks. A simulator is just another subclass.",
+    code: String.raw`from abc import ABC, abstractmethod
+import pytest
+
+class DriverError(Exception):
+    """Base class for every driver problem, so callers catch one type."""
+
+class DriverTimeout(DriverError):
+    pass
+
+class DmmDriver(ABC):
+    CHANNELS = ("CH1", "CH2")
+
+    def __init__(self, timeout_s=2.0):
+        self.timeout_s = timeout_s          # cheap: no I/O in __init__
+        self._open = False
+
+    # ---- public contract (template methods): written once, shared by all ----
+    def open(self):
+        if not self._open:
+            self._open_connection()
+            self._open = True
+        return self
+
+    def close(self):
+        if self._open:
+            try:
+                self._close_connection()
+            finally:
+                self._open = False          # idempotent and always ends closed
+
+    def measure_voltage(self, channel):
+        if not self._open:
+            raise DriverError("driver is not open")
+        if channel not in self.CHANNELS:    # validate BEFORE touching the instrument
+            raise ValueError(f"unknown channel {channel!r}")
+        try:
+            raw = self._query(f"MEAS:VOLT? {channel}")
+        except TimeoutError as err:         # translate library errors into our own type
+            raise DriverTimeout(str(err)) from err
+        return float(raw)                   # one clear unit and type: volts as float
+
+    def __enter__(self):
+        return self.open()
+
+    def __exit__(self, *exc_info):
+        self.close()
+        return False
+
+    # ---- the small hooks every implementation provides ----
+    @abstractmethod
+    def _open_connection(self): ...
+    @abstractmethod
+    def _close_connection(self): ...
+    @abstractmethod
+    def _query(self, command): ...
+
+class SimDmm(DmmDriver):
+    def __init__(self, readings, **kwargs):
+        super().__init__(**kwargs)
+        self.readings = dict(readings)
+        self.log = []
+    def _open_connection(self):
+        self.log.append("open")
+    def _close_connection(self):
+        self.log.append("close")
+    def _query(self, command):
+        self.log.append(command)
+        value = self.readings[command.split()[-1]]
+        if isinstance(value, Exception):
+            raise value
+        return str(value)
+
+def test_creating_a_driver_does_no_io():
+    assert SimDmm({"CH1": 3.3}).log == []
+
+def test_the_base_class_validates_before_touching_the_instrument():
+    d = SimDmm({"CH1": 3.3}).open()
+    with pytest.raises(ValueError):
+        d.measure_voltage("CH9")
+    assert d.log == ["open"]                # nothing was sent
+
+def test_using_a_driver_that_is_not_open_is_a_clear_error():
+    with pytest.raises(DriverError):
+        SimDmm({"CH1": 3.3}).measure_voltage("CH1")
+
+def test_the_result_is_a_float_in_volts():
+    assert SimDmm({"CH1": "3.30"}).open().measure_voltage("CH1") == 3.3
+
+def test_a_library_timeout_becomes_a_driver_error():
+    d = SimDmm({"CH1": TimeoutError("no reply")}).open()
+    with pytest.raises(DriverTimeout) as info:
+        d.measure_voltage("CH1")
+    assert isinstance(info.value, DriverError)   # one except clause is enough for callers
+
+def test_the_context_manager_closes_even_when_the_body_fails():
+    with pytest.raises(RuntimeError):
+        with SimDmm({"CH1": 3.3}) as d:
+            raise RuntimeError("test step failed")
+    assert d.log[-1] == "close"
+
+def test_close_is_idempotent():
+    d = SimDmm({"CH1": 3.3}).open()
+    d.close()
+    d.close()
+    assert d.log.count("close") == 1
+
+def test_every_implementation_must_satisfy_the_same_contract():
+    drivers = [SimDmm({"CH1": 1.5})]        # add real drivers here: same tests, same results
+    for d in drivers:
+        with d:
+            assert isinstance(d.measure_voltage("CH1"), float)
+`,
+  },
+  {
+    id: "py-bigo",
+    title: "14. Big O: count the work, not the seconds",
+    runnable: true,
+    intro: "<b>Big O</b> describes how the work grows with the input size <code>n</code>. Stopwatch times are noisy, so these tests <b>count comparisons</b>, which gives the same answer every run. Doubling <code>n</code> doubles linear work and quadruples quadratic work.",
+    code: String.raw`class Tracked:
+    """A value that counts how many times it is compared."""
+    comparisons = 0
+    def __init__(self, v):
+        self.v = v
+    def __hash__(self):
+        return hash(self.v)
+    def __eq__(self, other):
+        Tracked.comparisons += 1
+        return self.v == other.v
+
+def comparisons_for(fn):
+    Tracked.comparisons = 0
+    fn()
+    return Tracked.comparisons
+
+N = 500
+items = [Tracked(i) for i in range(N)]
+missing = Tracked(N + 1000)
+
+def test_in_on_a_list_compares_with_every_element():     # O(n)
+    assert comparisons_for(lambda: missing in items) == N
+
+def test_in_on_a_set_does_not_scan():                    # O(1) on average
+    as_set = set(items)
+    assert comparisons_for(lambda: missing in as_set) == 0
+
+def test_nested_loops_grow_quadratically():              # O(n^2)
+    def pairs(n):
+        data = [Tracked(i) for i in range(n)]
+        def run():
+            for a in data:
+                for b in data:
+                    a == b
+        return comparisons_for(run)
+    assert pairs(10) == 100
+    assert pairs(20) == 400                              # twice the data, four times the work
+
+def test_a_duplicate_check_with_a_list_is_quadratic_and_with_a_set_is_linear():
+    def has_dup_list(xs):                                # O(n^2)
+        for i, a in enumerate(xs):
+            if a in xs[:i]:
+                return True
+        return False
+    def has_dup_set(xs):                                 # O(n)
+        seen = set()
+        for a in xs:
+            if a in seen:
+                return True
+            seen.add(a)
+        return False
+    data = [Tracked(i) for i in range(200)]
+    assert comparisons_for(lambda: has_dup_list(data)) == 200 * 199 // 2   # 19,900
+    assert comparisons_for(lambda: has_dup_set(data)) == 0
+
+def test_binary_search_needs_about_log2_n_steps():       # O(log n)
+    def binary_search(sorted_values, target):
+        steps, lo, hi = 0, 0, len(sorted_values) - 1
+        while lo <= hi:
+            steps += 1
+            mid = (lo + hi) // 2
+            if sorted_values[mid] == target:
+                return steps
+            if sorted_values[mid] < target:
+                lo = mid + 1
+            else:
+                hi = mid - 1
+        return steps
+    values = list(range(1024))
+    assert binary_search(values, 1023) <= 11             # log2(1024) + 1
+    assert binary_search(values, -5) <= 11               # linear search would need 1,024
+
+def test_for_a_handful_of_items_the_choice_does_not_matter():
+    steps = ["power", "boot", "rail", "banner", "off"]   # a sequence has tens of steps, not millions
+    assert "rail" in steps                               # a list is fine, and clearer
+`,
+  },
 ];
 
 /* ------------------------------------------------------------------ Python exercises */
@@ -3820,6 +4304,653 @@ def test_free_items_and_a_single_unit_are_allowed():
 ` },
     ],
   },
+
+  {
+    id: "py-operator",
+    level: "Medium",
+    kind: "implement",
+    title: "Operator overloading: a Voltage class",
+    summary: "Special methods, NotImplemented, ordering and hashing.",
+    brief: `<p>Write a class <code>Voltage</code> that stores an integer number of millivolts and behaves like a number in the right places.</p>
+      <ul>
+        <li><code>Voltage(mv)</code> stores <code>mv</code>. <code>Voltage.from_volts(3.3)</code> returns <code>Voltage(3300)</code> (use <code>round(v * 1000)</code>). <code>repr</code> is <code>Voltage(3300 mV)</code>.</li>
+        <li><code>+</code> and <code>-</code> between two <code>Voltage</code> objects give a <code>Voltage</code>. With anything else they must raise <code>TypeError</code>: return <code>NotImplemented</code> instead of raising yourself.</li>
+        <li><code>==</code> compares millivolts. Comparing with another type gives <code>False</code> (again via <code>NotImplemented</code>).</li>
+        <li>Ordering (<code>&lt; &lt;= &gt; &gt;=</code>) between <code>Voltage</code> objects. Ordering against another type raises <code>TypeError</code>. Hint: <code>functools.total_ordering</code>.</li>
+        <li>Equal voltages have equal hashes, so they work in sets and as dict keys.</li>
+        <li><code>abs(v)</code> returns a <code>Voltage</code>. <code>bool(Voltage(0))</code> is <code>False</code>.</li>
+      </ul>`,
+    starter: String.raw`class Voltage:
+    pass
+`,
+    hints: [
+      "Each arithmetic method begins with <code>if not isinstance(other, Voltage): return NotImplemented</code>. Python then tries the other operand and finally raises <code>TypeError</code> for you.",
+      "Define <code>__eq__</code> and <code>__lt__</code>, add <code>@total_ordering</code>, and the other comparisons come for free.",
+      "Defining <code>__eq__</code> removes the default hash. Add <code>__hash__</code> that hashes the millivolt value.",
+    ],
+    solution: String.raw`from functools import total_ordering
+
+@total_ordering
+class Voltage:
+    def __init__(self, mv):
+        self.mv = mv
+
+    @classmethod
+    def from_volts(cls, volts):
+        return cls(round(volts * 1000))
+
+    def __repr__(self):
+        return f"Voltage({self.mv} mV)"
+
+    def __add__(self, other):
+        if not isinstance(other, Voltage):
+            return NotImplemented
+        return Voltage(self.mv + other.mv)
+
+    def __sub__(self, other):
+        if not isinstance(other, Voltage):
+            return NotImplemented
+        return Voltage(self.mv - other.mv)
+
+    def __eq__(self, other):
+        if not isinstance(other, Voltage):
+            return NotImplemented
+        return self.mv == other.mv
+
+    def __lt__(self, other):
+        if not isinstance(other, Voltage):
+            return NotImplemented
+        return self.mv < other.mv
+
+    def __hash__(self):
+        return hash(self.mv)
+
+    def __abs__(self):
+        return Voltage(abs(self.mv))
+
+    def __bool__(self):
+        return self.mv != 0
+`,
+    tests: String.raw`import pytest
+
+def test_repr():
+    assert repr(Voltage(3300)) == "Voltage(3300 mV)"
+
+def test_from_volts_rounds_to_millivolts():
+    assert Voltage.from_volts(3.3) == Voltage(3300)
+    assert Voltage.from_volts(0.0021) == Voltage(2)
+
+def test_addition_and_subtraction():
+    assert Voltage(100) + Voltage(250) == Voltage(350)
+    assert Voltage(100) - Voltage(250) == Voltage(-150)
+
+def test_arithmetic_with_other_types_is_a_type_error():
+    with pytest.raises(TypeError):
+        Voltage(1) + 1
+    with pytest.raises(TypeError):
+        Voltage(1) - 1.5
+    with pytest.raises(TypeError):
+        1 + Voltage(1)
+
+def test_equality_with_other_types_is_false_not_an_error():
+    assert (Voltage(5) == 5) is False
+    assert (Voltage(5) != 5) is True
+    assert Voltage(5) != Voltage(6)
+
+def test_ordering():
+    assert Voltage(1) < Voltage(2)
+    assert Voltage(2) > Voltage(1)
+    assert Voltage(2) <= Voltage(2)
+    assert Voltage(2) >= Voltage(2)
+    assert sorted([Voltage(3), Voltage(1), Voltage(2)]) == [Voltage(1), Voltage(2), Voltage(3)]
+    assert max([Voltage(3), Voltage(9)]) == Voltage(9)
+
+def test_ordering_against_other_types_is_a_type_error():
+    with pytest.raises(TypeError):
+        Voltage(1) < 5
+    with pytest.raises(TypeError):
+        Voltage(1) >= 2.0
+
+def test_equal_voltages_hash_equal():
+    assert hash(Voltage(5)) == hash(Voltage(5))
+    assert len({Voltage(1), Voltage(1), Voltage(2)}) == 2
+    assert {Voltage(7): "x"}[Voltage(7)] == "x"
+
+def test_abs_and_truthiness():
+    assert abs(Voltage(-5)) == Voltage(5)
+    assert not Voltage(0)
+    assert Voltage(1)
+
+def test_sum_needs_a_start_value_and_then_works():
+    assert sum([Voltage(1), Voltage(2), Voltage(3)], Voltage(0)) == Voltage(6)
+    with pytest.raises(TypeError):
+        sum([Voltage(1)])
+`,
+  },
+
+  {
+    id: "py-dispatch",
+    level: "Medium",
+    kind: "implement",
+    title: "Overloading by type with singledispatch",
+    summary: "One function name, behaviour chosen by the type of the argument.",
+    brief: `<p>Python has no overloading, but <code>functools.singledispatch</code> gives you the same effect. Implement <code>format_value(x)</code> as a <b>single-dispatch function</b> (decorate it with <code>@singledispatch</code> and register one function per type):</p>
+      <ul>
+        <li><code>bool</code>: <code>"PASS"</code> for <code>True</code>, <code>"FAIL"</code> for <code>False</code> (a <code>bool</code> is also an <code>int</code>, but the more specific registration wins).</li>
+        <li><code>int</code>: <code>"5 counts"</code>. <code>float</code>: three decimals and a unit, <code>"3.142 V"</code>.</li>
+        <li><code>str</code>: the string with surrounding whitespace removed. <code>None</code>: <code>"n/a"</code>.</li>
+        <li><code>list</code> and <code>tuple</code>: every item formatted with <code>format_value</code>, joined with <code>", "</code> (an empty list gives <code>""</code>).</li>
+        <li>Any other type raises <code>TypeError("cannot format dict")</code> (with the type's name).</li>
+      </ul>
+      <p>Also implement <code>average(*values)</code>: it accepts either several numbers or <b>one</b> list or tuple of numbers, and raises <code>ValueError</code> when there is nothing to average.</p>`,
+    starter: String.raw`from functools import singledispatch
+
+def format_value(x):
+    raise NotImplementedError
+
+def average(*values):
+    raise NotImplementedError
+`,
+    hints: [
+      "The undecorated function with <code>@singledispatch</code> is the fallback. Make it raise the <code>TypeError</code>.",
+      "<code>@format_value.register</code> on a function with an annotated first parameter (<code>x: int</code>) registers it for that type. <code>@format_value.register(list)</code> works too, and decorators can be stacked for <code>list</code> and <code>tuple</code>.",
+      "For <code>None</code> register <code>type(None)</code>. For <code>average</code>, check <code>len(values) == 1 and isinstance(values[0], (list, tuple))</code>.",
+    ],
+    solution: String.raw`from functools import singledispatch
+
+@singledispatch
+def format_value(x):
+    raise TypeError(f"cannot format {type(x).__name__}")
+
+@format_value.register
+def _(x: bool):
+    return "PASS" if x else "FAIL"
+
+@format_value.register
+def _(x: int):
+    return f"{x} counts"
+
+@format_value.register
+def _(x: float):
+    return f"{x:.3f} V"
+
+@format_value.register
+def _(x: str):
+    return x.strip()
+
+@format_value.register(type(None))
+def _(x):
+    return "n/a"
+
+@format_value.register(list)
+@format_value.register(tuple)
+def _(x):
+    return ", ".join(format_value(item) for item in x)
+
+def average(*values):
+    if len(values) == 1 and isinstance(values[0], (list, tuple)):
+        values = values[0]
+    if not values:
+        raise ValueError("no values to average")
+    return sum(values) / len(values)
+`,
+    tests: String.raw`import pytest
+
+def test_it_is_a_single_dispatch_function():
+    assert hasattr(format_value, "register")
+    assert hasattr(format_value, "dispatch")
+
+def test_ints_and_floats_are_formatted_differently():
+    assert format_value(5) == "5 counts"
+    assert format_value(3.14159) == "3.142 V"
+
+def test_bool_is_more_specific_than_int():
+    assert format_value(True) == "PASS"
+    assert format_value(False) == "FAIL"
+
+def test_strings_and_none():
+    assert format_value("  ok \n") == "ok"
+    assert format_value(None) == "n/a"
+
+def test_lists_and_tuples_are_formatted_item_by_item():
+    assert format_value([1, 2.5, "x"]) == "1 counts, 2.500 V, x"
+    assert format_value((True, None)) == "PASS, n/a"
+    assert format_value([]) == ""
+    assert format_value([[1], [2]]) == "1 counts, 2 counts"
+
+def test_unsupported_types_name_themselves_in_the_error():
+    with pytest.raises(TypeError, match="dict"):
+        format_value({})
+    with pytest.raises(TypeError, match="set"):
+        format_value({1})
+
+def test_average_accepts_numbers_or_one_list():
+    assert average(1, 2, 3) == 2
+    assert average([1, 2, 3]) == 2
+    assert average((2, 4)) == 3
+    assert average(5) == 5
+
+def test_average_of_nothing_is_an_error():
+    with pytest.raises(ValueError):
+        average()
+    with pytest.raises(ValueError):
+        average([])
+`,
+  },
+
+  {
+    id: "py-driver-abc",
+    level: "Medium",
+    kind: "implement",
+    title: "Implement a driver on an abstract base class",
+    summary: "A simulator, a factory, and a base class that keeps the supply safe.",
+    brief: `<p>The abstract class <code>PsuDriver</code> (a bench power supply) is given. It owns the public contract: validation, the <b>safe-state rule</b> (<code>close()</code> always switches the output off), error handling and the context manager. Do <b>not</b> change it. You write the implementation side.</p>
+      <ul>
+        <li><code>SimPsu(PsuDriver)</code> with <code>__init__(self, fail_after=None)</code> (call <code>super().__init__()</code>). It has <code>connected</code> (starts <code>False</code>), a list <code>sent</code> of every command, and <code>fail_after</code>. It implements the four abstract hooks:
+          <ul>
+            <li><code>_connect</code> / <code>_disconnect</code> set <code>connected</code> to <code>True</code> / <code>False</code>. Creating the object does no "I/O".</li>
+            <li><code>_send(command)</code> appends to <code>sent</code> and remembers state (<code>"VOLT 5.000"</code> sets the voltage, <code>"OUTP ON"</code> / <code>"OUTP OFF"</code> the output). If <code>fail_after</code> is not <code>None</code> and that many commands have already been sent, it raises <code>DriverError("link lost")</code> instead.</li>
+            <li><code>_ask("MEAS:VOLT?")</code> returns the voltage as text with three decimals, or <code>"0.000"</code> while the output is off. Any other query raises <code>DriverError</code>.</li>
+          </ul></li>
+        <li><code>DRIVERS</code> is a dict mapping <code>"sim"</code> to <code>SimPsu</code>. <code>make_driver(kind, **kwargs)</code> builds the driver registered under <code>kind</code> and raises <code>ValueError</code> for an unknown kind.</li>
+      </ul>`,
+    starter: String.raw`from abc import ABC, abstractmethod
+
+class DriverError(Exception):
+    """Base class for all driver problems."""
+
+class PsuDriver(ABC):
+    MAX_VOLTS = 30.0
+
+    def __init__(self):
+        self._open = False                    # no I/O here
+
+    # ---- public contract: validation and safe behaviour live here, once ----
+    def open(self):
+        if not self._open:
+            self._connect()
+            self._open = True
+        return self
+
+    def close(self):
+        if self._open:
+            try:
+                self.output(False)            # always leave the supply in a safe state
+            finally:
+                self._disconnect()
+                self._open = False
+
+    def set_voltage(self, volts):
+        self._require_open()
+        if not 0 <= volts <= self.MAX_VOLTS:
+            raise ValueError(f"voltage must be between 0 and {self.MAX_VOLTS}")
+        self._send(f"VOLT {volts:.3f}")
+
+    def output(self, on):
+        self._require_open()
+        self._send("OUTP ON" if on else "OUTP OFF")
+
+    def read_voltage(self):
+        self._require_open()
+        return float(self._ask("MEAS:VOLT?"))
+
+    def __enter__(self):
+        return self.open()
+
+    def __exit__(self, *exc_info):
+        self.close()
+        return False
+
+    def _require_open(self):
+        if not self._open:
+            raise DriverError("driver is not open")
+
+    # ---- what every implementation must provide ----
+    @abstractmethod
+    def _connect(self): ...
+    @abstractmethod
+    def _disconnect(self): ...
+    @abstractmethod
+    def _send(self, command): ...
+    @abstractmethod
+    def _ask(self, command): ...
+
+# ---- your part ----
+class SimPsu(PsuDriver):
+    pass
+
+DRIVERS = {}
+
+def make_driver(kind, **kwargs):
+    raise NotImplementedError
+`,
+    hints: [
+      "Start with <code>__init__</code>: call <code>super().__init__()</code> first, then create <code>connected</code>, <code>sent</code>, <code>fail_after</code> and two private fields for the voltage and the output state. Until all four hooks exist the class cannot even be created.",
+      "In <code>_send</code> do the <code>fail_after</code> check <em>before</em> appending, using <code>len(self.sent)</code>.",
+      "<code>DRIVERS = {\"sim\": SimPsu}</code>, and the factory is <code>DRIVERS[kind](**kwargs)</code> with a clear <code>ValueError</code> for a missing key.",
+    ],
+    solution: String.raw`from abc import ABC, abstractmethod
+
+class DriverError(Exception):
+    """Base class for all driver problems."""
+
+class PsuDriver(ABC):
+    MAX_VOLTS = 30.0
+
+    def __init__(self):
+        self._open = False                    # no I/O here
+
+    # ---- public contract: validation and safe behaviour live here, once ----
+    def open(self):
+        if not self._open:
+            self._connect()
+            self._open = True
+        return self
+
+    def close(self):
+        if self._open:
+            try:
+                self.output(False)            # always leave the supply in a safe state
+            finally:
+                self._disconnect()
+                self._open = False
+
+    def set_voltage(self, volts):
+        self._require_open()
+        if not 0 <= volts <= self.MAX_VOLTS:
+            raise ValueError(f"voltage must be between 0 and {self.MAX_VOLTS}")
+        self._send(f"VOLT {volts:.3f}")
+
+    def output(self, on):
+        self._require_open()
+        self._send("OUTP ON" if on else "OUTP OFF")
+
+    def read_voltage(self):
+        self._require_open()
+        return float(self._ask("MEAS:VOLT?"))
+
+    def __enter__(self):
+        return self.open()
+
+    def __exit__(self, *exc_info):
+        self.close()
+        return False
+
+    def _require_open(self):
+        if not self._open:
+            raise DriverError("driver is not open")
+
+    # ---- what every implementation must provide ----
+    @abstractmethod
+    def _connect(self): ...
+    @abstractmethod
+    def _disconnect(self): ...
+    @abstractmethod
+    def _send(self, command): ...
+    @abstractmethod
+    def _ask(self, command): ...
+
+# ---- your part ----
+class SimPsu(PsuDriver):
+    def __init__(self, fail_after=None):
+        super().__init__()
+        self.fail_after = fail_after
+        self.connected = False
+        self.sent = []
+        self._volts = 0.0
+        self._on = False
+
+    def _connect(self):
+        self.connected = True
+
+    def _disconnect(self):
+        self.connected = False
+
+    def _send(self, command):
+        if self.fail_after is not None and len(self.sent) >= self.fail_after:
+            raise DriverError("link lost")
+        self.sent.append(command)
+        if command.startswith("VOLT "):
+            self._volts = float(command.split()[1])
+        elif command == "OUTP ON":
+            self._on = True
+        elif command == "OUTP OFF":
+            self._on = False
+
+    def _ask(self, command):
+        if command == "MEAS:VOLT?":
+            return f"{self._volts if self._on else 0.0:.3f}"
+        raise DriverError(f"unknown query {command!r}")
+
+DRIVERS = {"sim": SimPsu}
+
+def make_driver(kind, **kwargs):
+    if kind not in DRIVERS:
+        raise ValueError(f"unknown driver {kind!r}")
+    return DRIVERS[kind](**kwargs)
+`,
+    tests: String.raw`import pytest
+
+def test_it_is_a_driver_and_creating_it_does_no_io():
+    p = SimPsu()
+    assert isinstance(p, PsuDriver)
+    assert p.connected is False
+    assert p.sent == []
+
+def test_open_connects_and_returns_the_driver():
+    p = SimPsu()
+    assert p.open() is p
+    assert p.connected is True
+
+def test_the_base_class_formats_the_commands():
+    p = SimPsu().open()
+    p.set_voltage(5)
+    p.output(True)
+    assert p.sent == ["VOLT 5.000", "OUTP ON"]
+
+def test_read_voltage_follows_the_output_state():
+    p = SimPsu().open()
+    p.set_voltage(5)
+    assert p.read_voltage() == 0.0
+    p.output(True)
+    assert p.read_voltage() == 5.0
+
+def test_validation_happens_before_anything_is_sent():
+    p = SimPsu().open()
+    with pytest.raises(ValueError):
+        p.set_voltage(31)
+    assert p.sent == []
+
+def test_a_driver_that_is_not_open_refuses_to_work():
+    with pytest.raises(DriverError):
+        SimPsu().set_voltage(1)
+
+def test_close_switches_the_output_off_and_disconnects():
+    p = SimPsu().open()
+    p.output(True)
+    p.close()
+    assert p.sent[-1] == "OUTP OFF"
+    assert p.connected is False
+
+def test_close_twice_is_harmless():
+    p = SimPsu().open()
+    p.close()
+    p.close()
+    assert p.sent.count("OUTP OFF") == 1
+
+def test_the_context_manager_leaves_the_supply_safe_even_when_the_body_fails():
+    with pytest.raises(RuntimeError):
+        with SimPsu() as p:
+            p.output(True)
+            raise RuntimeError("step failed")
+    assert p.sent[-1] == "OUTP OFF"
+    assert p.connected is False
+
+def test_a_failing_link_still_ends_up_disconnected():
+    p = SimPsu(fail_after=1)
+    p.open()
+    p.set_voltage(3)                       # the first command goes through
+    with pytest.raises(DriverError):
+        p.output(True)                     # the second one fails
+    with pytest.raises(DriverError):
+        p.close()                          # the safe-state command fails too ...
+    assert p.connected is False            # ... but the link is closed anyway
+
+def test_unknown_queries_are_errors():
+    p = SimPsu().open()
+    with pytest.raises(DriverError):
+        p._ask("*IDN?")
+
+def test_the_factory():
+    p = make_driver("sim")
+    assert isinstance(p, SimPsu)
+    assert make_driver("sim", fail_after=3).fail_after == 3
+    with pytest.raises(ValueError):
+        make_driver("nope")
+
+def test_the_base_class_is_still_abstract():
+    class Incomplete(PsuDriver):
+        def _connect(self):
+            pass
+    with pytest.raises(TypeError):
+        Incomplete()
+`,
+  },
+
+  {
+    id: "py-bigo-fix",
+    level: "Medium",
+    kind: "implement",
+    title: "Make the slow code linear",
+    summary: "The answers are right but the work grows too fast. Pick the right data structure.",
+    brief: `<p>The three functions below are <b>correct but quadratic</b>: the work grows with the square of the input. Rewrite them so that the work grows only linearly. The tests check the answers <em>and</em> count how many comparisons you make.</p>
+      <ul>
+        <li><code>has_duplicates(items)</code>: <code>True</code> if any item appears twice. Items are hashable.</li>
+        <li><code>common_items(a, b)</code>: the items that are in both lists, <b>in the order of <code>a</code></b>, without duplicates.</li>
+        <li><code>limits_for(steps, names)</code>: <code>steps</code> is a list of <code>{"name", "low", "high"}</code> dicts. Return the list of <code>(low, high)</code> pairs for the given <code>names</code>, in the order of <code>names</code>. An unknown name raises <code>KeyError</code>.</li>
+      </ul>
+      <p class="note">Rule of thumb: a loop inside a loop over the same data is a warning sign. A <code>set</code> or a <code>dict</code> built once usually removes the inner loop.</p>`,
+    starter: String.raw`def has_duplicates(items):
+    for i, a in enumerate(items):
+        for b in items[i + 1:]:
+            if a == b:
+                return True
+    return False
+
+def common_items(a, b):
+    out = []
+    for x in a:
+        if x in b and x not in out:
+            out.append(x)
+    return out
+
+def limits_for(steps, names):
+    result = []
+    for name in names:
+        for step in steps:
+            if step["name"] == name:
+                result.append((step["low"], step["high"]))
+                break
+        else:
+            raise KeyError(name)
+    return result
+`,
+    hints: [
+      "Keep a <code>set</code> of what you have already seen. Checking <code>x in seen</code> is O(1) on average, and adding is too.",
+      "For <code>common_items</code> turn <code>b</code> into a set once, and use a second set to avoid reporting an item twice while keeping the output as a list in the order of <code>a</code>.",
+      "For <code>limits_for</code> build a dict <code>name -&gt; (low, high)</code> once, then look every name up in it. A missing key already raises <code>KeyError</code>.",
+    ],
+    solution: String.raw`def has_duplicates(items):
+    seen = set()
+    for x in items:
+        if x in seen:
+            return True
+        seen.add(x)
+    return False
+
+def common_items(a, b):
+    in_b = set(b)
+    seen = set()
+    out = []
+    for x in a:
+        if x in in_b and x not in seen:
+            seen.add(x)
+            out.append(x)
+    return out
+
+def limits_for(steps, names):
+    by_name = {step["name"]: (step["low"], step["high"]) for step in steps}
+    return [by_name[name] for name in names]
+`,
+    tests: String.raw`import pytest
+
+class Tracked:
+    """A value that counts how many times it is compared."""
+    comparisons = 0
+    def __init__(self, v):
+        self.v = v
+    def __hash__(self):
+        return hash(self.v)
+    def __eq__(self, other):
+        Tracked.comparisons += 1
+        return self.v == other.v
+    def __repr__(self):
+        return f"T({self.v})"
+
+def counted(fn):
+    Tracked.comparisons = 0
+    result = fn()
+    return result, Tracked.comparisons
+
+def make(values):
+    return [Tracked(v) for v in values]
+
+N = 300
+
+def test_has_duplicates_gives_the_right_answer():
+    assert has_duplicates(make([1, 2, 3])) is False
+    assert has_duplicates(make([1, 2, 1])) is True
+    assert has_duplicates([]) is False
+
+def test_has_duplicates_is_linear():
+    result, comps = counted(lambda: has_duplicates(make(range(N))))
+    assert result is False
+    assert comps <= 3 * N                    # a nested loop needs about N*N/2
+    result, comps = counted(lambda: has_duplicates(make(list(range(N)) + [0])))
+    assert result is True
+    assert comps <= 3 * N
+
+def test_common_items_keeps_the_order_of_the_first_list_and_has_no_duplicates():
+    a, b = make([5, 1, 3, 1, 9]), make([3, 9, 7, 1])
+    assert [t.v for t in common_items(a, b)] == [1, 3, 9]
+
+def test_common_items_with_nothing_in_common():
+    assert common_items(make([1, 2]), make([3, 4])) == []
+
+def test_common_items_is_linear():
+    a, b = make(range(N)), make(range(N // 2, N + N // 2))
+    result, comps = counted(lambda: common_items(a, b))
+    assert [t.v for t in result] == list(range(N // 2, N))
+    assert comps <= 6 * (2 * N)
+
+def test_limits_for_looks_up_by_name_in_the_order_of_the_names():
+    steps = [{"name": Tracked("a"), "low": 1, "high": 2}, {"name": Tracked("b"), "low": 3, "high": 4}]
+    assert limits_for(steps, [Tracked("b"), Tracked("a")]) == [(3, 4), (1, 2)]
+
+def test_limits_for_an_unknown_name_is_a_key_error():
+    steps = [{"name": Tracked("a"), "low": 1, "high": 2}]
+    with pytest.raises(KeyError):
+        limits_for(steps, [Tracked("zzz")])
+
+def test_limits_for_is_linear():
+    steps = [{"name": Tracked(i), "low": i, "high": i + 1} for i in range(N)]
+    names = [Tracked(i) for i in reversed(range(N))]
+    result, comps = counted(lambda: limits_for(steps, names))
+    assert result[0] == (N - 1, N)
+    assert result[-1] == (0, 1)
+    assert comps <= 3 * (2 * N)
+`,
+  },
 ];
 
 /* ------------------------------------------------------------------ glossary */
@@ -3958,6 +5089,13 @@ TDE.GLOSSARY = [
       ["PEP", "Python Enhancement Proposal", "A design document for Python. PEP 8 is the style guide."],
       ["REPL", "Read-Eval-Print Loop", "The interactive prompt where you type Python and see the result at once."],
       ["Reference", "Reference (name bound to an object)", "What a Python variable really is: a name pointing at an object, not a box holding a value."],
+      ["Overloading", "Same name, different parameters", "Not available for functions in Python: the last def wins. Use default arguments, *args or functools.singledispatch. Operator overloading with special methods is supported."],
+      ["Overriding", "A subclass replaces an inherited method", "Supported. The subclass version is used for subclass objects. Call super() to extend the parent's version. Keep the signature compatible."],
+      ["Overwriting", "Replacing something that already exists", "Redefining a name, shadowing a built-in, assigning to an existing key or attribute, or patching a method. Python does it silently."],
+      ["Big O", "How work grows with input size", "O(1), O(log n), O(n), O(n log n), O(n squared). Ignores constant factors. Count operations to compare algorithms."],
+      ["LSP", "Liskov Substitution Principle", "Code written for the parent type must keep working with any subclass. The reason an override should keep the parent's signature and meaning."],
+      ["DI", "Dependency Injection", "Pass in what an object needs (a transport, a clock) instead of creating it inside, so tests can supply a fake."],
+      ["Monkey patching", "Changing a class or module at run time", "Replacing a method or attribute while the program runs. Handy in tests, risky elsewhere."],
       ["Mutable / immutable", "Can / cannot be changed in place", "Lists, dicts and sets are mutable. Numbers, strings and tuples are not."],
       ["Dunder", "Double underscore name", "Special methods such as __init__ and __repr__ that Python calls for you."],
     ],

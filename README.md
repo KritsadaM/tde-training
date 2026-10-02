@@ -73,7 +73,7 @@ There are two exercise kinds:
 | 13 | Medium | implement | `diff_config`: compare a node's readings with its golden configuration |
 | 14 | Medium | implement | `guardbanded_limits`, `classify_guardbanded`, `acceleration_factor`, `burnin_hours`: guardbands and Arrhenius burn-in |
 
-Python practice (Software section): `with_item` / `copy_grid` / `merge_limits` (aliasing), `record_reading` / `make_config` (mutable defaults), a `Sensor` class with constructors, `Dmm` / `Psu` subclasses with `super()`, a `Station` class with class variables, and a bug hunt in a `Cart` class (9 hidden bugs).
+Python practice (Software section): `with_item` / `copy_grid` / `merge_limits` (aliasing), `record_reading` / `make_config` (mutable defaults), a `Sensor` class with constructors, `Dmm` / `Psu` subclasses with `super()`, a `Station` class with class variables, a bug hunt in a `Cart` class (9 hidden bugs), a `Voltage` class with operator overloading, `format_value` with `singledispatch`, a simulator and factory on an abstract `PsuDriver`, and three quadratic functions to make linear (checked by counting comparisons).
 
 ## Navigation
 
