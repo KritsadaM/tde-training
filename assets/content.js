@@ -2581,6 +2581,1247 @@ def test_burnin_hours_rejects_bad_input(args):
   },
 ];
 
+
+/* ------------------------------------------------------------------ Python examples */
+/* Predict-then-run examples. Each test states what Python really does. */
+TDE.PY_EXAMPLES = [
+  {
+    id: "py-names",
+    title: "1. Names, not boxes",
+    runnable: true,
+    intro: "<b>Predict first.</b> Read each test and decide whether it passes, then press <b>Run</b>. In Python, <code>b = a</code> does not copy anything: it attaches a second <em>name</em> to the same object.",
+    code: String.raw`def test_assignment_attaches_another_name_to_the_same_object():
+    a = [1, 2, 3]
+    b = a                      # no copy: b is another name for the same list
+    b.append(4)
+    print("a =", a)
+    assert a == [1, 2, 3, 4]   # a changed too
+    assert a is b
+    assert id(a) == id(b)
+
+def test_copy_makes_a_new_object():
+    a = [1, 2, 3]
+    c = a.copy()
+    c.append(4)
+    assert a == [1, 2, 3]
+    assert a is not c
+
+def test_rebinding_a_name_does_not_change_the_other_name():
+    a = [1, 2]
+    b = a
+    b = b + [3]                # builds a NEW list and rebinds b
+    assert a == [1, 2]
+    assert b == [1, 2, 3]
+
+def test_plus_equals_on_a_list_mutates_in_place():
+    a = [1, 2]
+    b = a
+    b += [3]                   # list += extends the same object
+    assert a == [1, 2, 3]      # surprise: a changed
+
+def test_integers_cannot_be_mutated_so_it_looks_like_a_copy():
+    x = 5
+    y = x
+    y += 1                     # builds a new int and rebinds y
+    assert x == 5 and y == 6
+
+def test_equal_is_not_identical():
+    u = [1, 2]
+    v = [1, 2]
+    assert u == v              # same value
+    assert u is not v          # different objects
+`,
+  },
+  {
+    id: "py-copy",
+    title: "2. Shallow copy, deep copy",
+    runnable: true,
+    intro: "A copy of a container is not a copy of what is inside it. This is the classic cause of \"I changed one test's limits and another test broke\".",
+    code: String.raw`import copy
+
+def test_a_shallow_copy_shares_the_inner_lists():
+    grid = [[0, 0], [0, 0]]
+    shallow = grid.copy()          # list(grid) and grid[:] behave the same
+    assert shallow is not grid     # a new outer list ...
+    shallow[0][0] = 9
+    assert grid[0][0] == 9         # ... but the inner lists are shared
+
+def test_a_deep_copy_is_fully_independent():
+    grid = [[0, 0], [0, 0]]
+    deep = copy.deepcopy(grid)
+    deep[0][0] = 9
+    assert grid[0][0] == 0
+
+def test_multiplying_a_list_of_lists_repeats_one_inner_list():
+    bad = [[0, 0]] * 3             # three names for ONE inner list
+    bad[0][0] = 1
+    assert bad == [[1, 0], [1, 0], [1, 0]]
+    good = [[0, 0] for _ in range(3)]
+    good[0][0] = 1
+    assert good == [[1, 0], [0, 0], [0, 0]]
+
+def test_dict_copies_have_the_same_trap():
+    limits = {"vdd": {"low": 3.1, "high": 3.5}}
+    shallow = dict(limits)
+    shallow["vdd"]["low"] = 0
+    assert limits["vdd"]["low"] == 0   # the original limits changed
+`,
+  },
+  {
+    id: "py-defaults",
+    title: "3. Arguments and default values",
+    runnable: true,
+    intro: "Python passes <em>references to objects</em> into functions (sometimes called call by assignment), and it evaluates default values <b>once</b>, when the <code>def</code> runs.",
+    code: String.raw`import pytest
+
+def test_a_mutable_default_is_created_once_when_def_runs():
+    def add(x, bucket=[]):         # BUG: one list for every call
+        bucket.append(x)
+        return bucket
+    assert add(1) == [1]
+    assert add(2) == [1, 2]        # the first call's value is still there
+    assert add.__defaults__ == ([1, 2],)
+
+def test_none_as_default_gives_a_fresh_list_each_call():
+    def add(x, bucket=None):
+        if bucket is None:
+            bucket = []
+        bucket.append(x)
+        return bucket
+    assert add(1) == [1]
+    assert add(2) == [2]
+
+def test_a_function_can_change_the_callers_list():
+    def add(x, bucket):
+        bucket.append(x)
+    mine = []
+    add(5, mine)
+    assert mine == [5]             # the function received the same object
+
+def test_rebinding_inside_a_function_does_not_reach_the_caller():
+    def reset(items):
+        items = []                 # rebinds the local name only
+    keep = [1, 2]
+    reset(keep)
+    assert keep == [1, 2]
+
+def test_immutable_defaults_are_safe():
+    def label(name, suffix="V"):   # a str cannot be changed in place
+        return name + suffix
+    assert label("vdd") == "vddV"
+    assert label("vdd", "A") == "vddA"
+`,
+  },
+  {
+    id: "py-init",
+    title: "4. Constructors: __init__ and __new__",
+    runnable: true,
+    intro: "People call <code>__init__</code> \"the constructor\". More precisely, <code>__new__</code> creates the object and <code>__init__</code> <em>initialises</em> it. Python has no method overloading, so one class has one <code>__init__</code>.",
+    code: String.raw`import pytest
+
+class Sensor:
+    def __init__(self, name, unit="V"):
+        self.name = name
+        self.unit = unit
+        self.readings = []         # created per object, so not shared
+
+def test_every_object_gets_its_own_state():
+    a, b = Sensor("a"), Sensor("b")
+    a.readings.append(1)
+    assert b.readings == []
+    assert a.readings is not b.readings
+
+def test_defaults_fill_in_missing_arguments():
+    assert Sensor("vdd").unit == "V"
+    assert Sensor("idd", "A").unit == "A"
+
+def test_new_creates_then_init_initialises():
+    calls = []
+    class Demo:
+        def __new__(cls):
+            calls.append("new")
+            return super().__new__(cls)
+        def __init__(self):
+            calls.append("init")
+    Demo()
+    assert calls == ["new", "init"]
+
+def test_init_must_return_none():
+    s = Sensor("a")
+    assert s.__init__("b") is None     # it initialises; it does not return the object
+    assert s.name == "b"               # and calling it again re-initialises
+
+def test_the_second_definition_replaces_the_first_there_is_no_overloading():
+    class Box:
+        def put(self, a):
+            return "one"
+        def put(self, a, b):           # replaces the first put
+            return "two"
+    assert Box().put(1, 2) == "two"
+    with pytest.raises(TypeError):
+        Box().put(1)
+
+def test_use_a_classmethod_for_alternative_constructors():
+    class Limit:
+        def __init__(self, low, high):
+            self.low, self.high = low, high
+        @classmethod
+        def from_text(cls, text):
+            low, high = text.split("..")
+            return cls(float(low), float(high))
+    lim = Limit.from_text("3.1..3.5")
+    assert (lim.low, lim.high) == (3.1, 3.5)
+`,
+  },
+  {
+    id: "py-super",
+    title: "5. Inheritance and super()",
+    runnable: true,
+    intro: "If a subclass defines its own <code>__init__</code>, the parent's <code>__init__</code> is <b>not</b> called for you. Call it with <code>super().__init__(...)</code>.",
+    code: String.raw`class Instrument:
+    def __init__(self, name):
+        self.name = name
+        self.connected = False
+
+    def describe(self):
+        return f"{self.name} ({'connected' if self.connected else 'offline'})"
+
+class Dmm(Instrument):
+    def __init__(self, name, digits=6):
+        super().__init__(name)         # sets name and connected
+        self.digits = digits
+
+    def describe(self):                # override and extend the parent's version
+        return super().describe() + f", {self.digits} digits"
+
+class Broken(Instrument):
+    def __init__(self, name):
+        self.digits = 6                # forgot super().__init__(name)
+
+class NoInit(Instrument):
+    pass                               # no __init__ of its own: the parent's is used
+
+def test_super_init_sets_up_the_parent_part():
+    d = Dmm("dmm1")
+    assert (d.name, d.connected, d.digits) == ("dmm1", False, 6)
+
+def test_the_parent_init_does_not_run_if_you_override_it_and_forget_super():
+    b = Broken("x")
+    assert not hasattr(b, "name")      # the parent never ran
+
+def test_a_subclass_without_its_own_init_inherits_the_parents():
+    assert NoInit("n").name == "n"
+
+def test_override_and_extend_with_super():
+    d = Dmm("dmm1")
+    assert d.describe() == "dmm1 (offline), 6 digits"
+
+def test_isinstance_and_issubclass():
+    d = Dmm("dmm1")
+    assert isinstance(d, Dmm) and isinstance(d, Instrument)
+    assert issubclass(Dmm, Instrument) and not issubclass(Instrument, Dmm)
+
+def test_the_parent_is_not_changed_by_its_subclass():
+    assert Instrument("x").describe() == "x (offline)"
+    assert not hasattr(Instrument("x"), "digits")
+`,
+  },
+  {
+    id: "py-mro",
+    title: "6. Multiple inheritance and the MRO",
+    runnable: true,
+    intro: "With more than one parent, <code>super()</code> means \"the <em>next class in the method resolution order</em>\", which is not always the direct parent. This is why \"super() means the parent class\" is only half true.",
+    code: String.raw`class A:
+    def hello(self):
+        return ["A"]
+
+class B(A):
+    def hello(self):
+        return ["B"] + super().hello()
+
+class C(A):
+    def hello(self):
+        return ["C"] + super().hello()
+
+class D(B, C):
+    def hello(self):
+        return ["D"] + super().hello()
+
+def test_the_mro_lists_the_search_order():
+    assert [k.__name__ for k in D.__mro__] == ["D", "B", "C", "A", "object"]
+
+def test_super_follows_the_mro_not_the_direct_parent():
+    # B's super() is C here, even though B(A) names A as its parent
+    assert D().hello() == ["D", "B", "C", "A"]
+
+def test_a_class_on_its_own_follows_its_own_chain():
+    assert B().hello() == ["B", "A"]
+
+def test_the_first_class_that_has_the_name_wins():
+    class X:
+        def who(self): return "X"
+    class Y:
+        def who(self): return "Y"
+    class Z(X, Y):
+        pass
+    assert Z().who() == "X"        # left to right
+`,
+  },
+  {
+    id: "py-classvar",
+    title: "7. Class variables vs instance variables",
+    runnable: true,
+    intro: "A class variable has one value for the whole class. Reading it through an object works, but <b>assigning</b> through an object creates a new instance attribute that hides it.",
+    code: String.raw`def make_station_class():
+    class Station:
+        max_log = 3                # class variable: one value for the whole class
+        shared_tags = []           # DANGER: a mutable class variable
+        def __init__(self, name):
+            self.name = name       # instance variable: one per object
+            self.log = []
+    return Station
+
+def test_every_instance_can_read_the_class_variable():
+    Station = make_station_class()
+    a, b = Station("a"), Station("b")
+    assert a.max_log == b.max_log == Station.max_log == 3
+
+def test_assigning_through_an_instance_creates_an_instance_attribute():
+    Station = make_station_class()
+    a, b = Station("a"), Station("b")
+    a.max_log = 10                 # shadows the class variable for a only
+    assert (a.max_log, b.max_log, Station.max_log) == (10, 3, 3)
+    assert "max_log" in a.__dict__ and "max_log" not in b.__dict__
+
+def test_changing_the_class_variable_changes_everyone_who_has_not_shadowed_it():
+    Station = make_station_class()
+    a, b = Station("a"), Station("b")
+    a.max_log = 10
+    Station.max_log = 5
+    assert (a.max_log, b.max_log) == (10, 5)
+
+def test_a_mutable_class_variable_is_shared_by_every_instance():
+    Station = make_station_class()
+    a, b = Station("a"), Station("b")
+    a.shared_tags.append("x")
+    assert b.shared_tags == ["x"]
+    assert a.shared_tags is b.shared_tags is Station.shared_tags
+
+def test_plus_equals_through_self_makes_an_instance_attribute():
+    class Counter:
+        count = 0
+        def __init__(self):
+            self.count += 1        # reads Counter.count, then writes an INSTANCE attribute
+    Counter(); Counter()
+    assert Counter.count == 0      # the class counter never moved
+
+def test_update_the_class_counter_through_the_class():
+    class Counter:
+        count = 0
+        def __init__(self):
+            Counter.count += 1
+    Counter(); Counter()
+    assert Counter.count == 2
+`,
+  },
+  {
+    id: "py-private",
+    title: "8. Public, _protected and __private",
+    runnable: true,
+    intro: "Python has no <code>private</code> keyword. Names are a <em>convention</em>: <code>_name</code> means \"internal, please do not touch\", and <code>__name</code> is renamed (mangled) to avoid clashes in subclasses. Neither stops anyone. Use a <code>@property</code> to control access.",
+    code: String.raw`import pytest
+
+class Account:
+    def __init__(self, owner, balance=0):
+        self.owner = owner            # public by convention
+        self._balance = balance       # internal by convention
+        self.__pin = "1234"           # name-mangled to _Account__pin
+
+    @property
+    def balance(self):                # read-only view of the internal value
+        return self._balance
+
+    def deposit(self, amount):
+        if amount <= 0:
+            raise ValueError("amount must be positive")
+        self._balance += amount
+
+def test_one_underscore_is_only_a_convention():
+    acct = Account("ann", 10)
+    acct._balance = 99                # nothing stops us
+    assert acct.balance == 99
+
+def test_two_underscores_rename_the_attribute_they_do_not_hide_it():
+    acct = Account("ann")
+    assert not hasattr(acct, "__pin")
+    assert acct._Account__pin == "1234"
+
+def test_a_property_without_a_setter_is_read_only():
+    acct = Account("ann", 10)
+    with pytest.raises(AttributeError):
+        acct.balance = 5
+
+def test_use_methods_to_validate_changes():
+    acct = Account("ann", 10)
+    acct.deposit(5)
+    assert acct.balance == 15
+    with pytest.raises(ValueError):
+        acct.deposit(-1)
+
+def test_mangling_keeps_a_parent_and_child_attribute_apart():
+    class Child(Account):
+        def __init__(self):
+            super().__init__("child")
+            self.__pin = "9999"       # becomes _Child__pin
+    c = Child()
+    assert c._Account__pin == "1234"
+    assert c._Child__pin == "9999"
+`,
+  },
+];
+
+/* ------------------------------------------------------------------ Python exercises */
+TDE.PY_EXERCISES = [
+  {
+    id: "py-alias-fix",
+    level: "Easy",
+    kind: "implement",
+    title: "Fix the aliasing bugs",
+    summary: "Return new objects instead of changing the caller's.",
+    brief: `<p>These three functions all have the same bug: they work on the object they were given instead of a new one. Fix them.</p>
+      <ul>
+        <li><code>with_item(items, item)</code> returns a <b>new</b> list with <code>item</code> added at the end. The original list must not change.</li>
+        <li><code>copy_grid(grid)</code> returns an <b>independent</b> copy of a list of lists. Changing a cell of the copy must not change the original, and no inner list may be shared.</li>
+        <li><code>merge_limits(base, override)</code> takes two dicts of <code>name -&gt; {"low": .., "high": ..}</code> and returns a new dict where entries from <code>override</code> replace those in <code>base</code>. Neither input may change, and the result must share no inner dict with either input.</li>
+      </ul>`,
+    starter: String.raw`def with_item(items, item):
+    items.append(item)
+    return items
+
+def copy_grid(grid):
+    return grid.copy()
+
+def merge_limits(base, override):
+    base.update(override)
+    return base
+`,
+    hints: [
+      "<code>items + [item]</code> builds a new list. <code>items.append(...)</code> changes the existing one.",
+      "<code>grid.copy()</code> copies only the outer list. A list comprehension such as <code>[row[:] for row in grid]</code> copies every row.",
+      "<code>copy.deepcopy</code> copies nested dicts completely. Copy both inputs, then update.",
+    ],
+    solution: String.raw`import copy
+
+def with_item(items, item):
+    return items + [item]
+
+def copy_grid(grid):
+    return [row[:] for row in grid]
+
+def merge_limits(base, override):
+    merged = copy.deepcopy(base)
+    merged.update(copy.deepcopy(override))
+    return merged
+`,
+    tests: String.raw`import copy
+
+def test_with_item_returns_a_new_list_and_leaves_the_original_alone():
+    original = [1, 2]
+    result = with_item(original, 3)
+    assert result == [1, 2, 3]
+    assert original == [1, 2]
+    assert result is not original
+
+def test_with_item_on_an_empty_list():
+    assert with_item([], "a") == ["a"]
+
+def test_copy_grid_is_independent():
+    grid = [[1, 2], [3, 4]]
+    dup = copy_grid(grid)
+    assert dup == grid
+    dup[0][0] = 99
+    assert grid[0][0] == 1
+    assert dup[1] is not grid[1]
+
+def test_copy_grid_of_an_empty_grid():
+    assert copy_grid([]) == []
+
+def base_and_override():
+    base = {"vdd": {"low": 3.1, "high": 3.5}, "idd": {"low": 0.1, "high": 0.4}}
+    over = {"vdd": {"low": 3.2, "high": 3.4}}
+    return base, over
+
+def test_merge_limits_prefers_the_override():
+    base, over = base_and_override()
+    assert merge_limits(base, over) == {"vdd": {"low": 3.2, "high": 3.4}, "idd": {"low": 0.1, "high": 0.4}}
+
+def test_merge_limits_does_not_modify_its_inputs():
+    base, over = base_and_override()
+    snap_b, snap_o = copy.deepcopy(base), copy.deepcopy(over)
+    merge_limits(base, over)
+    assert base == snap_b and over == snap_o
+
+def test_merge_limits_result_shares_nothing_with_the_inputs():
+    base, over = base_and_override()
+    merged = merge_limits(base, over)
+    merged["idd"]["low"] = 0
+    merged["vdd"]["low"] = 0
+    assert base["idd"]["low"] == 0.1
+    assert over["vdd"]["low"] == 3.2
+`,
+  },
+
+  {
+    id: "py-default-fix",
+    level: "Easy",
+    kind: "implement",
+    title: "Fix the mutable defaults",
+    summary: "Default values are created once. Make them safe.",
+    brief: `<p>Both functions below share state between calls. Rewrite them with the <code>None</code> pattern.</p>
+      <ul>
+        <li><code>record_reading(value, readings=None)</code>: without <code>readings</code>, return a <b>new</b> list containing <code>value</code> (every call independent). With a list, append to <b>that</b> list and return it.</li>
+        <li><code>make_config(name, options=None)</code>: return a <b>new</b> dict with a copy of <code>options</code> plus <code>"name": name</code>. The caller's <code>options</code> dict must not be changed, and calls without <code>options</code> must be independent.</li>
+      </ul>`,
+    starter: String.raw`def record_reading(value, readings=[]):
+    readings.append(value)
+    return readings
+
+def make_config(name, options={}):
+    options["name"] = name
+    return options
+`,
+    hints: [
+      "Change the default to <code>None</code> and create the list or dict inside the function when the argument is <code>None</code>.",
+      "For <code>make_config</code>, <code>dict(options)</code> makes a copy, so you never touch the caller's dict.",
+    ],
+    solution: String.raw`def record_reading(value, readings=None):
+    if readings is None:
+        readings = []
+    readings.append(value)
+    return readings
+
+def make_config(name, options=None):
+    config = dict(options) if options else {}
+    config["name"] = name
+    return config
+`,
+    tests: String.raw`def test_each_call_without_a_list_starts_fresh():
+    assert record_reading(1) == [1]
+    assert record_reading(2) == [2]
+
+def test_the_defaults_are_not_mutable_objects():
+    assert record_reading.__defaults__ == (None,)
+    assert make_config.__defaults__ == (None,)
+
+def test_a_given_list_is_extended_and_returned():
+    mine = [1]
+    out = record_reading(2, mine)
+    assert out is mine
+    assert mine == [1, 2]
+
+def test_make_config_builds_a_new_dict_each_time():
+    a = make_config("a")
+    b = make_config("b")
+    assert a == {"name": "a"}
+    assert b == {"name": "b"}
+    assert a is not b
+
+def test_make_config_copies_the_options():
+    opts = {"timeout": 5}
+    cfg = make_config("x", opts)
+    assert cfg == {"timeout": 5, "name": "x"}
+    assert opts == {"timeout": 5}
+    cfg["timeout"] = 9
+    assert opts["timeout"] == 5
+
+def test_the_name_overrides_an_option_called_name():
+    assert make_config("new", {"name": "old"}) == {"name": "new"}
+`,
+  },
+
+  {
+    id: "py-constructor",
+    level: "Medium",
+    kind: "implement",
+    title: "Write a class with a constructor",
+    summary: "__init__, defaults, per-object state and an alternative constructor.",
+    brief: `<p>Write a class <code>Sensor</code>.</p>
+      <ul>
+        <li><code>Sensor(name, unit="V", low=None, high=None)</code> stores <code>name</code>, <code>unit</code>, <code>low</code>, <code>high</code> and a <code>readings</code> list that belongs to <b>that object only</b>.</li>
+        <li><code>record(value)</code> appends the value to <code>readings</code> and returns <code>"PASS"</code> or <code>"FAIL"</code>. Limits are inclusive, and <code>None</code> means no limit on that side.</li>
+        <li><code>repr(sensor)</code> gives <code>Sensor(name='vdd', unit='V', readings=2)</code> (the number of readings).</li>
+        <li><code>Sensor.from_spec("vdd:V:3.1:3.5")</code> is an <b>alternative constructor</b> (a classmethod): four parts split on <code>:</code>, empty low or high means <code>None</code>, numbers become floats. Anything other than four parts raises <code>ValueError</code>. It must work for subclasses too (return an instance of <code>cls</code>).</li>
+      </ul>`,
+    starter: String.raw`class Sensor:
+    pass
+`,
+    hints: [
+      "Create <code>self.readings = []</code> <em>inside</em> <code>__init__</code>. A list written in the class body would be shared by every sensor.",
+      "<code>@classmethod def from_spec(cls, spec):</code> and finish with <code>return cls(...)</code> so subclasses work.",
+      "For the repr use an f-string: <code>f\"Sensor(name={self.name!r}, unit={self.unit!r}, readings={len(self.readings)})\"</code>.",
+    ],
+    solution: String.raw`class Sensor:
+    def __init__(self, name, unit="V", low=None, high=None):
+        self.name = name
+        self.unit = unit
+        self.low = low
+        self.high = high
+        self.readings = []
+
+    def record(self, value):
+        self.readings.append(value)
+        if self.low is not None and value < self.low:
+            return "FAIL"
+        if self.high is not None and value > self.high:
+            return "FAIL"
+        return "PASS"
+
+    def __repr__(self):
+        return f"Sensor(name={self.name!r}, unit={self.unit!r}, readings={len(self.readings)})"
+
+    @classmethod
+    def from_spec(cls, spec):
+        parts = spec.split(":")
+        if len(parts) != 4:
+            raise ValueError("spec must have four parts: name:unit:low:high")
+        name, unit, low, high = parts
+        return cls(name, unit, float(low) if low else None, float(high) if high else None)
+`,
+    tests: String.raw`import pytest
+
+def test_defaults():
+    s = Sensor("vdd")
+    assert (s.name, s.unit, s.low, s.high, s.readings) == ("vdd", "V", None, None, [])
+
+def test_each_sensor_has_its_own_readings():
+    a, b = Sensor("a"), Sensor("b")
+    a.record(1)
+    assert b.readings == []
+    assert a.readings is not b.readings
+
+def test_record_stores_the_value_and_judges_it():
+    s = Sensor("vdd", "V", 3.1, 3.5)
+    assert s.record(3.3) == "PASS"
+    assert s.record(3.1) == "PASS"
+    assert s.record(3.5) == "PASS"
+    assert s.record(3.0) == "FAIL"
+    assert s.record(3.6) == "FAIL"
+    assert s.readings == [3.3, 3.1, 3.5, 3.0, 3.6]
+
+def test_one_sided_limits():
+    t = Sensor("temp", "C", high=85)
+    assert t.record(90) == "FAIL"
+    assert t.record(-50) == "PASS"
+    l = Sensor("level", low=1)
+    assert l.record(0) == "FAIL"
+    assert l.record(100) == "PASS"
+
+def test_repr():
+    s = Sensor("vdd")
+    assert repr(s) == "Sensor(name='vdd', unit='V', readings=0)"
+    s.record(1); s.record(2)
+    assert repr(s) == "Sensor(name='vdd', unit='V', readings=2)"
+
+def test_from_spec_builds_a_sensor():
+    s = Sensor.from_spec("vdd:V:3.1:3.5")
+    assert isinstance(s, Sensor)
+    assert (s.name, s.unit, s.low, s.high) == ("vdd", "V", 3.1, 3.5)
+
+def test_from_spec_with_a_missing_limit():
+    s = Sensor.from_spec("temp:C::85")
+    assert s.low is None and s.high == 85.0
+
+@pytest.mark.parametrize("spec", ["vdd", "a:b:c", "a:V:1:2:3", ""])
+def test_from_spec_rejects_the_wrong_number_of_parts(spec):
+    with pytest.raises(ValueError):
+        Sensor.from_spec(spec)
+
+def test_from_spec_works_for_subclasses():
+    class Probe(Sensor):
+        pass
+    assert isinstance(Probe.from_spec("a:V::"), Probe)
+`,
+  },
+
+  {
+    id: "py-inheritance",
+    level: "Medium",
+    kind: "implement",
+    title: "Subclass with super()",
+    summary: "Extend a base class without repeating it.",
+    brief: `<p>The base class <code>Instrument</code> is given. Write two subclasses and a helper.</p>
+      <ul>
+        <li><code>Dmm(Instrument)</code>: <code>Dmm(name, digits=6)</code> sets up the base part with <code>super()</code> and stores <code>digits</code>. <code>describe()</code> returns the parent's text plus <code>", {digits} digits"</code>, for example <code>"dmm1 (offline), 6 digits"</code>.</li>
+        <li><code>Psu(Instrument)</code>: <code>Psu(name, max_volts)</code> also stores <code>voltage = 0</code> and <code>output = False</code>. <code>describe()</code> returns the parent's text plus <code>", max {max_volts} V"</code>. <code>set_voltage(v)</code> raises <code>ValueError</code> if <code>v</code> is negative or above <code>max_volts</code>, otherwise stores it.</li>
+        <li><code>describe_all(instruments)</code> returns the list of every instrument's <code>describe()</code> text.</li>
+      </ul>
+      <p class="note">Do not copy the parent's code. Call <code>super()</code>. If you forget it in <code>__init__</code>, the parent's attributes are never created.</p>`,
+    starter: String.raw`class Instrument:
+    def __init__(self, name):
+        self.name = name
+        self.connected = False
+
+    def connect(self):
+        self.connected = True
+        return self
+
+    def describe(self):
+        return f"{self.name} ({'connected' if self.connected else 'offline'})"
+
+class Dmm(Instrument):
+    pass
+
+class Psu(Instrument):
+    pass
+
+def describe_all(instruments):
+    raise NotImplementedError
+`,
+    hints: [
+      "In <code>__init__</code> call <code>super().__init__(name)</code> first, then set your own attributes.",
+      "<code>describe</code> can start from <code>super().describe()</code> and add the extra text.",
+      "<code>describe_all</code> is a one-line list comprehension. It works for any instrument because each class answers <code>describe()</code> its own way (polymorphism).",
+    ],
+    solution: String.raw`class Instrument:
+    def __init__(self, name):
+        self.name = name
+        self.connected = False
+
+    def connect(self):
+        self.connected = True
+        return self
+
+    def describe(self):
+        return f"{self.name} ({'connected' if self.connected else 'offline'})"
+
+class Dmm(Instrument):
+    def __init__(self, name, digits=6):
+        super().__init__(name)
+        self.digits = digits
+
+    def describe(self):
+        return super().describe() + f", {self.digits} digits"
+
+class Psu(Instrument):
+    def __init__(self, name, max_volts):
+        super().__init__(name)
+        self.max_volts = max_volts
+        self.voltage = 0
+        self.output = False
+
+    def describe(self):
+        return super().describe() + f", max {self.max_volts} V"
+
+    def set_voltage(self, v):
+        if v < 0 or v > self.max_volts:
+            raise ValueError("voltage out of range")
+        self.voltage = v
+
+def describe_all(instruments):
+    return [i.describe() for i in instruments]
+`,
+    tests: String.raw`import pytest
+
+def test_dmm_is_an_instrument_with_the_base_setup():
+    d = Dmm("dmm1")
+    assert isinstance(d, Instrument)
+    assert (d.name, d.connected, d.digits) == ("dmm1", False, 6)
+
+def test_dmm_digits_argument():
+    assert Dmm("d", digits=8).digits == 8
+
+def test_inherited_methods_are_reused():
+    d = Dmm("d")
+    assert d.connect() is d
+    assert d.connected is True
+
+def test_dmm_describe_extends_the_parent_text():
+    d = Dmm("d")
+    assert d.describe() == "d (offline), 6 digits"
+    d.connect()
+    assert d.describe() == "d (connected), 6 digits"
+
+def test_psu_setup():
+    p = Psu("p1", max_volts=30)
+    assert (p.name, p.connected, p.max_volts, p.voltage, p.output) == ("p1", False, 30, 0, False)
+
+def test_psu_describe():
+    assert Psu("p1", 30).describe() == "p1 (offline), max 30 V"
+
+def test_set_voltage_validates_and_stores():
+    p = Psu("p1", 30)
+    p.set_voltage(12)
+    assert p.voltage == 12
+    p.set_voltage(30)
+    assert p.voltage == 30
+    for bad in (31, -1):
+        with pytest.raises(ValueError):
+            p.set_voltage(bad)
+    assert p.voltage == 30
+
+def test_describe_all_works_for_mixed_instruments():
+    items = [Dmm("a"), Psu("b", 5), Instrument("c")]
+    assert describe_all(items) == ["a (offline), 6 digits", "b (offline), max 5 V", "c (offline)"]
+
+def test_the_parent_class_is_untouched():
+    assert not hasattr(Instrument("x"), "digits")
+    assert Dmm.__mro__[1] is Instrument
+`,
+  },
+
+  {
+    id: "py-classvar-station",
+    level: "Medium",
+    kind: "implement",
+    title: "Class variables done right",
+    summary: "A shared counter, per-object state and a class-level setting.",
+    brief: `<p>Write a class <code>Station</code> that mixes class-level and per-object state correctly.</p>
+      <ul>
+        <li><code>Station.count</code> is a <b>class variable</b>: the number of stations created since the last reset (subclasses count too, in the same counter). It starts at 0.</li>
+        <li><code>Station(name)</code> increments <code>Station.count</code>, then gives the object <code>station_id = Station.count</code> (the first station gets 1), plus <code>name</code> and its <b>own</b> empty <code>log</code> list. The counter must <b>not</b> end up as an attribute of the object.</li>
+        <li><code>Station.reset_count()</code> is a classmethod that sets <code>Station.count</code> back to 0, <b>even when called on a subclass</b>.</li>
+        <li><code>Station.max_log = 100</code> is a class-level setting. <code>add_log(msg)</code> appends to the log and keeps only the last <code>self.max_log</code> entries, so an object that sets its own <code>max_log</code> trims differently from the others.</li>
+      </ul>`,
+    starter: String.raw`class Station:
+    pass
+`,
+    hints: [
+      "Inside <code>__init__</code> write <code>Station.count += 1</code>. With <code>self.count += 1</code> you would create an instance attribute and the class counter would never move.",
+      "In the classmethod assign <code>Station.count = 0</code>. <code>cls.count = 0</code> on a subclass would create a separate attribute on the subclass.",
+      "Trim with <code>del self.log[: len(self.log) - self.max_log]</code> when the log is too long. Read <code>self.max_log</code> so a per-object setting is honoured.",
+    ],
+    solution: String.raw`class Station:
+    count = 0
+    max_log = 100
+
+    def __init__(self, name):
+        Station.count += 1
+        self.station_id = Station.count
+        self.name = name
+        self.log = []
+
+    @classmethod
+    def reset_count(cls):
+        Station.count = 0
+
+    def add_log(self, msg):
+        self.log.append(msg)
+        if len(self.log) > self.max_log:
+            del self.log[: len(self.log) - self.max_log]
+`,
+    tests: String.raw`def fresh():
+    Station.reset_count()
+    Station.max_log = 100
+
+def test_count_and_ids():
+    fresh()
+    a, b = Station("a"), Station("b")
+    assert (a.station_id, b.station_id) == (1, 2)
+    assert Station.count == 2
+
+def test_the_counter_lives_on_the_class_not_on_the_objects():
+    fresh()
+    a = Station("a")
+    assert "count" not in a.__dict__
+    assert "station_id" in a.__dict__
+
+def test_subclasses_share_the_same_counter():
+    fresh()
+    class Special(Station):
+        pass
+    Station("a")
+    s = Special("b")
+    assert s.station_id == 2
+    assert Station.count == 2
+
+def test_reset_count_works_from_a_subclass_too():
+    fresh()
+    class Special(Station):
+        pass
+    Station("a"); Special("b")
+    Special.reset_count()
+    assert Station.count == 0
+    assert Station("c").station_id == 1
+
+def test_each_station_has_its_own_log():
+    fresh()
+    a, b = Station("a"), Station("b")
+    a.add_log("x")
+    assert a.log == ["x"] and b.log == []
+    assert a.log is not b.log
+
+def test_the_log_is_trimmed_to_the_class_setting():
+    fresh()
+    Station.max_log = 3
+    a = Station("a")
+    for i in range(5):
+        a.add_log(i)
+    assert a.log == [2, 3, 4]
+
+def test_an_object_can_override_the_class_setting_for_itself():
+    fresh()
+    a, b = Station("a"), Station("b")
+    a.max_log = 2
+    for i in range(4):
+        a.add_log(i)
+        b.add_log(i)
+    assert a.log == [2, 3]
+    assert b.log == [0, 1, 2, 3]
+    assert Station.max_log == 100
+`,
+  },
+
+  {
+    id: "py-cart-bugs",
+    level: "Medium",
+    kind: "tests",
+    title: "Hunt the bugs: a shopping cart class",
+    summary: "Nine classic object-oriented bugs hide in the buggy versions.",
+    brief: `<p>The class <code>Cart</code> exists in several versions: one correct and several with a hidden bug of the kind this guide warns about. Write <code>test_*</code> functions that <b>pass on the correct version and fail on every buggy one</b>.</p>
+      <p><b>Spec</b></p>
+      <ul>
+        <li><code>Cart(owner)</code> starts empty. Each cart is independent of every other cart.</li>
+        <li><code>add(name, price, qty=1)</code> adds an item and <b>returns the cart</b> (so calls can be chained). <code>price</code> must be 0 or more and <code>qty</code> at least 1, otherwise <code>ValueError</code>. Adding a name that is already in the cart <b>increases its quantity</b>.</li>
+        <li><code>total()</code> is the sum of <code>price * qty</code>, rounded to 2 decimals.</li>
+        <li><code>names()</code> returns the item names as a <b>sorted</b> list.</li>
+        <li><code>copy()</code> returns a new, <b>fully independent</b> cart with the same owner and items. Changing either cart afterwards must not affect the other.</li>
+      </ul>
+      <p>You need at least 6 tests.</p>`,
+    starter: String.raw`import pytest
+
+# Cart is provided. Do not define it yourself.
+
+def test_new_cart_is_empty():
+    assert Cart("ann").names() == []
+
+# Add more tests. Think: sharing between objects, return values,
+# repeated names, copies, validation, ordering, rounding.
+`,
+    hints: [
+      "Two carts created one after the other must not see each other's items. Add to one, then look at the other.",
+      "A copy has two traps: the copy sharing the same dict, and the copy sharing the inner values. Change the copy, check the original, and then change the original, check the copy.",
+      "Check what <code>add</code> returns, what happens when the same name is added twice, which values are rejected (0 and negative prices, 0 and negative quantities), and the order of <code>names()</code>.",
+      "Use a price like 0.1 with quantity 3. A total that is not rounded gives 0.30000000000000004.",
+    ],
+    solution: String.raw`import pytest
+
+def test_new_carts_are_independent():
+    a, b = Cart("a"), Cart("b")
+    a.add("pen", 1.5)
+    assert a.names() == ["pen"]
+    assert b.names() == []
+
+def test_add_returns_the_cart_so_calls_can_be_chained():
+    c = Cart("a")
+    assert c.add("pen", 1) is c
+    c.add("b", 1).add("a", 1)
+    assert c.names() == ["a", "b", "pen"]
+
+def test_adding_the_same_name_increases_the_quantity():
+    c = Cart("a")
+    c.add("pen", 2.0, qty=2).add("pen", 2.0)
+    assert c.total() == 6.0
+
+def test_total_is_rounded_to_cents():
+    c = Cart("a")
+    c.add("x", 0.1, qty=3)
+    assert c.total() == 0.3
+
+def test_copy_is_independent_in_both_directions():
+    c = Cart("a")
+    c.add("pen", 1, qty=2)
+    d = c.copy()
+    assert d.owner == "a"
+    d.add("pen", 1)
+    d.add("cup", 5)
+    assert c.total() == 2 and c.names() == ["pen"]
+    assert d.total() == 8
+    c.add("pen", 1)
+    assert c.total() == 3 and d.total() == 8
+
+@pytest.mark.parametrize("args", [("x", -1), ("x", 1, 0), ("x", 1, -3)])
+def test_bad_prices_and_quantities_are_rejected(args):
+    with pytest.raises(ValueError):
+        Cart("a").add(*args)
+
+def test_free_items_and_a_single_unit_are_allowed():
+    c = Cart("a")
+    c.add("gift", 0).add("one", 1, 1)
+    assert c.total() == 1
+`,
+    minTests: 6,
+    good: String.raw`class Cart:
+    def __init__(self, owner):
+        self.owner = owner
+        self.items = {}                    # name -> [price, qty]
+
+    def add(self, name, price, qty=1):
+        if price < 0:
+            raise ValueError("price must not be negative")
+        if qty < 1:
+            raise ValueError("qty must be at least 1")
+        if name in self.items:
+            self.items[name][1] += qty
+        else:
+            self.items[name] = [price, qty]
+        return self
+
+    def total(self):
+        return round(sum(p * q for p, q in self.items.values()), 2)
+
+    def names(self):
+        return sorted(self.items)
+
+    def copy(self):
+        other = Cart(self.owner)
+        other.items = {n: list(v) for n, v in self.items.items()}
+        return other
+`,
+    mutants: [
+      { code: String.raw`class Cart:
+    items = {}                             # shared by every cart
+
+    def __init__(self, owner):
+        self.owner = owner
+
+    def add(self, name, price, qty=1):
+        if price < 0:
+            raise ValueError("price must not be negative")
+        if qty < 1:
+            raise ValueError("qty must be at least 1")
+        if name in self.items:
+            self.items[name][1] += qty
+        else:
+            self.items[name] = [price, qty]
+        return self
+
+    def total(self):
+        return round(sum(p * q for p, q in self.items.values()), 2)
+
+    def names(self):
+        return sorted(self.items)
+
+    def copy(self):
+        other = Cart(self.owner)
+        other.items = {n: list(v) for n, v in self.items.items()}
+        return other
+` },
+      { code: String.raw`class Cart:
+    def __init__(self, owner):
+        self.owner = owner
+        self.items = {}
+
+    def add(self, name, price, qty=1):
+        if price < 0:
+            raise ValueError("price must not be negative")
+        if qty < 1:
+            raise ValueError("qty must be at least 1")
+        if name in self.items:
+            self.items[name][1] += qty
+        else:
+            self.items[name] = [price, qty]
+
+    def total(self):
+        return round(sum(p * q for p, q in self.items.values()), 2)
+
+    def names(self):
+        return sorted(self.items)
+
+    def copy(self):
+        other = Cart(self.owner)
+        other.items = {n: list(v) for n, v in self.items.items()}
+        return other
+` },
+      { code: String.raw`class Cart:
+    def __init__(self, owner):
+        self.owner = owner
+        self.items = {}
+
+    def add(self, name, price, qty=1):
+        if price < 0:
+            raise ValueError("price must not be negative")
+        if qty < 1:
+            raise ValueError("qty must be at least 1")
+        self.items[name] = [price, qty]
+        return self
+
+    def total(self):
+        return round(sum(p * q for p, q in self.items.values()), 2)
+
+    def names(self):
+        return sorted(self.items)
+
+    def copy(self):
+        other = Cart(self.owner)
+        other.items = {n: list(v) for n, v in self.items.items()}
+        return other
+` },
+      { code: String.raw`class Cart:
+    def __init__(self, owner):
+        self.owner = owner
+        self.items = {}
+
+    def add(self, name, price, qty=1):
+        if price < 0:
+            raise ValueError("price must not be negative")
+        if qty < 1:
+            raise ValueError("qty must be at least 1")
+        if name in self.items:
+            self.items[name][1] += qty
+        else:
+            self.items[name] = [price, qty]
+        return self
+
+    def total(self):
+        return round(sum(p * q for p, q in self.items.values()), 2)
+
+    def names(self):
+        return sorted(self.items)
+
+    def copy(self):
+        other = Cart(self.owner)
+        other.items = self.items
+        return other
+` },
+      { code: String.raw`class Cart:
+    def __init__(self, owner):
+        self.owner = owner
+        self.items = {}
+
+    def add(self, name, price, qty=1):
+        if price < 0:
+            raise ValueError("price must not be negative")
+        if qty < 1:
+            raise ValueError("qty must be at least 1")
+        if name in self.items:
+            self.items[name][1] += qty
+        else:
+            self.items[name] = [price, qty]
+        return self
+
+    def total(self):
+        return round(sum(p * q for p, q in self.items.values()), 2)
+
+    def names(self):
+        return sorted(self.items)
+
+    def copy(self):
+        other = Cart(self.owner)
+        other.items = dict(self.items)
+        return other
+` },
+      { code: String.raw`class Cart:
+    def __init__(self, owner):
+        self.owner = owner
+        self.items = {}
+
+    def add(self, name, price, qty=1):
+        if price < 0:
+            raise ValueError("price must not be negative")
+        if qty < 0:
+            raise ValueError("qty must be at least 1")
+        if name in self.items:
+            self.items[name][1] += qty
+        else:
+            self.items[name] = [price, qty]
+        return self
+
+    def total(self):
+        return round(sum(p * q for p, q in self.items.values()), 2)
+
+    def names(self):
+        return sorted(self.items)
+
+    def copy(self):
+        other = Cart(self.owner)
+        other.items = {n: list(v) for n, v in self.items.items()}
+        return other
+` },
+      { code: String.raw`class Cart:
+    def __init__(self, owner):
+        self.owner = owner
+        self.items = {}
+
+    def add(self, name, price, qty=1):
+        if price < 0:
+            raise ValueError("price must not be negative")
+        if qty < 1:
+            raise ValueError("qty must be at least 1")
+        if name in self.items:
+            self.items[name][1] += qty
+        else:
+            self.items[name] = [price, qty]
+        return self
+
+    def total(self):
+        return round(sum(p * q for p, q in self.items.values()), 2)
+
+    def names(self):
+        return list(self.items)
+
+    def copy(self):
+        other = Cart(self.owner)
+        other.items = {n: list(v) for n, v in self.items.items()}
+        return other
+` },
+      { code: String.raw`class Cart:
+    def __init__(self, owner):
+        self.owner = owner
+        self.items = {}
+
+    def add(self, name, price, qty=1):
+        if price <= 0:
+            raise ValueError("price must not be negative")
+        if qty < 1:
+            raise ValueError("qty must be at least 1")
+        if name in self.items:
+            self.items[name][1] += qty
+        else:
+            self.items[name] = [price, qty]
+        return self
+
+    def total(self):
+        return round(sum(p * q for p, q in self.items.values()), 2)
+
+    def names(self):
+        return sorted(self.items)
+
+    def copy(self):
+        other = Cart(self.owner)
+        other.items = {n: list(v) for n, v in self.items.items()}
+        return other
+` },
+      { code: String.raw`class Cart:
+    def __init__(self, owner):
+        self.owner = owner
+        self.items = {}
+
+    def add(self, name, price, qty=1):
+        if price < 0:
+            raise ValueError("price must not be negative")
+        if qty < 1:
+            raise ValueError("qty must be at least 1")
+        if name in self.items:
+            self.items[name][1] += qty
+        else:
+            self.items[name] = [price, qty]
+        return self
+
+    def total(self):
+        return sum(p * q for p, q in self.items.values())
+
+    def names(self):
+        return sorted(self.items)
+
+    def copy(self):
+        other = Cart(self.owner)
+        other.items = {n: list(v) for n, v in self.items.items()}
+        return other
+` },
+    ],
+  },
+];
+
 /* ------------------------------------------------------------------ glossary */
 /* Each entry: [acronym, stands for, in plain words]. Edit freely. */
 TDE.GLOSSARY = [
@@ -2705,6 +3946,20 @@ TDE.GLOSSARY = [
       ["CSV", "Comma-Separated Values", "A simple table in text form."],
       ["XML", "Extensible Markup Language", "A tagged text format used by many test and report tools."],
       ["SQL", "Structured Query Language", "The language for asking a database questions."],
+    ],
+  },
+  {
+    id: "python", title: "Python concepts",
+    intro: "Terms from the Python guide.",
+    items: [
+      ["OOP", "Object-Oriented Programming", "Organising code as objects that bundle data (attributes) and behaviour (methods)."],
+      ["MRO", "Method Resolution Order", "The order in which Python searches a class and its parents for an attribute. Shown by Class.__mro__, and what super() follows."],
+      ["ABC", "Abstract Base Class", "A class that defines an interface that subclasses must implement."],
+      ["PEP", "Python Enhancement Proposal", "A design document for Python. PEP 8 is the style guide."],
+      ["REPL", "Read-Eval-Print Loop", "The interactive prompt where you type Python and see the result at once."],
+      ["Reference", "Reference (name bound to an object)", "What a Python variable really is: a name pointing at an object, not a box holding a value."],
+      ["Mutable / immutable", "Can / cannot be changed in place", "Lists, dicts and sets are mutable. Numbers, strings and tuples are not."],
+      ["Dunder", "Double underscore name", "Special methods such as __init__ and __repr__ that Python calls for you."],
     ],
   },
   {

@@ -6,7 +6,7 @@
   const ASSET_V = (document.currentScript && new URL(document.currentScript.src).search) || "";
 
   /* hooks filled in by the builders and by setupNavigation() */
-  const TDEUI = (window.TDEUI = { sync() {}, refreshNav() {}, selectExample: null, openExercise: null, selectGlossary: null });
+  const TDEUI = (window.TDEUI = { sync() {}, refreshNav() {}, openers: {} });
 
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -193,12 +193,13 @@
   }
 
   /* ------------------------------------------------------------ progress */
+  const ALL_EXERCISES = [...TDE.EXERCISES, ...(TDE.PY_EXERCISES || [])];
   const progress = {
     done: store.get("tde.progress", {}),
     mark(id) { this.done[id] = true; store.set("tde.progress", this.done); this.paint(); },
     paint() {
-      const total = TDE.EXERCISES.length;
-      const n = TDE.EXERCISES.filter((e) => this.done[e.id]).length;
+      const total = ALL_EXERCISES.length;
+      const n = ALL_EXERCISES.filter((e) => this.done[e.id]).length;
       $$("[data-progress-count]").forEach((n_) => (n_.textContent = `${n}/${total}`));
       const bar = $("#progress-bar");
       if (bar) bar.style.setProperty("--p", `${(n / total) * 100}%`);
@@ -208,8 +209,9 @@
   };
 
   /* ------------------------------------------------------------ examples */
-  function buildExamples() {
-    const root = $("#examples-root");
+  function buildExamples(list, rootId, pageId) {
+    const root = $(`#${rootId}`);
+    if (!root || !list || !list.length) return;
     const tabs = el("div", { class: "tabs", role: "tablist", "aria-label": "Code examples" });
     const panels = el("div", { class: "tabpanels" });
     root.append(tabs, panels);
@@ -222,9 +224,9 @@
       $$(".tabpanel", panels).forEach((p) => (p.hidden = p.dataset.id !== id));
     };
 
-    TDE.EXAMPLES.forEach((ex, i) => {
+    list.forEach((ex, i) => {
       const tab = el("button", { role: "tab", type: "button", "data-id": ex.id, id: `tab-${ex.id}`, "aria-controls": `panel-${ex.id}` }, ex.title);
-      tab.addEventListener("click", () => { select(ex.id); TDEUI.sync("examples", ex.id); });
+      tab.addEventListener("click", () => { select(ex.id); TDEUI.sync(pageId, ex.id); });
       tab.addEventListener("keydown", (e) => {
         const all = $$("[role=tab]", tabs);
         const idx = all.indexOf(tab);
@@ -232,7 +234,7 @@
         if (next == null) return;
         e.preventDefault();
         const target = all[(next + all.length) % all.length];
-        target.focus(); select(target.dataset.id); TDEUI.sync("examples", target.dataset.id);
+        target.focus(); select(target.dataset.id); TDEUI.sync(pageId, target.dataset.id);
       });
       tabs.append(tab);
 
@@ -256,19 +258,21 @@
       panels.append(panel);
       if (i === 0) select(ex.id);
     });
-    TDEUI.selectExample = (id) => { if (TDE.EXAMPLES.some((e) => e.id === id)) select(id); };
+    TDEUI.openers[pageId] = (id) => { if (list.some((e) => e.id === id)) select(id); };
   }
 
   /* ------------------------------------------------------------ exercises */
-  function buildExercises() {
-    const root = $("#practice-root");
+  function buildExercises(data, rootId, pageId) {
+    const root = $(`#${rootId}`);
+    if (!root || !data || !data.length) return;
+    const lastKey = `tde.lastExercise.${pageId}`;
     const list = el("ol", { class: "ex-list" });
     const panel = el("div", { class: "ex-panel" });
     root.append(list, panel);
     const levelClass = { Easy: "easy", Medium: "medium", Hard: "hard" };
 
-    TDE.EXERCISES.forEach((ex, i) => {
-      list.append(el("li", {}, el("button", { type: "button", class: "ex-item", "data-ex-id": ex.id, onclick: () => { open(i); TDEUI.sync("practice", ex.id); } },
+    data.forEach((ex, i) => {
+      list.append(el("li", {}, el("button", { type: "button", class: "ex-item", "data-ex-id": ex.id, onclick: () => { open(i); TDEUI.sync(pageId, ex.id); } },
         el("span", { class: "num" }, String(i + 1)),
         el("span", { class: "ex-title" }, ex.title, el("small", {}, ex.summary)),
         el("span", { class: `chip ${levelClass[ex.level]}` }, ex.level),
@@ -276,8 +280,8 @@
     });
 
     function open(index) {
-      const ex = TDE.EXERCISES[index];
-      store.set("tde.lastExercise", index);
+      const ex = data[index];
+      store.set(lastKey, index);
       $$(".ex-item", list).forEach((b, j) => b.classList.toggle("current", j === index));
       let shownHints = 0;
       const saved = store.get(`tde.code.${ex.id}`, null);
@@ -300,8 +304,8 @@
         renderResult(out, res, { passText: ex.kind === "implement" ? "All hidden tests passed" : "Every bug caught" });
         if (res.passed) {
           progress.mark(ex.id);
-          if (index + 1 < TDE.EXERCISES.length) {
-            out.append(el("button", { class: "btn primary next", type: "button", onclick: () => { open(index + 1); TDEUI.sync("practice", TDE.EXERCISES[index + 1].id); panel.scrollIntoView({ behavior: "smooth", block: "start" }); } }, "Next exercise →"));
+          if (index + 1 < data.length) {
+            out.append(el("button", { class: "btn primary next", type: "button", onclick: () => { open(index + 1); TDEUI.sync(pageId, data[index + 1].id); panel.scrollIntoView({ behavior: "smooth", block: "start" }); } }, "Next exercise →"));
           } else {
             out.append(el("p", { class: "finish" }, "That was the last one. You have finished the course. 🎉"));
           }
@@ -339,8 +343,8 @@
         hintBox, solBox, out);
     }
 
-    TDEUI.openExercise = (id) => { const i = TDE.EXERCISES.findIndex((e) => e.id === id); if (i >= 0) open(i); };
-    open(Math.min(store.get("tde.lastExercise", 0), TDE.EXERCISES.length - 1));
+    TDEUI.openers[pageId] = (id) => { const i = data.findIndex((e) => e.id === id); if (i >= 0) open(i); };
+    open(Math.min(store.get(lastKey, pageId === "practice" ? store.get("tde.lastExercise", 0) : 0), data.length - 1));
   }
 
   /* ------------------------------------------------------------ diagrams */
@@ -424,7 +428,7 @@
       count.textContent = q ? `${shown} of ${total} terms match, across all topics` : `${total} terms in ${groups.length} topics`;
     }
     search.addEventListener("input", apply);
-    TDEUI.selectGlossary = (id) => {
+    TDEUI.openers.glossary = (id) => {
       if (!TDE.GLOSSARY.some((g) => g.id === id)) return;
       topic = id; store.set("tde.glossaryTopic", topic); search.value = ""; apply();
     };
@@ -649,12 +653,13 @@
   const CATEGORIES = [
     { id: "start", title: "Start", pages: ["top"] },
     { id: "job", title: "The job", pages: ["role", "models", "lifecycle"] },
-    { id: "systems", title: "Test systems", pages: ["diagrams", "deep-dive", "sequencer", "planning", "tools"] },
+    { id: "systems", title: "Test systems", pages: ["diagrams", "deep-dive", "planning", "tools"] },
     { id: "ocp", title: "OCP rack and cooling", pages: ["ocp", "cooling", "servertest"] },
-    { id: "practice", title: "Learn by doing", pages: ["examples", "practice"] },
+    { id: "software", title: "Software", pages: ["py-guide", "py-examples", "py-practice", "sequencer"] },
+    { id: "practice", title: "TDE examples and practice", pages: ["examples", "practice"] },
     { id: "ref", title: "Reference", pages: ["glossary"] },
   ];
-  const PAGE_LABELS = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", ocp: "OCP rack", cooling: "Cooling", sequencer: "Test sequencer", planning: "Capacity and cost", tools: "Strategy tools", servertest: "Node test", examples: "Examples", practice: "Practice", glossary: "Glossary" };
+  const PAGE_LABELS = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", ocp: "OCP rack", cooling: "Cooling", sequencer: "Test sequencer", planning: "Capacity and cost", tools: "Strategy tools", servertest: "Node test", examples: "Examples", practice: "Practice", "py-guide": "Python guide", "py-examples": "Python examples", "py-practice": "Python practice", glossary: "Glossary" };
 
   function setupNavigation() {
     const html = document.documentElement;
@@ -663,6 +668,13 @@
     const ids = views.map((v) => v.id);
     const tree = $("#nav-tree"), results = $("#nav-results"), input = $("#nav-search");
     const toggleBtn = $("#sb-toggle"), backdrop = $("#sb-backdrop");
+    // pages whose sub-pages come from data (each has its own tab or list UI)
+    const DATA_PAGES = {
+      examples: ["example", TDE.EXAMPLES],
+      "py-examples": ["example", TDE.PY_EXAMPLES || []],
+      practice: ["exercise", TDE.EXERCISES],
+      "py-practice": ["exercise", TDE.PY_EXERCISES || []],
+    };
 
     const plain = (h) => String(h).replace(/<[^>]+>/g, " ").replace(/&[a-z#0-9]+;/gi, " ").replace(/\s+/g, " ").trim();
     const slugOf = (s, used) => {
@@ -698,7 +710,7 @@
             d.replaceWith(wrap);
             return { id: wrap.dataset.sub, title, el: wrap };
           });
-        } else if (!["examples", "practice", "glossary"].includes(v.id)) {
+        } else if (!DATA_PAGES[v.id] && v.id !== "glossary") {
           // split at <h3>: an "Overview" for what comes before the first one
           let i = 0;
           while (i < kids.length && kids[i].matches(".kicker, h2, .lead")) i++;
@@ -722,9 +734,12 @@
       if (subs.length) subsOf[v.id] = subs.map((s) => ({ ...s, dom: true, raw: plain(s.el.innerHTML) }));
     });
 
-    // pages whose sub-pages come from data (their own UI shows the selected item)
-    subsOf.examples = TDE.EXAMPLES.map((e) => ({ id: e.id, title: e.title.replace(/^\d+\.\s*/, ""), raw: plain(`${e.intro} ${e.code}`), note: e.runnable ? "▶" : "" }));
-    subsOf.practice = TDE.EXERCISES.map((e) => ({ id: e.id, title: e.title, raw: plain(`${e.summary} ${e.brief}`), exercise: true }));
+    Object.entries(DATA_PAGES).forEach(([pid, [kind, list]]) => {
+      if (!$(`#${pid}`) || !list.length) return;
+      subsOf[pid] = kind === "example"
+        ? list.map((e) => ({ id: e.id, title: e.title.replace(/^\d+\.\s*/, ""), raw: plain(`${e.intro} ${e.code}`) }))
+        : list.map((e) => ({ id: e.id, title: e.title, raw: plain(`${e.summary} ${e.brief}`), exercise: true }));
+    });
     subsOf.glossary = TDE.GLOSSARY.map((g) => ({ id: g.id, title: g.title, raw: `${g.intro} ${g.items.map((it) => plain(it.join(" "))).join(" ")}` }));
     Object.values(subsOf).forEach((list) => list.forEach((s) => (s.text = `${s.title} ${s.raw}`.toLowerCase())));
 
@@ -890,9 +905,8 @@
         $(".subhead", view).textContent = subs[n].title;
       }
       else if (sub) {
-        if (id === "examples") TDEUI.selectExample && TDEUI.selectExample(sub);
-        if (id === "practice") TDEUI.openExercise && TDEUI.openExercise(sub);
-        if (id === "glossary") TDEUI.selectGlossary && TDEUI.selectGlossary(sub);
+        const open = TDEUI.openers[id];
+        if (open) open(sub);
       }
       document.title = titleOf(id, sub);
       renderTree();
@@ -936,8 +950,10 @@
     bindDiagram("svg-stand", "panel-stand", TDE.DIAGRAMS.stand, "interface");
     bindDiagram("svg-nodeflow", "panel-nodeflow", TDE.DIAGRAMS.nodeflow, "firmware");
     bindDiagram("svg-loop", "panel-loop", TDE.DIAGRAMS.loop, "cdu");
-    buildExamples();
-    buildExercises();
+    buildExamples(TDE.EXAMPLES, "examples-root", "examples");
+    buildExamples(TDE.PY_EXAMPLES, "py-examples-root", "py-examples");
+    buildExercises(TDE.EXERCISES, "practice-root", "practice");
+    buildExercises(TDE.PY_EXERCISES, "py-practice-root", "py-practice");
     buildGlossary();
     buildCooling();
     buildPlanning();

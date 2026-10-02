@@ -49,7 +49,7 @@ def brief(res):
 
 
 print("Examples")
-for ex in tde["EXAMPLES"]:
+for ex in tde["EXAMPLES"] + tde.get("PY_EXAMPLES", []):
     if ex["runnable"]:
         res = harness.handle({"mode": "example", "user": ex["code"]})
         check(ex["title"], res["passed"] and not res["error"] and res["results"], brief(res))
@@ -57,7 +57,7 @@ for ex in tde["EXAMPLES"]:
         check(ex["title"] + " (static, has code)", len(ex["code"]) > 50)
 
 print("Exercises")
-for ex in tde["EXERCISES"]:
+for ex in tde["EXERCISES"] + tde.get("PY_EXERCISES", []):
     print(f" {ex['id']} [{ex['kind']}]")
     if ex["kind"] == "implement":
         req = lambda code: {"mode": "implement", "user": code, "tests": ex["tests"]}
@@ -76,6 +76,11 @@ for ex in tde["EXERCISES"]:
         for i, m in enumerate(ex["mutants"], 1):
             check(f"bug {i} differs from correct code", m["code"].strip() != ex["good"].strip())
     check("has hints", len(ex["hints"]) >= 2)
+
+ids = [e["id"] for e in tde["EXAMPLES"] + tde.get("PY_EXAMPLES", [])]
+check("example ids are unique", len(ids) == len(set(ids)))
+ids = [e["id"] for e in tde["EXERCISES"] + tde.get("PY_EXERCISES", [])]
+check("exercise ids are unique", len(ids) == len(set(ids)))
 
 print("Glossary and cooling data")
 seen = set()

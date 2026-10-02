@@ -73,6 +73,8 @@ There are two exercise kinds:
 | 13 | Medium | implement | `diff_config`: compare a node's readings with its golden configuration |
 | 14 | Medium | implement | `guardbanded_limits`, `classify_guardbanded`, `acceleration_factor`, `burnin_hours`: guardbands and Arrhenius burn-in |
 
+Python practice (Software section): `with_item` / `copy_grid` / `merge_limits` (aliasing), `record_reading` / `make_config` (mutable defaults), a `Sensor` class with constructors, `Dmm` / `Psu` subclasses with `super()`, a `Station` class with class variables, and a bug hunt in a `Cart` class (9 hidden bugs).
+
 ## Navigation
 
 A collapsible **left sidebar** (a drawer on phones) groups the course as **category > page > sub-page** and has full-text search (press `/` to focus it). Everything is one HTML document routed by hash: `#page` or `#page/sub-page`, for example `#cooling/compare`, `#examples/cpk`, `#practice/leak-decay`, `#glossary/hardware`.
@@ -85,6 +87,23 @@ A collapsible **left sidebar** (a drawer on phones) groups the course as **categ
   * Examples, Practice and Glossary list their items from `assets/content.js`.
 * **Adding a page:** add a `<section class="block view" id="my-page">` in `index.html` (keep the order in the file the same as the order in `CATEGORIES`), then add its id and label to `CATEGORIES` / `PAGE_LABELS`.
 * Do not use the CSS class `sub` for anything new: the hero subtitle already uses it. Sub-pages use `subpage`.
+
+## Sections, examples and practice sets
+
+The sidebar groups pages into categories (`CATEGORIES` in `assets/app.js`). The **Software** category holds the Python guide, Python examples, Python practice and the Test sequencer. New software documents (for example ISS3 or Robot Framework) belong there too:
+
+1. Add a `<section class="block view" id="my-page">` to `index.html`, in the same position as in `CATEGORIES`. The order of the sections in the file must match the order in `CATEGORIES`.
+2. Add the id to `CATEGORIES.software.pages` and a label to `PAGE_LABELS` in `assets/app.js`.
+3. Renumber the `kicker` labels and the course map on the Home page if you want them in order.
+
+**Examples and practice are separate pages and separate data sets.** Test-engineering ones are `TDE.EXAMPLES` and `TDE.EXERCISES`, Python ones are `TDE.PY_EXAMPLES` and `TDE.PY_EXERCISES` (all in `assets/content.js`). To add another set (say for Robot Framework):
+
+* add `TDE.RF_EXAMPLES` / `TDE.RF_EXERCISES` arrays with the same fields as the others (unique `id` values across all sets);
+* add `<div id="rf-examples-root"></div>` and `<div id="rf-practice-root" class="practice-grid"></div>` inside new page sections;
+* register them in `DATA_PAGES` and in the init block at the bottom of `assets/app.js` (`buildExamples(...)` / `buildExercises(...)`), and add them to `ALL_EXERCISES` so progress counts them;
+* `tools/check_exercises.py` should include the new arrays in its loops (it already covers the Python ones).
+
+Note for exercises that run Python: the in-browser runner (Pyodide) executes Python only. Robot Framework or ISS3 examples would be read-only code listings unless a runner is added.
 
 ## Adding ISS3 content
 

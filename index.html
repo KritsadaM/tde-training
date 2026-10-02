@@ -7,9 +7,9 @@
   <title>TDE Training – Test Development Engineer</title>
   <meta name="description" content="Interactive training for Test Development Engineers in electronics manufacturing: CM and JDM programs, NPI and sustaining, tester hardware and software, diagrams, Python examples and hands-on exercises that run in your browser.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c7a6f'/%3E%3Cpath d='M8 17l5 5 11-12' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="assets/style.css?v=cab0fe1f9c">
-  <script src="assets/content.js?v=cab0fe1f9c" defer></script>
-  <script src="assets/app.js?v=cab0fe1f9c" defer></script>
+  <link rel="stylesheet" href="assets/style.css?v=7ecdfaf1ad">
+  <script src="assets/content.js?v=7ecdfaf1ad" defer></script>
+  <script src="assets/app.js?v=7ecdfaf1ad" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -25,7 +25,7 @@
   <div class="container">
     <button class="icon-btn" id="sb-toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide navigation"><span aria-hidden="true">☰</span></button>
     <a class="brand" href="#top"><span class="logo">TDE</span> Training</a>
-    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/14</span></span>
+    <span class="pill" title="Exercises solved">✓ <span data-progress-count>0/20</span></span>
     <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">☾</button>
   </div>
   <div id="progress-bar" aria-hidden="true"></div>
@@ -51,8 +51,8 @@
     </div>
     <ul class="stats">
       <li><b>8</b><span>interactive diagrams</span></li>
-      <li><b>12</b><span>code examples</span></li>
-      <li><b>14</b><span>graded exercises</span></li>
+      <li><b>20</b><span>code examples</span></li>
+      <li><b>20</b><span>graded exercises</span></li>
       <li><b>0</b><span>installs needed</span></li>
     </ul>
 
@@ -63,15 +63,18 @@
       <a class="card link" href="#lifecycle"><span class="num">3</span><h4>NPI to sustaining</h4><p>The life of a tester, from proposal to maintenance.</p></a>
       <a class="card link" href="#diagrams"><span class="num">4</span><h4>Diagrams</h4><p>Test stages on the line and the anatomy of a tester.</p></a>
       <a class="card link" href="#deep-dive"><span class="num">5</span><h4>Deep dive</h4><p>Strategy, hardware, fixtures, JTAG, software, retest policy, safety and more.</p></a>
-      <a class="card link" href="#sequencer"><span class="num">6</span><h4>Test sequencer</h4><p>What a sequencer does, how to write steps, and a first-week plan for ISS3.</p></a>
-      <a class="card link" href="#planning"><span class="num">7</span><h4>Capacity and cost</h4><p>How many testers, what a test costs, with calculators.</p></a>
-      <a class="card link" href="#tools"><span class="num">8</span><h4>Strategy tools</h4><p>Coverage matrix, guardbands, burn-in time and fixture force.</p></a>
-      <a class="card link" href="#ocp"><span class="num">9</span><h4>OCP rack</h4><p>Open Rack basics, power, safety, test stands, troubleshooting and a 30-day plan.</p></a>
-      <a class="card link" href="#cooling"><span class="num">10</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
-      <a class="card link" href="#servertest"><span class="num">11</span><h4>Node test</h4><p>Testing server nodes: flow, tools, BMC and Redfish, golden configuration.</p></a>
-      <a class="card link" href="#examples"><span class="num">12</span><h4>Examples</h4><p>Twelve Python examples. Eight run in your browser.</p></a>
-      <a class="card link" href="#practice"><span class="num">13</span><h4>Practice</h4><p>Fourteen graded exercises with hints and solutions.</p></a>
-      <a class="card link" href="#glossary"><span class="num">14</span><h4>Glossary</h4><p>175+ acronyms grouped by topic, with search.</p></a>
+      <a class="card link" href="#planning"><span class="num">6</span><h4>Capacity and cost</h4><p>How many testers, what a test costs, with calculators.</p></a>
+      <a class="card link" href="#tools"><span class="num">7</span><h4>Strategy tools</h4><p>Coverage matrix, guardbands, burn-in time and fixture force.</p></a>
+      <a class="card link" href="#ocp"><span class="num">8</span><h4>OCP rack</h4><p>Open Rack basics, power, safety, test stands, troubleshooting and a 30-day plan.</p></a>
+      <a class="card link" href="#cooling"><span class="num">9</span><h4>Cooling</h4><p>Fan vs water vs immersion, and water cooling in depth.</p></a>
+      <a class="card link" href="#servertest"><span class="num">10</span><h4>Node test</h4><p>Testing server nodes: flow, tools, BMC and Redfish, golden configuration.</p></a>
+      <a class="card link" href="#py-guide"><span class="num">11</span><h4>Python guide</h4><p>Software: names and references, constructors, inheritance, class variables, public and private.</p></a>
+      <a class="card link" href="#py-examples"><span class="num">12</span><h4>Python examples</h4><p>Eight predict-then-run examples of what Python really does.</p></a>
+      <a class="card link" href="#py-practice"><span class="num">13</span><h4>Python practice</h4><p>Six graded exercises, including a bug hunt.</p></a>
+      <a class="card link" href="#sequencer"><span class="num">14</span><h4>Test sequencer</h4><p>Software: what a sequencer does, how to write steps, and a first-week plan for ISS3.</p></a>
+      <a class="card link" href="#examples"><span class="num">15</span><h4>TDE examples</h4><p>Twelve test-engineering examples. Eight run in your browser.</p></a>
+      <a class="card link" href="#practice"><span class="num">16</span><h4>TDE practice</h4><p>Fourteen graded test-engineering exercises with hints and solutions.</p></a>
+      <a class="card link" href="#glossary"><span class="num">17</span><h4>Glossary</h4><p>180+ acronyms grouped by topic, with search.</p></a>
     </div>
   </div>
 </section>
@@ -164,7 +167,7 @@
       </div>
     </div>
 
-    <div class="note"><p><b>Lost in acronyms?</b> The <a href="#glossary">Glossary</a> groups 175+ of them by topic: company, MFG, test, quality, software, hardware, interfaces, server and node test, OCP rack and cooling, IT and safety. It is searchable.</p></div>
+    <div class="note"><p><b>Lost in acronyms?</b> The <a href="#glossary">Glossary</a> groups 180+ of them by topic: company, MFG, test, quality, software, Python, hardware, interfaces, server and node test, OCP rack and cooling, IT and safety. It is searchable.</p></div>
   </div>
 </section>
 
@@ -687,153 +690,10 @@
   </div>
 </section>
 
-<!-- ============================================================ TEST SEQUENCER -->
-<section class="block view" id="sequencer">
-  <div class="container">
-    <span class="kicker">06 · Test sequencer</span>
-    <h2>The test sequencer: the engine of a test station</h2>
-    <p class="lead">The sequencer runs a test as an ordered list of steps, applies limits, decides the verdict and writes the record. In JDM programs the team mostly uses <b>ISS3</b> for this. The ideas on this page are the same in every sequencer, so they make ISS3 faster to learn, and they tell you what to ask about it.</p>
-
-    <div class="subpage" data-sub="does" data-title="What a sequencer does">
-      <h3>Responsibilities</h3>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Responsibility</th><th>What it means</th><th>Why it matters</th></tr></thead>
-        <tbody>
-          <tr><td><b>Run order and flow</b></td><td>Run steps in order, with loops, branches, and "stop on first fail" or "run everything"</td><td>Safe ordering: no heat before the loop is full, no test before power is good</td></tr>
-          <tr><td><b>Steps with limits</b></td><td>Each step measures something and compares it with limits</td><td>The limits are the definition of "good". They need review and versions</td></tr>
-          <tr><td><b>Verdicts</b></td><td>PASS, FAIL, ERROR, SKIP per step, and one verdict per unit</td><td>A tester fault must never look like a pass or like a bad unit (exercise 6)</td></tr>
-          <tr><td><b>Instrument and DUT access</b></td><td>Drivers for instruments, the DUT console and I/O, ideally with simulators</td><td>Swap an instrument without touching the sequence. Develop without hardware</td></tr>
-          <tr><td><b>Parallel testing</b></td><td>Test several units or sockets at the same time</td><td>Cuts the cost of test (see Capacity and cost)</td></tr>
-          <tr><td><b>Operator interface</b></td><td>Scan the serial number, show progress and a clear result</td><td>The operator must not be able to skip steps or change limits</td></tr>
-          <tr><td><b>Data and records</b></td><td>Every measurement, verdict, version and timestamp, per serial number</td><td>Traceability, yield analysis, and answers when a customer asks</td></tr>
-          <tr><td><b>Configuration</b></td><td>Limits, station settings, product variants kept as data</td><td>A limit change is then a reviewed data change, not a code edit</td></tr>
-          <tr><td><b>Safe state and errors</b></td><td>Always return outputs to a safe state, even after a failure or a crash</td><td>Protects the DUT, the fixture and the people (exercise 7)</td></tr>
-          <tr><td><b>Development and debug</b></td><td>Run, step through and dry-run a sequence, read logs</td><td>Sets how fast you can build and fix tests</td></tr>
-        </tbody>
-      </table></div>
-
-      <h3>Sequence, steps and data are three separate things</h3>
-      <div class="grid g3">
-        <div class="card"><h4>The sequence</h4><ul><li>The list of steps and their order</li><li>Flow rules: stop on fail, retry policy</li><li>Says <em>what</em> and <em>when</em></li></ul></div>
-        <div class="card"><h4>The steps</h4><ul><li>Code that does one measurement or action</li><li>Talks to instruments through drivers</li><li>Says <em>how</em></li></ul></div>
-        <div class="card"><h4>The data</h4><ul><li>Limits, settings, product variants</li><li>Versioned and reviewed</li><li>Says <em>how good is good enough</em></li></ul></div>
-      </div>
-      <div class="note"><p>You have already built the core of a sequencer: exercise 7 runs steps against limits, separates FAIL from ERROR, stops on fail and always powers off. A real sequencer adds parallel testing, an operator interface, logging and release management around that core.</p></div>
-    </div>
-
-    <div class="subpage" data-sub="steps" data-title="Writing good steps">
-      <h3>A step in a generic style</h3>
-      <p>This is a <b>Python illustration of the idea</b>, not the syntax of any particular sequencer. Every sequencer has its own way of writing a step, but a good step looks like this in all of them.</p>
-<pre data-hl="python">def step_rail_3v3(ctx):
-    """One purpose: check the 3.3 V rail."""
-    ctx.psu.output(True)
-    value = ctx.dmm.read_stable("3V3", tol=0.005, timeout=2.0)   # wait for a condition, not for time
-    return ctx.check("VDD_3V3", value)    # limits come from the versioned limits file
-
-SEQUENCE = ["step_power_on", "step_rail_3v3", "step_boot", "step_uart_banner", "step_power_off"]</pre>
-
-      <h3>What makes a step good</h3>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Rule</th><th>Why</th><th>Practise it in</th></tr></thead>
-        <tbody>
-          <tr><td><b>One purpose per step</b></td><td>A failing step then names the broken thing</td><td>Exercise 2, 6</td></tr>
-          <tr><td><b>Limits come from data</b></td><td>Changing a limit must not mean editing code</td><td>Example 5, exercise 1</td></tr>
-          <tr><td><b>Wait for conditions, not for time</b></td><td>Faster and more reliable than a fixed delay</td><td>Exercise 5</td></tr>
-          <tr><td><b>Problems raise errors, never fake values</b></td><td>A missing reading must not turn into 0 and pass</td><td>Exercise 1, example 10</td></tr>
-          <tr><td><b>Clean up, always</b></td><td>Outputs off and fixtures released, even after an error</td><td>Exercise 7</td></tr>
-          <tr><td><b>No hidden coupling</b></td><td>A step should not rely on side effects of a step that may have been skipped</td><td>Exercise 7</td></tr>
-          <tr><td><b>Log what you measured, not only the verdict</b></td><td>Later questions are answered from the data</td><td>Example 7</td></tr>
-        </tbody>
-      </table></div>
-
-      <h3>Anti-patterns to avoid</h3>
-      <div class="cols">
-        <div><div class="label bad">Hides problems</div>
-<pre data-hl="python">try:
-    v = dmm.read()
-except Exception:
-    v = 0                    # a dead meter now reads 0 V
-if v &lt; 3.5:
-    result = "PASS"          # ...and 0 V "passes"</pre></div>
-        <div><div class="label good">Surfaces them</div>
-<pre data-hl="python">v = dmm.read()               # an exception becomes ERROR
-status = check_limit(v, 3.135, 3.465)   # PASS or FAIL
-return status</pre></div>
-      </div>
-    </div>
-
-    <div class="subpage" data-sub="iss3" data-title="ISS3 in JDM programs">
-      <h3>What we know</h3>
-      <p>In JDM programs the team mostly uses <b>ISS3</b> as the test sequencer. So a new TDE on a JDM program will build, debug and release tests in ISS3.</p>
-      <div class="note"><p><b>About this site and ISS3.</b> No public documentation for ISS3 was available when this page was written, so the site does <em>not</em> describe ISS3's own screens, syntax or features, and it will not guess. Ask your lead for the ISS3 documentation, a training environment and a few example sequences from existing JDM programs. When the team has them, add them to this page (see the README).</p></div>
-
-      <h3>Your first-week checklist for ISS3</h3>
-      <p>Answer these twelve questions in your own words, with a worked example from a real program for each. Together they cover what you need to build and release a test.</p>
-      <div class="table-wrap"><table>
-        <thead><tr><th>#</th><th>Question to answer</th><th>Why it matters</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>How is a sequence defined and stored? Where does it live in version control?</td><td>You must be able to review, compare and roll back</td></tr>
-          <tr><td>2</td><td>How is a step written, in which language, and how does it return a value and a verdict?</td><td>It is the unit of work you will write every day</td></tr>
-          <tr><td>3</td><td>Where do limits and configuration live? How are they versioned and approved?</td><td>Limits define "good"</td></tr>
-          <tr><td>4</td><td>How are FAIL and ERROR told apart, and what happens to the unit in each case?</td><td>Scrapping good units or shipping bad ones</td></tr>
-          <tr><td>5</td><td>How does it reach instruments and the DUT? How do you add a new driver?</td><td>Every new tester needs some</td></tr>
-          <tr><td>6</td><td>How do you run and debug a sequence without hardware?</td><td>Speed of development</td></tr>
-          <tr><td>7</td><td>Does it support parallel testing, and how is that configured?</td><td>Capacity and cost of test</td></tr>
-          <tr><td>8</td><td>What does the operator see, and can the operator change anything?</td><td>Operator mistakes and tampering</td></tr>
-          <tr><td>9</td><td>What is recorded per unit, in what format, and how does it reach MES?</td><td>Traceability and yield analysis</td></tr>
-          <tr><td>10</td><td>How is a release built, versioned, deployed to stations and rolled back?</td><td>MFG must know exactly what is installed</td></tr>
-          <tr><td>11</td><td>Who supports it, and what are its known limitations and licence rules?</td><td>Where to go when you are stuck</td></tr>
-          <tr><td>12</td><td>Which existing JDM sequences are the best ones to copy?</td><td>Follow what already works</td></tr>
-        </tbody>
-      </table></div>
-
-      <h3>Map this site to ISS3</h3>
-      <p>The exercises here teach the concepts in plain Python. For each one, find where the same thing happens in ISS3.</p>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Concept</th><th>On this site</th><th>In ISS3, find out</th></tr></thead>
-        <tbody>
-          <tr><td><b>Limit check</b></td><td>Exercise 1, example 1 and 5</td><td>How a step is compared with limits, and inclusive or exclusive edges</td></tr>
-          <tr><td><b>FAIL vs ERROR</b></td><td>Exercise 6, 7</td><td>How an exception or a driver timeout is reported</td></tr>
-          <tr><td><b>Sequencer core</b></td><td>Exercise 7</td><td>Stop-on-fail, skip, and the cleanup that always runs</td></tr>
-          <tr><td><b>Wait for stable</b></td><td>Exercise 5</td><td>Whether a wait or poll helper already exists</td></tr>
-          <tr><td><b>Instrument driver and simulator</b></td><td>Example 3</td><td>How instruments are wrapped and whether simulation is supported</td></tr>
-          <tr><td><b>Result record</b></td><td>Example 7</td><td>The fields recorded, and what is sent to MES</td></tr>
-          <tr><td><b>Golden configuration</b></td><td>Exercise 13</td><td>How product variants and baselines are selected</td></tr>
-          <tr><td><b>Cost of test</b></td><td>Exercise 12, Capacity and cost</td><td>What parallel testing and multi-up fixtures it can drive</td></tr>
-        </tbody>
-      </table></div>
-    </div>
-
-    <div class="subpage" data-sub="plan" data-title="A learning plan">
-      <p class="lead">A realistic path from "I have never seen it" to "I can build and release a test". Adjust it to what ISS3 offers. If it has no dry-run mode, build instrument simulators as in example 3.</p>
-      <div class="week">
-        <div class="day"><b>Week 1</b><p>Read the documentation and answer the twelve questions. Run an existing sequence from a JDM program on the training setup or a simulator.</p></div>
-        <div class="day"><b>Week 2</b><p>Change something safely: edit a limit through the proper process, add a step, read the log and the record it produced.</p></div>
-        <div class="day"><b>Week 3</b><p>Add an instrument driver or a simulator. Write a small sequence for a real board, with FAIL and ERROR handled.</p></div>
-        <div class="day"><b>Week 4</b><p>Get your sequence reviewed. Build a release the way MFG will receive it, install it on a station and roll it back once.</p></div>
-      </div>
-
-      <h3>Habits that carry over to any sequencer</h3>
-      <div class="card">
-        <ul class="checklist">
-          <li>Read an existing, trusted sequence before writing your own</li>
-          <li>Keep limits and settings out of the code</li>
-          <li>Treat missing data as an error, never as a pass</li>
-          <li>Test with a golden unit and a known-bad unit</li>
-          <li>Version every sequence, limit file and release</li>
-          <li>Write the release notes for the technician, not for yourself</li>
-          <li>Keep a simulator so work does not wait for hardware</li>
-          <li>Review each other's sequences like code</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ============================================================ CAPACITY AND COST -->
 <section class="block view" id="planning">
   <div class="container">
-    <span class="kicker">07 · Capacity and cost</span>
+    <span class="kicker">06 · Capacity and cost</span>
     <h2>How many testers, and what does a test cost?</h2>
     <p class="lead">Two numbers decide whether a test plan is realistic: how many stations the line needs, and what each tested unit costs. A TDE estimates both for every proposal and every NPI build, and defends them with stated assumptions.</p>
 
@@ -970,7 +830,7 @@ testers = round up ( needed / one tester gives )</code></pre>
 <!-- ============================================================ STRATEGY TOOLS -->
 <section class="block view" id="tools">
   <div class="container">
-    <span class="kicker">08 · Strategy tools</span>
+    <span class="kicker">07 · Strategy tools</span>
     <h2>Four tools for test strategy decisions</h2>
     <p class="lead">Small, hands-on tools for questions a TDE answers again and again: what does our strategy cover, how tight should limits be, how long should a burn-in run, and can the fixture hold the board. Change the numbers and watch the answer move. The defaults are illustrations, not specifications.</p>
 
@@ -1056,7 +916,7 @@ testers = round up ( needed / one tester gives )</code></pre>
 <!-- ============================================================ 5. OCP RACK -->
 <section class="block view" id="ocp">
   <div class="container">
-    <span class="kicker">09 · OCP rack</span>
+    <span class="kicker">08 · OCP rack</span>
     <h2>The OCP rack: what is different</h2>
     <p class="lead">OCP racks are new to the team, so start here. <b>OCP</b> (Open Compute Project) is a community that publishes open hardware designs for data centres. Its <b>Open Rack</b> changes how a rack is built, powered and cooled, and with it, how a rack is tested.</p>
 
@@ -1338,7 +1198,7 @@ testers = round up ( needed / one tester gives )</code></pre>
 <!-- ============================================================ 6. COOLING -->
 <section class="block view" id="cooling">
   <div class="container">
-    <span class="kicker">10 · Cooling</span>
+    <span class="kicker">09 · Cooling</span>
     <h2>Cooling: fan, water or immersion?</h2>
     <p class="lead">Every watt a rack uses becomes heat that has to go somewhere. As chips get hotter, air runs out of capacity and liquid takes over. This page compares the options, then goes deep on <b>water cooling</b>, the one an OCP rack is most likely to use.</p>
 
@@ -1436,7 +1296,7 @@ testers = round up ( needed / one tester gives )</code></pre>
 <!-- ============================================================ NODE TEST -->
 <section class="block view" id="servertest">
   <div class="container">
-    <span class="kicker">11 · Node test</span>
+    <span class="kicker">10 · Node test</span>
     <h2>Testing a server node</h2>
     <p class="lead">Before a node goes into an OCP rack it is tested on its own. The tests combine what you know about boards (power, firmware, measurements) with how servers are managed (a BMC, Linux tools, Redfish). This page is the map.</p>
 
@@ -1538,12 +1398,364 @@ curl -sk -u "$BMC_USER:$BMC_PASS" "https://$BMC/redfish/v1/UpdateService/Firmwar
   </div>
 </section>
 
+<!-- ============================================================ PYTHON GUIDE -->
+<section class="block view" id="py-guide">
+  <div class="container">
+    <span class="kicker">11 · Python guide</span>
+    <h2>Python: the parts that surprise people</h2>
+    <p class="lead">Short explanations of the Python behaviours that cause the most mistakes, written as <b>"what people believe"</b> against <b>"what Python really does"</b>. Each topic links to a runnable example (predict, then run) and a graded practice exercise. This guide is the first part of the Software section.</p>
+
+    <div class="subpage" data-sub="names" data-title="Variables are names, not boxes">
+      <h3>The misconception</h3>
+      <p>In many languages a variable is a box that holds a value, and <code>b = a</code> copies the value into a second box. In Python a variable is a <b>name</b> attached to an object. Assignment attaches a name. It never copies.</p>
+<pre data-hl="python">a = [1, 2, 3]
+b = a              # b is a second NAME for the same list
+b.append(4)
+print(a)           # [1, 2, 3, 4]   a changed too
+print(a is b)      # True: one object, two names
+c = a.copy()       # a NEW list with the same items
+print(c is a)      # False</pre>
+
+      <h3>What people believe, and what Python really does</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Belief</th><th>What Python really does</th><th>See</th></tr></thead>
+        <tbody>
+          <tr><td><code>b = a</code> makes a copy</td><td>It makes another name for the same object</td><td><a href="#py-examples/py-names">Example 1</a></td></tr>
+          <tr><td>My function gets its own copy of the list</td><td>It gets the same object. Changing it inside changes it for the caller. Rebinding the name inside does not</td><td><a href="#py-examples/py-defaults">Example 3</a></td></tr>
+          <tr><td><code>copy()</code> copies everything</td><td>A shallow copy: a new outer container, the same inner objects. Use <code>copy.deepcopy</code> for independence</td><td><a href="#py-examples/py-copy">Example 2</a></td></tr>
+          <tr><td><code>[[0] * 3] * 3</code> makes a 3 by 3 grid</td><td>It repeats <b>one</b> inner list three times</td><td><a href="#py-examples/py-copy">Example 2</a></td></tr>
+          <tr><td><code>==</code> and <code>is</code> mean the same</td><td><code>==</code> compares values. <code>is</code> compares identity (the same object)</td><td><a href="#py-examples/py-names">Example 1</a></td></tr>
+          <tr><td>Default arguments are created on every call</td><td>They are evaluated <b>once</b>, when <code>def</code> runs</td><td><a href="#py-examples/py-defaults">Example 3</a></td></tr>
+          <tr><td><code>+=</code> always builds a new object</td><td>For a list it changes the object in place. For numbers and strings it builds a new one</td><td><a href="#py-examples/py-names">Example 1</a></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Rules of thumb</h3>
+      <ul>
+        <li>Do not change an argument unless the function is documented to do so. Return a new object instead.</li>
+        <li>Copy when you need independence: <code>list(x)</code> or <code>x.copy()</code> for a flat container, <code>copy.deepcopy(x)</code> when there are containers inside.</li>
+        <li>Use <code>None</code> as the default for a list or dict, and create it inside the function.</li>
+        <li>Use <code>is</code> only for <code>None</code>, <code>True</code>, <code>False</code> and deliberate sentinel objects. Never for numbers or strings.</li>
+        <li>Build grids with a comprehension: <code>[[0] * 3 for _ in range(3)]</code>.</li>
+      </ul>
+
+      <h3>Why a test engineer cares</h3>
+      <p>A limits dictionary shared by several steps and then changed by one. A default list that quietly collects results across runs. A configuration passed into a test and modified there. Two sensors that hold the same list. Each one makes a result change for no visible reason, and each is easy to avoid once you can see the names.</p>
+      <div class="note"><p><b>Try it:</b> <a href="#py-examples/py-names">Example 1: names, not boxes</a>, then <a href="#py-practice/py-alias-fix">Exercise: fix the aliasing bugs</a> and <a href="#py-practice/py-default-fix">Exercise: fix the mutable defaults</a>.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="classes" data-title="Classes and constructors">
+      <h3>The misconception</h3>
+      <p>People call <code>__init__</code> "the constructor", and expect it to work like a constructor in C++ or Java. In Python <code>__new__</code> creates the object and <code>__init__</code> then <em>initialises</em> it. In practice you write only <code>__init__</code>, but the difference explains several surprises.</p>
+<pre data-hl="python">class Sensor:
+    def __init__(self, name, unit="V"):
+        self.name = name           # an attribute of THIS object
+        self.unit = unit
+        self.readings = []         # created per object
+
+    @classmethod
+    def from_text(cls, text):      # an alternative constructor
+        name, unit = text.split(":")
+        return cls(name, unit)
+
+s = Sensor.from_text("vdd:V")</pre>
+
+      <h3>What people believe, and what Python really does</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Belief</th><th>What Python really does</th><th>See</th></tr></thead>
+        <tbody>
+          <tr><td><code>__init__</code> creates the object</td><td><code>__new__</code> creates it, then <code>__init__</code> sets it up</td><td><a href="#py-examples/py-init">Example 4</a></td></tr>
+          <tr><td><code>__init__</code> must return the object</td><td>It must return <code>None</code></td><td><a href="#py-examples/py-init">Example 4</a></td></tr>
+          <tr><td>I can write several <code>__init__</code> with different arguments</td><td>There is no overloading: the last definition replaces the earlier ones. Use default arguments or a <code>@classmethod</code></td><td><a href="#py-examples/py-init">Example 4</a></td></tr>
+          <tr><td><code>self</code> is a keyword</td><td>It is only the conventional name of the first parameter, which receives the object</td><td></td></tr>
+          <tr><td>Writing <code>name = name</code> in <code>__init__</code> sets the attribute</td><td>It creates a local variable and throws it away. You need <code>self.name = name</code></td><td></td></tr>
+          <tr><td>A list written in the class body belongs to each object</td><td>It is one list shared by all objects</td><td><a href="#py-examples/py-classvar">Example 7</a></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Rules of thumb</h3>
+      <ul>
+        <li>Set <b>every</b> attribute in <code>__init__</code>, so all objects have the same shape.</li>
+        <li>Create mutable per-object state (lists, dicts) inside <code>__init__</code>.</li>
+        <li>For a second way of building an object, write a <code>@classmethod</code> that returns <code>cls(...)</code>.</li>
+        <li>Keep <code>__init__</code> cheap. In test software, do not open an instrument in <code>__init__</code>. Build the object, then call <code>connect()</code>, so tests and simulators can create objects without hardware.</li>
+        <li>Give classes a useful <code>__repr__</code>, so failures print something readable.</li>
+      </ul>
+      <div class="note"><p><b>Try it:</b> <a href="#py-examples/py-init">Example 4: constructors</a>, then <a href="#py-practice/py-constructor">Exercise: write a class with a constructor</a>.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="inherit" data-title="Inheritance">
+      <h3>The misconception</h3>
+      <p>A subclass gets everything from its parent, so the parent's setup must run automatically. It does not, <b>if the subclass defines its own <code>__init__</code></b>. Then you must call the parent's with <code>super().__init__(...)</code>.</p>
+<pre data-hl="python">class Instrument:
+    def __init__(self, name):
+        self.name = name
+        self.connected = False
+
+class Dmm(Instrument):
+    def __init__(self, name, digits=6):
+        super().__init__(name)     # without this, name and connected never exist
+        self.digits = digits
+
+    def describe(self):            # override and extend
+        return super().describe() + f", {self.digits} digits"</pre>
+
+      <h3>What people believe, and what Python really does</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Belief</th><th>What Python really does</th><th>See</th></tr></thead>
+        <tbody>
+          <tr><td>The parent's <code>__init__</code> always runs</td><td>Only when the subclass has no <code>__init__</code> of its own. Otherwise call <code>super().__init__()</code></td><td><a href="#py-examples/py-super">Example 5</a></td></tr>
+          <tr><td><code>super()</code> means my parent class</td><td>It means the <b>next class in the method resolution order</b> (MRO)</td><td><a href="#py-examples/py-mro">Example 6</a></td></tr>
+          <tr><td>Overriding a method changes it for the parent too</td><td>Only objects of the subclass use the new version</td><td><a href="#py-examples/py-super">Example 5</a></td></tr>
+          <tr><td>With multiple parents, Python picks one at random</td><td>The order is fixed, left to right, and shown by <code>Class.__mro__</code></td><td><a href="#py-examples/py-mro">Example 6</a></td></tr>
+          <tr><td>Inheritance is the way to reuse code</td><td>Use it for "is a". For "has a", store an object in an attribute (composition)</td><td></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Inherit or compose?</h3>
+      <div class="grid g2">
+        <div class="card"><h4>Inherit: "is a"</h4><ul><li>A <code>Dmm</code> <em>is an</em> <code>Instrument</code></li><li>It can be used wherever an <code>Instrument</code> is expected</li><li>It reuses and extends the parent's behaviour</li></ul></div>
+        <div class="card"><h4>Compose: "has a"</h4><ul><li>A <code>TestStation</code> <em>has</em> instruments</li><li>Store them in attributes and call their methods</li><li>Easier to change and to test with simulators</li></ul></div>
+      </div>
+
+      <h3>Rules of thumb</h3>
+      <ul>
+        <li>Call <code>super().__init__(...)</code> first in a subclass <code>__init__</code>.</li>
+        <li>Extend the parent's method with <code>super().method()</code> instead of copying its code.</li>
+        <li>Keep hierarchies shallow. Prefer composition when in doubt.</li>
+        <li>Let each class answer the same method its own way (polymorphism) instead of testing the type with <code>isinstance</code>.</li>
+      </ul>
+      <div class="note"><p><b>Try it:</b> <a href="#py-examples/py-super">Example 5: inheritance and super()</a>, <a href="#py-examples/py-mro">Example 6: the MRO</a>, then <a href="#py-practice/py-inheritance">Exercise: subclass with super()</a>.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="classvars" data-title="Class variables, public and private">
+      <h3>Class variables and instance variables</h3>
+<pre data-hl="python">class Station:
+    max_log = 100              # CLASS variable: one value for the whole class
+    def __init__(self, name):
+        self.name = name       # INSTANCE variable: one per object
+
+a, b = Station("a"), Station("b")
+a.max_log = 5                  # creates an instance attribute on a only
+print(a.max_log, b.max_log, Station.max_log)    # 5 100 100</pre>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Belief</th><th>What Python really does</th><th>See</th></tr></thead>
+        <tbody>
+          <tr><td>A variable in the class body belongs to each object</td><td>It belongs to the class and is shared</td><td><a href="#py-examples/py-classvar">Example 7</a></td></tr>
+          <tr><td><code>obj.x = 5</code> changes the class variable</td><td>It creates an instance attribute that hides the class variable for that object</td><td><a href="#py-examples/py-classvar">Example 7</a></td></tr>
+          <tr><td><code>self.count += 1</code> updates a class counter</td><td>It reads the class value, then writes an <b>instance</b> attribute. The class counter never moves. Use <code>Station.count += 1</code></td><td><a href="#py-examples/py-classvar">Example 7</a></td></tr>
+          <tr><td>A list in the class body is per object</td><td>One list shared by all objects</td><td><a href="#py-examples/py-classvar">Example 7</a></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Public, _protected and __private</h3>
+      <p>Python has no <code>public</code>, <code>protected</code> or <code>private</code> keywords. It relies on naming conventions and trust ("we are all consenting adults").</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Name</th><th>Meaning</th><th>Enforced?</th></tr></thead>
+        <tbody>
+          <tr><td><code>name</code></td><td>Public: part of the interface you promise to keep</td><td>No</td></tr>
+          <tr><td><code>_name</code></td><td>Internal: may change without notice, please do not use from outside</td><td>No. Only a convention</td></tr>
+          <tr><td><code>__name</code></td><td>Renamed to <code>_ClassName__name</code> so a subclass cannot clash with it</td><td>Renamed, not hidden. Anyone can still read <code>_ClassName__name</code></td></tr>
+          <tr><td><code>@property</code></td><td>Controlled access: compute, validate or make read-only</td><td>Yes, for the property itself</td></tr>
+        </tbody>
+      </table></div>
+<pre data-hl="python">class Account:
+    def __init__(self, balance=0):
+        self._balance = balance        # internal by convention
+
+    @property
+    def balance(self):                 # read-only from outside
+        return self._balance
+
+    def deposit(self, amount):
+        if amount &lt;= 0:
+            raise ValueError("amount must be positive")
+        self._balance += amount</pre>
+
+      <h3>Rules of thumb</h3>
+      <ul>
+        <li>Use class variables for constants and shared settings (immutable values, written in <code>UPPER_CASE</code> for constants).</li>
+        <li>Create per-object state in <code>__init__</code>, and never put a list or dict in the class body unless you want it shared.</li>
+        <li>Change class-level state through the class name: <code>Station.count += 1</code>.</li>
+        <li>Prefer a leading single underscore for internal names. Use double underscores only to avoid clashes in subclasses.</li>
+        <li>Use <code>@property</code> instead of Java-style getters and setters.</li>
+      </ul>
+      <div class="note"><p><b>Try it:</b> <a href="#py-examples/py-classvar">Example 7: class vs instance variables</a>, <a href="#py-examples/py-private">Example 8: public, protected, private</a>, then <a href="#py-practice/py-classvar-station">Exercise: class variables done right</a> and <a href="#py-practice/py-cart-bugs">Exercise: hunt the bugs in a cart class</a>.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ PYTHON EXAMPLES -->
+<section class="block view" id="py-examples">
+  <div class="container">
+    <span class="kicker">12 · Python examples</span>
+    <h2>Python examples: predict, then run</h2>
+    <p class="lead">Each example is a handful of tests that state what Python <em>really</em> does. <b>Read the code and predict</b> whether each test passes, then press <b>Run</b>. Change the code, break it on purpose, and run it again. All eight are editable and run in your browser. The <a href="#py-guide">Python guide</a> explains the ideas behind them.</p>
+    <p class="runtime-note">The first run downloads the Python runtime (about 10 MB, then cached by your browser).</p>
+    <div id="py-examples-root"></div>
+  </div>
+</section>
+
+<!-- ============================================================ PYTHON PRACTICE -->
+<section class="block view" id="py-practice">
+  <div class="container">
+    <span class="kicker">13 · Python practice</span>
+    <h2>Python practice: six exercises</h2>
+    <p class="lead">Graded exercises on the Python behaviours from the guide. In <b>Implement</b> exercises you write or fix code and hidden tests grade it. In <b>Write the tests</b> you must catch bugs of the kind the guide warns about. Progress and code are saved in this browser.</p>
+    <div id="py-practice-root" class="practice-grid"></div>
+  </div>
+</section>
+
+<!-- ============================================================ TEST SEQUENCER -->
+<section class="block view" id="sequencer">
+  <div class="container">
+    <span class="kicker">14 · Test sequencer</span>
+    <h2>The test sequencer: the engine of a test station</h2>
+    <p class="lead">The sequencer runs a test as an ordered list of steps, applies limits, decides the verdict and writes the record. In JDM programs the team mostly uses <b>ISS3</b> for this. The ideas on this page are the same in every sequencer, so they make ISS3 faster to learn, and they tell you what to ask about it.</p>
+
+    <div class="subpage" data-sub="does" data-title="What a sequencer does">
+      <h3>Responsibilities</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Responsibility</th><th>What it means</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td><b>Run order and flow</b></td><td>Run steps in order, with loops, branches, and "stop on first fail" or "run everything"</td><td>Safe ordering: no heat before the loop is full, no test before power is good</td></tr>
+          <tr><td><b>Steps with limits</b></td><td>Each step measures something and compares it with limits</td><td>The limits are the definition of "good". They need review and versions</td></tr>
+          <tr><td><b>Verdicts</b></td><td>PASS, FAIL, ERROR, SKIP per step, and one verdict per unit</td><td>A tester fault must never look like a pass or like a bad unit (exercise 6)</td></tr>
+          <tr><td><b>Instrument and DUT access</b></td><td>Drivers for instruments, the DUT console and I/O, ideally with simulators</td><td>Swap an instrument without touching the sequence. Develop without hardware</td></tr>
+          <tr><td><b>Parallel testing</b></td><td>Test several units or sockets at the same time</td><td>Cuts the cost of test (see Capacity and cost)</td></tr>
+          <tr><td><b>Operator interface</b></td><td>Scan the serial number, show progress and a clear result</td><td>The operator must not be able to skip steps or change limits</td></tr>
+          <tr><td><b>Data and records</b></td><td>Every measurement, verdict, version and timestamp, per serial number</td><td>Traceability, yield analysis, and answers when a customer asks</td></tr>
+          <tr><td><b>Configuration</b></td><td>Limits, station settings, product variants kept as data</td><td>A limit change is then a reviewed data change, not a code edit</td></tr>
+          <tr><td><b>Safe state and errors</b></td><td>Always return outputs to a safe state, even after a failure or a crash</td><td>Protects the DUT, the fixture and the people (exercise 7)</td></tr>
+          <tr><td><b>Development and debug</b></td><td>Run, step through and dry-run a sequence, read logs</td><td>Sets how fast you can build and fix tests</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Sequence, steps and data are three separate things</h3>
+      <div class="grid g3">
+        <div class="card"><h4>The sequence</h4><ul><li>The list of steps and their order</li><li>Flow rules: stop on fail, retry policy</li><li>Says <em>what</em> and <em>when</em></li></ul></div>
+        <div class="card"><h4>The steps</h4><ul><li>Code that does one measurement or action</li><li>Talks to instruments through drivers</li><li>Says <em>how</em></li></ul></div>
+        <div class="card"><h4>The data</h4><ul><li>Limits, settings, product variants</li><li>Versioned and reviewed</li><li>Says <em>how good is good enough</em></li></ul></div>
+      </div>
+      <div class="note"><p>You have already built the core of a sequencer: exercise 7 runs steps against limits, separates FAIL from ERROR, stops on fail and always powers off. A real sequencer adds parallel testing, an operator interface, logging and release management around that core.</p></div>
+    </div>
+
+    <div class="subpage" data-sub="steps" data-title="Writing good steps">
+      <h3>A step in a generic style</h3>
+      <p>This is a <b>Python illustration of the idea</b>, not the syntax of any particular sequencer. Every sequencer has its own way of writing a step, but a good step looks like this in all of them.</p>
+<pre data-hl="python">def step_rail_3v3(ctx):
+    """One purpose: check the 3.3 V rail."""
+    ctx.psu.output(True)
+    value = ctx.dmm.read_stable("3V3", tol=0.005, timeout=2.0)   # wait for a condition, not for time
+    return ctx.check("VDD_3V3", value)    # limits come from the versioned limits file
+
+SEQUENCE = ["step_power_on", "step_rail_3v3", "step_boot", "step_uart_banner", "step_power_off"]</pre>
+
+      <h3>What makes a step good</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Rule</th><th>Why</th><th>Practise it in</th></tr></thead>
+        <tbody>
+          <tr><td><b>One purpose per step</b></td><td>A failing step then names the broken thing</td><td>Exercise 2, 6</td></tr>
+          <tr><td><b>Limits come from data</b></td><td>Changing a limit must not mean editing code</td><td>Example 5, exercise 1</td></tr>
+          <tr><td><b>Wait for conditions, not for time</b></td><td>Faster and more reliable than a fixed delay</td><td>Exercise 5</td></tr>
+          <tr><td><b>Problems raise errors, never fake values</b></td><td>A missing reading must not turn into 0 and pass</td><td>Exercise 1, example 10</td></tr>
+          <tr><td><b>Clean up, always</b></td><td>Outputs off and fixtures released, even after an error</td><td>Exercise 7</td></tr>
+          <tr><td><b>No hidden coupling</b></td><td>A step should not rely on side effects of a step that may have been skipped</td><td>Exercise 7</td></tr>
+          <tr><td><b>Log what you measured, not only the verdict</b></td><td>Later questions are answered from the data</td><td>Example 7</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Anti-patterns to avoid</h3>
+      <div class="cols">
+        <div><div class="label bad">Hides problems</div>
+<pre data-hl="python">try:
+    v = dmm.read()
+except Exception:
+    v = 0                    # a dead meter now reads 0 V
+if v &lt; 3.5:
+    result = "PASS"          # ...and 0 V "passes"</pre></div>
+        <div><div class="label good">Surfaces them</div>
+<pre data-hl="python">v = dmm.read()               # an exception becomes ERROR
+status = check_limit(v, 3.135, 3.465)   # PASS or FAIL
+return status</pre></div>
+      </div>
+    </div>
+
+    <div class="subpage" data-sub="iss3" data-title="ISS3 in JDM programs">
+      <h3>What we know</h3>
+      <p>In JDM programs the team mostly uses <b>ISS3</b> as the test sequencer. So a new TDE on a JDM program will build, debug and release tests in ISS3.</p>
+      <div class="note"><p><b>About this site and ISS3.</b> No public documentation for ISS3 was available when this page was written, so the site does <em>not</em> describe ISS3's own screens, syntax or features, and it will not guess. Ask your lead for the ISS3 documentation, a training environment and a few example sequences from existing JDM programs. When the team has them, add them to this page (see the README).</p></div>
+
+      <h3>Your first-week checklist for ISS3</h3>
+      <p>Answer these twelve questions in your own words, with a worked example from a real program for each. Together they cover what you need to build and release a test.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>#</th><th>Question to answer</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>How is a sequence defined and stored? Where does it live in version control?</td><td>You must be able to review, compare and roll back</td></tr>
+          <tr><td>2</td><td>How is a step written, in which language, and how does it return a value and a verdict?</td><td>It is the unit of work you will write every day</td></tr>
+          <tr><td>3</td><td>Where do limits and configuration live? How are they versioned and approved?</td><td>Limits define "good"</td></tr>
+          <tr><td>4</td><td>How are FAIL and ERROR told apart, and what happens to the unit in each case?</td><td>Scrapping good units or shipping bad ones</td></tr>
+          <tr><td>5</td><td>How does it reach instruments and the DUT? How do you add a new driver?</td><td>Every new tester needs some</td></tr>
+          <tr><td>6</td><td>How do you run and debug a sequence without hardware?</td><td>Speed of development</td></tr>
+          <tr><td>7</td><td>Does it support parallel testing, and how is that configured?</td><td>Capacity and cost of test</td></tr>
+          <tr><td>8</td><td>What does the operator see, and can the operator change anything?</td><td>Operator mistakes and tampering</td></tr>
+          <tr><td>9</td><td>What is recorded per unit, in what format, and how does it reach MES?</td><td>Traceability and yield analysis</td></tr>
+          <tr><td>10</td><td>How is a release built, versioned, deployed to stations and rolled back?</td><td>MFG must know exactly what is installed</td></tr>
+          <tr><td>11</td><td>Who supports it, and what are its known limitations and licence rules?</td><td>Where to go when you are stuck</td></tr>
+          <tr><td>12</td><td>Which existing JDM sequences are the best ones to copy?</td><td>Follow what already works</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Map this site to ISS3</h3>
+      <p>The exercises here teach the concepts in plain Python. For each one, find where the same thing happens in ISS3.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Concept</th><th>On this site</th><th>In ISS3, find out</th></tr></thead>
+        <tbody>
+          <tr><td><b>Limit check</b></td><td>Exercise 1, example 1 and 5</td><td>How a step is compared with limits, and inclusive or exclusive edges</td></tr>
+          <tr><td><b>FAIL vs ERROR</b></td><td>Exercise 6, 7</td><td>How an exception or a driver timeout is reported</td></tr>
+          <tr><td><b>Sequencer core</b></td><td>Exercise 7</td><td>Stop-on-fail, skip, and the cleanup that always runs</td></tr>
+          <tr><td><b>Wait for stable</b></td><td>Exercise 5</td><td>Whether a wait or poll helper already exists</td></tr>
+          <tr><td><b>Instrument driver and simulator</b></td><td>Example 3</td><td>How instruments are wrapped and whether simulation is supported</td></tr>
+          <tr><td><b>Result record</b></td><td>Example 7</td><td>The fields recorded, and what is sent to MES</td></tr>
+          <tr><td><b>Golden configuration</b></td><td>Exercise 13</td><td>How product variants and baselines are selected</td></tr>
+          <tr><td><b>Cost of test</b></td><td>Exercise 12, Capacity and cost</td><td>What parallel testing and multi-up fixtures it can drive</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="subpage" data-sub="plan" data-title="A learning plan">
+      <p class="lead">A realistic path from "I have never seen it" to "I can build and release a test". Adjust it to what ISS3 offers. If it has no dry-run mode, build instrument simulators as in example 3.</p>
+      <div class="week">
+        <div class="day"><b>Week 1</b><p>Read the documentation and answer the twelve questions. Run an existing sequence from a JDM program on the training setup or a simulator.</p></div>
+        <div class="day"><b>Week 2</b><p>Change something safely: edit a limit through the proper process, add a step, read the log and the record it produced.</p></div>
+        <div class="day"><b>Week 3</b><p>Add an instrument driver or a simulator. Write a small sequence for a real board, with FAIL and ERROR handled.</p></div>
+        <div class="day"><b>Week 4</b><p>Get your sequence reviewed. Build a release the way MFG will receive it, install it on a station and roll it back once.</p></div>
+      </div>
+
+      <h3>Habits that carry over to any sequencer</h3>
+      <div class="card">
+        <ul class="checklist">
+          <li>Read an existing, trusted sequence before writing your own</li>
+          <li>Keep limits and settings out of the code</li>
+          <li>Treat missing data as an error, never as a pass</li>
+          <li>Test with a golden unit and a known-bad unit</li>
+          <li>Version every sequence, limit file and release</li>
+          <li>Write the release notes for the technician, not for yourself</li>
+          <li>Keep a simulator so work does not wait for hardware</li>
+          <li>Review each other's sequences like code</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================================================ 6. EXAMPLES -->
 <section class="block view" id="examples">
   <div class="container">
-    <span class="kicker">12 · Programming examples</span>
+    <span class="kicker">15 · Programming examples</span>
     <h2>Tester software, ready to run</h2>
     <p class="lead">Python with a pytest-style API, applied to production test. Eight of the twelve examples are <b>editable and run in your browser</b>: change the code, break it on purpose and see how a failure looks. The read-only ones show real instrument control, a station loop, a release pipeline and a liquid test sequence. If your stations use LabVIEW, TestStand or C#, the structure is the same.</p>
+    <p class="tag">These examples are about test engineering. For Python language behaviour (references, classes, inheritance) see the <a href="#py-guide">Python guide</a> in the Software section.</p>
     <p class="runtime-note">The first run downloads the Python runtime (about 10 MB, then cached by your browser).</p>
     <div id="examples-root"></div>
   </div>
@@ -1552,16 +1764,16 @@ curl -sk -u "$BMC_USER:$BMC_PASS" "https://$BMC/redfish/v1/UpdateService/Firmwar
 <!-- ============================================================ 7. PRACTICE -->
 <section class="block view" id="practice">
   <div class="container">
-    <span class="kicker">13 · Practice</span>
+    <span class="kicker">16 · Practice</span>
     <h2>Prove it: fourteen exercises</h2>
     <p class="lead">Two kinds of challenge. In <b>Implement</b> exercises you write a function and hidden tests grade it. In <b>Write the tests</b> exercises the code already exists in one correct and several buggy versions, and your tests must tell them apart, because a tester that cannot spot a planted bug will not spot a real one. Progress and code are saved in this browser.</p>
-    <div id="practice-root"></div>
+    <div id="practice-root" class="practice-grid"></div>
   </div>
 </section>
 <!-- ============================================================ 8. GLOSSARY -->
 <section class="block view" id="glossary">
   <div class="container">
-    <span class="kicker">14 · Reference</span>
+    <span class="kicker">17 · Reference</span>
     <h2>Glossary of acronyms</h2>
     <p class="lead">The acronyms you will meet, grouped by topic. Search by acronym or by meaning, or pick a topic. Some acronyms mean different things in different fields (for example <b>SPI</b>), so check the group.</p>
     <div class="gl-layout">
