@@ -84,7 +84,7 @@ TDE.DIAGRAMS = {
       body: `<p>Detailed design of the whole test solution.</p>
         <ul><li><b>Hardware:</b> fixture mechanics, interface board schematic and layout, harness, instrument selection, safety.</li>
         <li><b>Software:</b> architecture, drivers, sequence, limits file, logging and MES interface.</li>
-        <li><b>Review with:</b> HPS, MFG.</li></ul>`,
+        <li><b>Review with:</b> HPS in JDM or the customer in CM, and MFG.</li></ul>`,
     },
     fabricate: {
       title: "Fabricate",
@@ -103,7 +103,7 @@ TDE.DIAGRAMS = {
       title: "NPI / pilot builds",
       body: `<p>NPI (New Product Introduction): the first real builds. <b>Most of our work happens here.</b></p>
         <ul><li>Run on real units at line speed. Collect yield and false-fail data. Tune limits and software.</li>
-        <li>Absorb design changes (ECOs) from the customer or HPS.</li>
+        <li>Absorb design changes (ECOs) from the customer (CM) or HPS (JDM).</li>
         <li>Feed test data back: which defects, which process step.</li></ul>`,
     },
     handover: {
@@ -445,7 +445,7 @@ TDE.DIAGRAMS = {
       title: "Design package",
       body: `<p>Everything the build needs, released and reviewed <em>before</em> parts are ordered.</p>
         <ul><li><b>Contains:</b> system block diagram, schematics, wire list, cable and harness drawings, general arrangement (where each item sits in the rack), BOM, power budget.</li>
-        <li><b>Reviewed with:</b> HPS (does it fit the product and cover what must be tested?), EHS (is it safe?), the technician who will build it (can it be built?).</li>
+        <li><b>Reviewed with:</b> the design team, HPS in JDM or the customer in CM (does it fit the product and cover what must be tested?), EHS (is it safe?), the technician who will build it (can it be built?).</li>
         <li><b>Output:</b> a released revision. The build uses that revision and no other.</li></ul>`,
     },
     kitting: {
@@ -514,7 +514,7 @@ TDE.DIAGRAMS = {
     concept: {
       title: "Concept and estimate",
       body: `<p>Design just enough of the tester to price it honestly.</p>
-        <ul><li><b>TDE does:</b> test strategy and coverage with HPS, block diagram, instrument list, fixture type, station count from the takt time, software platform. Effort per work package, material from vendor quotes.</li>
+        <ul><li><b>TDE does:</b> test strategy and coverage (with HPS in JDM, with the customer in CM), block diagram, instrument list, fixture type, station count from the takt time, software platform. Effort per work package, material from vendor quotes.</li>
         <li><b>Output:</b> concept, BOM with prices and lead times, hours per work package, schedule from PO to SAT.</li>
         <li><b>Watch out:</b> debug time, spares, on-site support and long-lead parts are the usual misses.</li></ul>`,
     },
@@ -5258,7 +5258,7 @@ TDE.GLOSSARY = [
     items: [
       ["TDE", "Test Development Engineer", "Designs, builds and delivers the production test solution (hardware and software), then helps sustain it."],
       ["TE", "Test Engineer", "Joins in NPI when the tester and the UUT are validated together: golden units, correlation, repeatability, acceptance before MFG."],
-      ["HPS", "Hardware Platform Solution", "The hardware design team. The TDE's main partner during NPI: design reviews, DFT and test coverage. Co-writes proposals with the TDE in JDM."],
+      ["HPS", "Hardware Platform Solution", "The hardware design team in JDM programs. The TDE's main partner during NPI: design reviews, DFT and test coverage. Co-writes proposals with the TDE. Not involved in CM programs, where the customer owns the design."],
       ["MFG", "Manufacturing", "The line and the people who run the tester every day. The TDE's \"customer\" after handover."],
       ["QA / QE", "Quality Assurance / Quality Engineer", "Owns quality systems, audits and customer quality issues."],
       ["ME / PE", "Manufacturing Engineer / Process Engineer", "Owns the line process, such as SMT settings, throughput and yield improvement."],
