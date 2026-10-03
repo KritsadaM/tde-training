@@ -496,7 +496,8 @@ table.swim tr.out th, table.swim tr.out td { background: var(--surface-2); color
 /* ---------------------------------------------------------------- project management */
 .stat-tiles { margin: 14px 0 22px; }
 .stat-tiles b { font-size: 1.6rem; }
-table.raci-table td.c, table.raci-table th.c { width: 6.2rem; }
+table.raci-table td.c, table.raci-table th.c { width: 5.4rem; padding-inline: 6px; }
+table.raci-table td:first-child, table.raci-table th:first-child { min-width: 14rem; }
 .card h4 + .calc-grid { margin-top: 8px; }
 .calc h4 { margin: 18px 0 10px; font-size: .95rem; }
 .calc h4:first-child { margin-top: 0; }
