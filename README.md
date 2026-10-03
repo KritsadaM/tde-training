@@ -120,6 +120,8 @@ python3 tools/stamp_assets.py
 
 It writes a content hash into the `?v=` of the three asset links in `index.html` (the web worker and harness get the same version from `app.js`). CI fails with a reminder if you forget (`python3 tools/stamp_assets.py --check`).
 
+The hash is taken over the raw bytes of the files, so line endings matter. `.gitattributes` keeps every text file LF in the repository and in each checkout, Windows included, so a stamp made on any machine matches the one CI computes.
+
 ## Project layout
 
 ```

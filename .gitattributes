@@ -1,0 +1,15 @@
+# LF line endings in the repository and in every checkout, Windows included.
+# tools/stamp_assets.py hashes the raw bytes of assets/ and CI checks them out
+# with LF, so a CRLF working copy gives a stamp that CI rejects.
+* text=auto eol=lf
+
+# binary files, if any are added later
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
