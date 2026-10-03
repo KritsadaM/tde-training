@@ -7,9 +7,9 @@
   <title>TDE Training – Test Development Engineer</title>
   <meta name="description" content="Interactive training for Test Development Engineers in electronics manufacturing, in five sessions: overview (CM and JDM, NPI and sustaining), project management (RFQ, design proposal, quotation, schedule, FAT and SAT), tester hardware, test software, and Python examples and exercises that run in your browser.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c7a6f'/%3E%3Cpath d='M8 17l5 5 11-12' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="assets/style.css?v=f78820883f">
-  <script src="assets/content.js?v=f78820883f" defer></script>
-  <script src="assets/app.js?v=f78820883f" defer></script>
+  <link rel="stylesheet" href="assets/style.css?v=e88735422e">
+  <script src="assets/content.js?v=e88735422e" defer></script>
+  <script src="assets/app.js?v=e88735422e" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -67,7 +67,7 @@
         </thead>
         <tbody>
           <tr class="pm"><th scope="row">Project management</th><td>Read the RFQ, ask questions, write the design proposal and the quotation, get the PO</td><td>Kickoff, schedule, roles (RACI), design reviews, long-lead orders</td><td>Weekly status, risk register, change control, purchasing</td><td>FAT, SAT, handover package, close-out</td><td>Support route, ECOs, lessons learned, quote versus actual</td></tr>
-          <tr class="hw"><th scope="row">Hardware</th><td>Test strategy, coverage, tester concept, DFT requests</td><td>Instruments, fixture, interface board, wiring drawings, safety concept</td><td>Fabricate the rack, ring-out, staged power-up, golden units</td><td>Correlation, GR&amp;R, limits and guardbands, run-at-rate</td><td>Calibration, probe life, spares, obsolescence</td></tr>
+          <tr class="hw"><th scope="row">Hardware</th><td>Test strategy and coverage with HPS, tester concept, DFT requests</td><td>Instruments, fixture, interface board, wiring drawings, safety concept</td><td>Fabricate the rack, ring-out, staged power-up, golden units</td><td>Validation with TE on the UUT: correlation, GR&amp;R, limits, run-at-rate</td><td>Calibration, probe life, spares, obsolescence</td></tr>
           <tr class="sw"><th scope="row">Software</th><td>Platform and sequencer choice, software effort estimate</td><td>Architecture, drivers, limits file, MES interface</td><td>Write with simulators, unit tests, debug on the station</td><td>Release with a version and a checksum, operator training</td><td>Bug fixes, yield data, ECO updates</td></tr>
           <tr class="out"><th scope="row">You deliver</th><td>Proposal + quotation</td><td>A frozen design (CDR)</td><td>A verified tester</td><td>An accepted tester + documents</td><td>A healthy line</td></tr>
         </tbody>
@@ -131,8 +131,8 @@
         <thead><tr><th>Partner</th><th>Typically owns</th><th>How a TDE works with them</th></tr></thead>
         <tbody>
           <tr><td><b>Customer</b></td><td>Product requirements, and the design in CM programs</td><td>Gets the design package, agrees coverage and targets, gives design-for-test feedback</td></tr>
-          <tr><td><b>HPS</b><br><small>Hardware Platform Solution</small></td><td>Hardware platform design in JDM programs</td><td>Joint design in JDM: testability goes in from the first board. Co-writes the customer proposal</td></tr>
-          <tr><td><b>TE</b><br><small>Test Engineer</small></td><td>Test requirements, coverage and test plans</td><td>Closest partner. TE says <em>what</em> must be proven, TDE builds the solution that proves it</td></tr>
+          <tr><td><b>HPS</b><br><small>Hardware Platform Solution</small></td><td>The product hardware design (the design team)</td><td>The TDE's main partner during NPI: design reviews, DFT and test coverage, which TDE and HPS sometimes own together. Co-writes the customer proposal in JDM</td></tr>
+          <tr><td><b>TE</b><br><small>Test Engineer</small></td><td>Validation of the tester with the product (UUT)</td><td>Joins when the tester and the UUT are validated together: golden and known-bad units, correlation, repeatability, the evidence MFG accepts</td></tr>
           <tr><td><b>MFG</b><br><small>Manufacturing</small></td><td>The line that runs the tester every day</td><td>Receives the tester, learns from their feedback on uptime, false fails and ergonomics</td></tr>
         </tbody>
       </table>
@@ -190,7 +190,7 @@
           <li>Design interface PCBs (schematic, layout, signal routing, and protection)</li>
           <li>Conduct Design-for-Test (DFT) reviews directly with customer hardware teams</li>
           <li>Analyze cycle time bottlenecks to increase Units Per Hour (UPH)</li>
-          <li>Co-author customer JDM test proposals with HPS and TE leads</li>
+          <li>Co-author customer JDM test proposals with HPS leads</li>
         </ul>
       </div>
     </div>
@@ -213,14 +213,14 @@
           <li>Customer owns the product design</li>
           <li>TDE helps <b>develop software or hardware</b> to test that design</li>
           <li>Starts in NPI, after design handover</li>
-          <li>Partners: customer engineers, TE, MFG</li>
+          <li>Partners: customer engineers (the design owner), MFG, and TE when the tester is validated with the UUT</li>
           <li>Wins on: speed, tester quality, low cost of test</li>
         </ul></div>
       <div class="card"><h4>JDM · Joint Development Manufacturing</h4>
         <p class="tag">We co-design with the customer</p>
         <ul>
           <li>Celestica helps design the product</li>
-          <li>TDE works mainly with <b>HPS and TE</b></li>
+          <li>TDE works mainly with <b>HPS</b> (the design team) in NPI, and with <b>TE</b> when the tester is validated with the UUT</li>
           <li>Starts at the <b>proposal</b> for the customer</li>
           <li>Proposal shows our technology, our way of working and our special capabilities</li>
           <li>Wins on: early testability, reusable platforms, one team from design to line</li>
@@ -242,7 +242,7 @@
 
           <text class="big" x="20" y="184">JDM · Joint Development Manufacturing: we co-design</text>
           <g class="node" data-key="jdm-need" style="--tint:14%"><rect class="shape" x="20" y="196" width="160" height="104" rx="12"/><text class="t" x="100" y="230" text-anchor="middle">Customer</text><text class="t" x="100" y="250" text-anchor="middle">opportunity</text><text class="s" x="100" y="280" text-anchor="middle">Needs and targets</text></g>
-          <g class="node" data-key="jdm-proposal" style="--tint:14%"><rect class="shape" x="210" y="196" width="160" height="104" rx="12"/><text class="t" x="290" y="230" text-anchor="middle">Proposal</text><text class="t" x="290" y="250" text-anchor="middle">TDE + HPS + TE</text><text class="s" x="290" y="280" text-anchor="middle">Tech and capability</text></g>
+          <g class="node" data-key="jdm-proposal" style="--tint:14%"><rect class="shape" x="210" y="196" width="160" height="104" rx="12"/><text class="t" x="290" y="230" text-anchor="middle">Proposal</text><text class="t" x="290" y="250" text-anchor="middle">TDE + HPS</text><text class="s" x="290" y="280" text-anchor="middle">Tech and capability</text></g>
           <g class="node" data-key="jdm-design" style="--tint:14%"><rect class="shape" x="400" y="196" width="160" height="104" rx="12"/><text class="t" x="480" y="230" text-anchor="middle">Joint design:</text><text class="t" x="480" y="250" text-anchor="middle">platform + test</text><text class="s" x="480" y="280" text-anchor="middle">DFT built in</text></g>
           <g class="node" data-key="jdm-build" style="--tint:14%"><rect class="shape" x="590" y="196" width="160" height="104" rx="12"/><text class="t" x="670" y="230" text-anchor="middle">Build and</text><text class="t" x="670" y="250" text-anchor="middle">correlate</text><text class="s" x="670" y="280" text-anchor="middle">Build, debug, prove</text></g>
           <g class="node" data-key="jdm-deliver" style="--tint:14%"><rect class="shape" x="780" y="196" width="160" height="104" rx="12"/><text class="t" x="860" y="230" text-anchor="middle">Deliver</text><text class="t" x="860" y="250" text-anchor="middle">to MFG</text><text class="s" x="860" y="280" text-anchor="middle">NPI builds, handover</text></g>
@@ -261,7 +261,7 @@
           <tr><td><b>Who designs the product</b></td><td>The customer</td><td>Celestica and the customer together</td></tr>
           <tr><td><b>Where the TDE starts</b></td><td>Design handover, entering NPI</td><td>Proposal stage, before the design exists</td></tr>
           <tr><td><b>Main TDE work</b></td><td>Develop software or hardware to test the customer's design</td><td>Proposal, test concept, tester design, with testability designed in</td></tr>
-          <tr><td><b>Closest partners</b></td><td>Customer engineers, TE, MFG</td><td>HPS, TE, customer, MFG</td></tr>
+          <tr><td><b>Closest partners</b></td><td>Customer engineers, MFG. TE at validation</td><td>HPS (design), customer, MFG. TE at validation</td></tr>
           <tr><td><b>Biggest lever</b></td><td>Feedback on testability during design review</td><td>Choosing the test approach together with the hardware</td></tr>
           <tr><td><b>What we sell</b></td><td>Fast, reliable, low-cost test delivery</td><td>Our technology, our way of working and our unique capability</td></tr>
           <tr><td><b>Test sequencer</b></td><td>Follow the customer's requirement when there is one</td><td>Mostly <b>ISS3</b> (see the Test sequencer page)</td></tr>
@@ -389,13 +389,13 @@
     </div>
 
     <div class="subpage" data-sub="roles" data-title="Who does what before the PO">
-      <p>Titles differ between sites and programs. On a small CM job the TDE may do almost all of this alone. On a large JDM program there is a program manager and a sales or business development team. What matters is that each row has exactly one <span class="raci A">A</span> (accountable, the one who answers for it).</p>
+      <p>Titles differ between sites and programs. On a small CM job the TDE may do almost all of this alone. On a large JDM program there is a program manager and a sales or business development team. What matters is that each row has exactly one <span class="raci A">A</span> (accountable, the one who answers for it). TE is not in this table: TE joins later, when the tester is validated together with the UUT.</p>
       <div class="table-wrap"><table class="raci-table">
-        <thead><tr><th>Activity</th><th class="c">Customer</th><th class="c">Sales / BD</th><th class="c">Program mgr</th><th class="c">TDE</th><th class="c">TE</th><th class="c">Purchasing</th><th class="c">Finance</th></tr></thead>
+        <thead><tr><th>Activity</th><th class="c">Customer</th><th class="c">Sales / BD</th><th class="c">Program mgr</th><th class="c">TDE</th><th class="c">HPS</th><th class="c">Purchasing</th><th class="c">Finance</th></tr></thead>
         <tbody>
           <tr><td>Send the RFQ and requirements</td><td class="c"><span class="raci AR">AR</span></td><td class="c"><span class="raci">I</span></td><td class="c"><span class="raci">I</span></td><td class="c"><span class="raci">I</span></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
           <tr><td>Clarify requirements, keep the question log</td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci A">A</span></td><td class="c"><span class="raci R">R</span></td><td class="c"><span class="raci">C</span></td><td class="c"></td><td class="c"></td></tr>
-          <tr><td>Decide what the test must prove (strategy)</td><td class="c"><span class="raci">C</span></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci AR">AR</span></td><td class="c"></td><td class="c"></td></tr>
+          <tr><td>Decide what the test must cover (strategy and coverage)</td><td class="c"><span class="raci">C</span></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci AR">AR</span></td><td class="c"><span class="raci R">R</span></td><td class="c"></td><td class="c"></td></tr>
           <tr><td>Tester concept and effort estimate</td><td class="c"></td><td class="c"></td><td class="c"><span class="raci">I</span></td><td class="c"><span class="raci AR">AR</span></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci">C</span></td><td class="c"></td></tr>
           <tr><td>Instrument and material prices, lead times</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci">C</span></td><td class="c"></td><td class="c"><span class="raci AR">AR</span></td><td class="c"></td></tr>
           <tr><td>Design proposal document</td><td class="c"></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci A">A</span></td><td class="c"><span class="raci R">R</span></td><td class="c"><span class="raci">C</span></td><td class="c"></td><td class="c"></td></tr>
@@ -472,7 +472,7 @@
         <div class="day"><b>Day 1 – 2</b><p>Read the package against the capture list. Send the numbered question list.</p></div>
         <div class="day"><b>Day 3 – 5</b><p>Test strategy and tester concept: block diagram, instrument list, fixture type, station count. Ask vendors for prices and lead times.</p></div>
         <div class="day"><b>Day 6 – 7</b><p>Effort estimate by work package, cost roll-up, schedule from PO to SAT. Draft the proposal.</p></div>
-        <div class="day"><b>Day 8</b><p>Internal review: TE, a senior TDE, the program manager. Fix the gaps.</p></div>
+        <div class="day"><b>Day 8</b><p>Internal review: a senior TDE, HPS, the program manager. Fix the gaps.</p></div>
         <div class="day"><b>Day 9</b><p>Margin and approval. Final PDFs with revision numbers.</p></div>
         <div class="day"><b>Day 10</b><p>Send. Offer a review call to walk through the proposal.</p></div>
       </div>
@@ -495,7 +495,7 @@
           <tr><td><b>Answers</b></td><td>What, how, how well, when</td><td>How much, on which terms</td></tr>
           <tr><td><b>Read by</b></td><td>The customer's test, quality and product engineers</td><td>The customer's purchasing and management</td></tr>
           <tr><td><b>Contains</b></td><td>Strategy, architecture, throughput, deliverables, schedule, acceptance criteria, assumptions, risks</td><td>Price lines, options, lead time, payment and delivery terms, warranty, validity</td></tr>
-          <tr><td><b>Written by</b></td><td>TDE with TE (and HPS in JDM)</td><td>Program manager, sales and finance, from the TDE's estimate</td></tr>
+          <tr><td><b>Written by</b></td><td>TDE, with HPS (the design team)</td><td>Program manager, sales and finance, from the TDE's estimate</td></tr>
           <tr><td><b>Reference</b></td><td>Has its own document number and revision</td><td>Quotes the proposal's number and revision as the scope</td></tr>
         </tbody>
       </table></div>
@@ -573,7 +573,7 @@ with a fast delivery.</code></pre></div>
 
     <div class="subpage" data-sub="jdm" data-title="Writing a JDM proposal">
       <p class="tag part-hint">Winning the work with technology and a way of working.</p>
-        <p>In JDM the TDE, HPS and TE write a proposal for a customer who may be choosing between partners. The proposal shows <b>what we propose</b>, <b>how we work</b> and <b>what only we can do well</b>.</p>
+        <p>In JDM the TDE and HPS write a proposal for a customer who may be choosing between partners. The proposal shows <b>what we propose</b>, <b>how we work</b> and <b>what only we can do well</b>.</p>
         <div class="table-wrap"><table>
           <thead><tr><th>Section</th><th>The question it answers</th></tr></thead>
           <tbody>
@@ -625,7 +625,7 @@ Revision history               rev, date, what changed, author</code></pre>
           <li>Acceptance criteria are measurable</li>
           <li>Risks are honest and each has an action</li>
           <li>No other customer's name, data or photo without permission</li>
-          <li>Reviewed by TE and a second TDE</li>
+          <li>Reviewed by HPS and a second TDE</li>
           <li>Document number, revision and date on every page. Sent as PDF</li>
         </ul>
       </div>
@@ -659,7 +659,7 @@ Revision history               rev, date, what changed, author</code></pre>
           <tr><td><b>Load and connect</b></td><td>Operator places the unit, the fixture clamps, contacts mate</td><td>Dual fixtures so one is loaded while the other is tested. Easy-load mechanics</td></tr>
           <tr><td><b>Power-up and boot</b></td><td>Rails settle, firmware boots</td><td>Wait for conditions, not fixed delays (exercise 5). Skip waits the product does not need</td></tr>
           <tr><td><b>Programming</b></td><td>Firmware and identity written and verified</td><td>Program in parallel or on a separate station</td></tr>
-          <tr><td><b>Test steps</b></td><td>Measurements and functional checks</td><td>Run independent steps in parallel. Drop redundant checks that data shows never fail (with TE and customer approval)</td></tr>
+          <tr><td><b>Test steps</b></td><td>Measurements and functional checks</td><td>Run independent steps in parallel. Drop redundant checks that data shows never fail (agreed with HPS and the customer, since it changes the coverage)</td></tr>
           <tr><td><b>Data and result</b></td><td>Write the record, upload to MES</td><td>Upload in the background. Save locally first</td></tr>
           <tr><td><b>Unload</b></td><td>Release, remove, label, move on</td><td>Overlap with the next cycle</td></tr>
         </tbody>
@@ -774,7 +774,7 @@ testers = round up ( needed / one tester gives )</code></pre>
           <li>Best, base and worst case for volume</li>
           <li>Options compared, for example flying probe first, ICT at ramp-up</li>
           <li>Risks named: access, firmware readiness, volume</li>
-          <li>Reviewed by TE and, where needed, finance</li>
+          <li>Reviewed by a senior TDE and, where needed, finance</li>
         </ul>
       </div>
     </div>
@@ -936,7 +936,7 @@ markup     = (price - cost) / cost        markup is a share of the COST</code></
     <div class="subpage" data-sub="send" data-title="Review, approve and send">
       <div class="ladder">
         <div class="step"><b>1 · Estimate</b><span>TDE: scope, hours, BOM, risks, with the sources.</span></div>
-        <div class="step"><b>2 · Technical review</b><span>TE and a senior TDE: is anything missing or too optimistic?</span></div>
+        <div class="step"><b>2 · Technical review</b><span>A senior TDE and HPS: is anything missing or too optimistic?</span></div>
         <div class="step"><b>3 · Cost and margin</b><span>Program manager and finance roll up cost and set the price.</span></div>
         <div class="step"><b>4 · Approval</b><span>Management, within the approval limits for that value.</span></div>
         <div class="step"><b>5 · Send</b><span>Sales or the program manager, as PDF, with the proposal.</span></div>
@@ -1086,20 +1086,21 @@ Best regards,
 
     <div class="subpage" data-sub="raci" data-title="Who does what after the PO">
       <div class="table-wrap"><table class="raci-table">
-        <thead><tr><th>Activity</th><th class="c">TDE</th><th class="c">TE</th><th class="c">Program mgr</th><th class="c">Purchasing</th><th class="c">Technician</th><th class="c">MFG</th><th class="c">Customer</th></tr></thead>
+        <thead><tr><th>Activity</th><th class="c">TDE</th><th class="c">HPS</th><th class="c">TE</th><th class="c">Program mgr</th><th class="c">Purchasing</th><th class="c">Technician</th><th class="c">MFG</th><th class="c">Customer</th></tr></thead>
         <tbody>
-          <tr><td>Schedule, status and reporting</td><td class="c"><span class="raci R">R</span></td><td class="c"><span class="raci">I</span></td><td class="c"><span class="raci A">A</span></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci">I</span></td><td class="c"><span class="raci">I</span></td></tr>
-          <tr><td>Test specification and limits</td><td class="c"><span class="raci R">R</span></td><td class="c"><span class="raci A">A</span></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci">C</span></td></tr>
-          <tr><td>Tester hardware and software design</td><td class="c"><span class="raci AR">AR</span></td><td class="c"><span class="raci">C</span></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci">C</span></td><td class="c"></td></tr>
-          <tr><td>Buying material, tracking deliveries</td><td class="c"><span class="raci">C</span></td><td class="c"></td><td class="c"><span class="raci A">A</span></td><td class="c"><span class="raci R">R</span></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
-          <tr><td>Rack build and wiring</td><td class="c"><span class="raci A">A</span></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci R">R</span></td><td class="c"></td><td class="c"></td></tr>
-          <tr><td>Build verification and debug</td><td class="c"><span class="raci AR">AR</span></td><td class="c"><span class="raci">C</span></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci R">R</span></td><td class="c"></td><td class="c"></td></tr>
-          <tr><td>FAT</td><td class="c"><span class="raci R">R</span></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci A">A</span></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci">I</span></td><td class="c"><span class="raci">C</span></td></tr>
-          <tr><td>Installation and SAT</td><td class="c"><span class="raci R">R</span></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci A">A</span></td><td class="c"></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci">C</span></td></tr>
-          <tr><td>Training and handover</td><td class="c"><span class="raci AR">AR</span></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci">I</span></td><td class="c"></td><td class="c"><span class="raci">I</span></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci">I</span></td></tr>
+          <tr><td>Schedule, status and reporting</td><td class="c"><span class="raci R">R</span></td><td class="c"><span class="raci">I</span></td><td class="c"></td><td class="c"><span class="raci A">A</span></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci">I</span></td><td class="c"><span class="raci">I</span></td></tr>
+          <tr><td>Test specification, coverage and limits</td><td class="c"><span class="raci AR">AR</span></td><td class="c"><span class="raci R">R</span></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci">C</span></td></tr>
+          <tr><td>Tester hardware and software design</td><td class="c"><span class="raci AR">AR</span></td><td class="c"><span class="raci">C</span></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci">C</span></td><td class="c"></td></tr>
+          <tr><td>Buying material, tracking deliveries</td><td class="c"><span class="raci">C</span></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci A">A</span></td><td class="c"><span class="raci R">R</span></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+          <tr><td>Rack build and wiring</td><td class="c"><span class="raci A">A</span></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci R">R</span></td><td class="c"></td><td class="c"></td></tr>
+          <tr><td>Tester bring-up and debug</td><td class="c"><span class="raci AR">AR</span></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci R">R</span></td><td class="c"></td><td class="c"></td></tr>
+          <tr><td>Validation of the tester with the UUT</td><td class="c"><span class="raci R">R</span></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci AR">AR</span></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci">I</span></td><td class="c"><span class="raci">C</span></td></tr>
+          <tr><td>FAT</td><td class="c"><span class="raci R">R</span></td><td class="c"></td><td class="c"><span class="raci R">R</span></td><td class="c"><span class="raci A">A</span></td><td class="c"></td><td class="c"></td><td class="c"><span class="raci">I</span></td><td class="c"><span class="raci">C</span></td></tr>
+          <tr><td>Installation and SAT</td><td class="c"><span class="raci R">R</span></td><td class="c"></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci A">A</span></td><td class="c"></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci">C</span></td></tr>
+          <tr><td>Training and handover</td><td class="c"><span class="raci AR">AR</span></td><td class="c"></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci">I</span></td><td class="c"></td><td class="c"><span class="raci">I</span></td><td class="c"><span class="raci">C</span></td><td class="c"><span class="raci">I</span></td></tr>
         </tbody>
       </table></div>
-      <p class="tag"><b>R</b> responsible · <b>A</b> accountable · <b>C</b> consulted · <b>I</b> informed. A typical split for illustration. Agree the real one at kickoff and put it in the minutes.</p>
+      <p class="tag"><b>R</b> responsible · <b>A</b> accountable · <b>C</b> consulted · <b>I</b> informed. TDE and HPS decide what the test covers. TE joins to validate the tester with the UUT. A typical split for illustration: agree the real one at kickoff and put it in the minutes.</p>
     </div>
 
     <div class="subpage" data-sub="gates" data-title="Design reviews and gates">
@@ -1108,9 +1109,10 @@ Best regards,
         <thead><tr><th>Gate</th><th>When</th><th>Entry criteria</th><th>Decision and output</th></tr></thead>
         <tbody>
           <tr><td><b>Kickoff</b></td><td>PO received</td><td>PO checked against the quotation, team named</td><td>Agreed scope, baseline schedule, RACI</td></tr>
-          <tr><td><b>Concept review</b></td><td>Week 1 – 2</td><td>Requirements captured, strategy and block diagram drafted</td><td>Strategy and concept approved by TE (and the customer)</td></tr>
+          <tr><td><b>Concept review</b></td><td>Week 1 – 2</td><td>Requirements captured, strategy and block diagram drafted</td><td>Strategy, coverage and concept agreed by TDE and HPS (and the customer)</td></tr>
           <tr><td><b>Critical design review (CDR)</b></td><td>Before fabrication</td><td>Schematics, fixture drawings, BOM, wiring package, software architecture, safety concept</td><td>Design frozen and released for fabrication. Later changes go through change control</td></tr>
-          <tr><td><b>Test readiness review</b></td><td>Before FAT</td><td>Debug done, golden units run, FAT procedure written</td><td>FAT procedure agreed with the customer, date confirmed</td></tr>
+          <tr><td><b>Validation with TE</b></td><td>After bring-up and debug</td><td>Tester verified, golden and known-bad UUTs available, validation plan written</td><td>TE validates the tester with the UUT: verdicts, correlation, GR&amp;R, cycle time</td></tr>
+          <tr><td><b>Test readiness review</b></td><td>Before FAT</td><td>Validation passed, FAT procedure written</td><td>FAT procedure agreed with the customer, date confirmed</td></tr>
           <tr><td><b>FAT</b></td><td>End of the build</td><td>Readiness review passed</td><td>FAT report and punch list, permission to ship</td></tr>
           <tr><td><b>SAT</b></td><td>After installation</td><td>Station installed and connected at the line</td><td>SAT report, customer acceptance, warranty starts</td></tr>
           <tr><td><b>Handover and close</b></td><td>After the NPI builds</td><td>SAT signed, documents complete, training done</td><td>MFG owns the tester, lessons learned recorded</td></tr>
@@ -1182,7 +1184,7 @@ Help        Purchasing: expedite DMM order 4500123</code></pre>
           <tr><td><b>Where</b></td><td>Our lab, before shipping</td><td>The production line where the tester will run</td></tr>
           <tr><td><b>Proves</b></td><td>The tester meets the specification: functions, verdicts, cycle time, measurement capability, safety</td><td>It still works after shipping, in the real environment, with the line's power, network and MES</td></tr>
           <tr><td><b>Typical content</b></td><td>Golden and known-bad units, fault injection, repeatability runs, safety functions, document review</td><td>Re-run of key FAT tests, run-at-rate on real units, MES upload, operator training</td></tr>
-          <tr><td><b>Signed by</b></td><td>The customer (present or remote) and the TDE</td><td>The customer or MFG</td></tr>
+          <tr><td><b>Signed by</b></td><td>The customer (present or remote), the TDE, and TE for the validation results</td><td>The customer or MFG</td></tr>
           <tr><td><b>Output</b></td><td>FAT report, punch list, permission to ship</td><td>SAT report, acceptance, start of the warranty</td></tr>
         </tbody>
       </table></div>
@@ -1234,7 +1236,7 @@ Help        Purchasing: expedite DMM order 4500123</code></pre>
           <tr><td><b>Data</b></td><td>Every result is recorded and uploaded</td><td>All units of the run in MES with the right versions</td></tr>
         </tbody>
       </table></div>
-      <p class="tag">Example targets only. The real numbers come from the program, the customer and TE. See <a href="#measurement">Measurement, yield and line debug</a> for GR&amp;R, Cpk and guardbands.</p>
+      <p class="tag">Example targets only. The real numbers come from the program and the customer, and TE confirms them when it validates the tester with the UUT. See <a href="#measurement">Measurement, yield and line debug</a> for GR&amp;R, Cpk and guardbands.</p>
     </div>
 
     <div class="subpage" data-sub="package" data-title="The handover package">
@@ -1242,7 +1244,7 @@ Help        Purchasing: expedite DMM order 4500123</code></pre>
         <ul class="checklist">
           <li><b>The tester,</b> installed and accepted at the line</li>
           <li><b>Released software,</b> with a version number and a checksum</li>
-          <li><b>Limits file,</b> versioned and reviewed with TE</li>
+          <li><b>Limits file,</b> versioned, and confirmed in validation with TE</li>
           <li><b>Work instruction</b> for operators</li>
           <li><b>Training</b> for operators and technicians, with records</li>
           <li><b>Maintenance and calibration plan,</b> with intervals</li>
@@ -1262,11 +1264,11 @@ Help        Purchasing: expedite DMM order 4500123</code></pre>
         <div class="table-wrap"><table>
           <thead><tr><th>Document</th><th>What it says</th><th>Reviewed with</th></tr></thead>
           <tbody>
-            <tr><td><b>Test strategy and plan</b></td><td>Stages, coverage (PCOLA / SOQ map), risks</td><td>TE, customer</td></tr>
+            <tr><td><b>Test strategy and plan</b></td><td>Stages, coverage (PCOLA / SOQ map), risks</td><td>HPS, customer</td></tr>
             <tr><td><b>DFT report</b></td><td>Testability findings and requests, with owners</td><td>HPS or the customer's design team</td></tr>
-            <tr><td><b>Tester design specification</b></td><td>Hardware and software architecture, interfaces, safety</td><td>TE, MFG, EHS</td></tr>
+            <tr><td><b>Tester design specification</b></td><td>Hardware and software architecture, interfaces, safety</td><td>HPS, MFG, EHS</td></tr>
             <tr><td><b>Fixture drawings and BOM</b></td><td>Mechanics, contacts, wiring</td><td>The fabricator, MFG</td></tr>
-            <tr><td><b>Test specification</b></td><td>Every step, measurement, unit and limit, with the reason for the limit</td><td>TE, customer</td></tr>
+            <tr><td><b>Test specification</b></td><td>Every step, measurement, unit and limit, with the reason for the limit</td><td>HPS, customer</td></tr>
             <tr><td><b>Work instruction</b></td><td>Operator steps, what to do on pass and fail, safety</td><td>MFG</td></tr>
             <tr><td><b>Calibration and maintenance plan</b></td><td>What, how often, who, which spares</td><td>MFG, quality</td></tr>
             <tr><td><b>Correlation and GR&amp;R report</b></td><td>Evidence that the measurement is capable</td><td>TE, customer</td></tr>
@@ -1463,7 +1465,7 @@ Help        Purchasing: expedite DMM order 4500123</code></pre>
           <li><b>Safety.</b> E-stop, interlocks on guards, current limits before power-on, ESD protection, and a clear safe state.</li>
           <li><b>Serviceability.</b> Label connectors, add a fixture ID so cycles and calibration can be tracked, keep spares.</li>
         </ul>
-        <p><b>Typical build flow:</b> design, review with TE and MFG, order parts (start long-lead items early), machine and assemble, bring up, debug with golden units, document.</p>
+        <p><b>Typical build flow:</b> design, review with HPS and MFG, order parts (start long-lead items early), machine and assemble, bring up, debug with golden units, document.</p>
       
     </div>
     <div class="subpage" data-sub="fixtures" data-title="Fixture design in depth">
@@ -1551,7 +1553,7 @@ Help        Purchasing: expedite DMM order 4500123</code></pre>
             <tr><td><b>Guardband</b></td><td>Tightening the test limit inside the spec limit by the measurement uncertainty</td><td>Stops marginal units from escaping, at the price of some false fails</td></tr>
             <tr><td><b>Cpk</b></td><td>How many 3-sigma widths fit between the mean and the nearest limit</td><td>One number for "is this measurement capable". Many programs ask for 1.33 or more.</td></tr>
           </tbody></table></div>
-        <p>Set limits from <b>measured data</b> on real units, not from the datasheet alone, and review them with TE. See example 4 for a Cpk calculation.</p>
+        <p>Set limits from <b>measured data</b> on real units, not from the datasheet alone, and confirm them with TE when the tester is validated with the UUT. See example 4 for a Cpk calculation.</p>
       
     </div>
     <div class="subpage" data-sub="guardband" data-title="Limits and guardband">
@@ -1572,7 +1574,7 @@ Help        Purchasing: expedite DMM order 4500123</code></pre>
           <div><span>Uncertainty ratio</span><b id="gb-tur">–</b><small>half the window / uncertainty</small></div>
         </div>
       </div>
-      <div class="note"><p><b>The ratio</b> compares the tolerance with the uncertainty. A common rule of thumb is 4:1 or better. Below that, guardbanding eats a large part of the window, and the better fix is a more accurate measurement, not tighter limits. Set limits from <b>measured data</b> as well, and review them with TE and the customer.</p></div>
+      <div class="note"><p><b>The ratio</b> compares the tolerance with the uncertainty. A common rule of thumb is 4:1 or better. Below that, guardbanding eats a large part of the window, and the better fix is a more accurate measurement, not tighter limits. Set limits from <b>measured data</b> as well, agree them with HPS and the customer, and confirm them in validation with TE.</p></div>
     </div>
     <div class="subpage" data-sub="yield" data-title="Yield and the numbers that matter">
       <p class="tag part-hint">Including the retest trap.</p>
@@ -1665,7 +1667,8 @@ Help        Purchasing: expedite DMM order 4500123</code></pre>
         <tbody>
           <tr><td><b>TDE</b></td><td>Designs the rack, writes the wiring diagrams and instructions, plans the verification, accepts the result</td><td>The design and the instructions</td></tr>
           <tr><td><b>Technician</b></td><td>Builds to the instruction, records what was done, raises every unclear or unsafe point</td><td>The quality of the build. Has the right to stop work</td></tr>
-          <tr><td><b>TE</b></td><td>Says what the tester must prove, reviews the design and the acceptance results</td><td>The test requirements</td></tr>
+          <tr><td><b>HPS</b></td><td>Reviews the design against the product: interfaces, DFT, what the test must cover</td><td>The product design</td></tr>
+          <tr><td><b>TE</b></td><td>Validates the finished tester with the UUT: golden and known-bad units, correlation, repeatability</td><td>The validation result</td></tr>
           <tr><td><b>EHS and quality</b></td><td>Reviews safety, the quality system and calibration</td><td>Compliance</td></tr>
           <tr><td><b>MFG and maintenance</b></td><td>Receives the rack, gets trained, signs off</td><td>Running and maintaining it afterwards</td></tr>
         </tbody>
@@ -2426,7 +2429,7 @@ curl -sk -u "$BMC_USER:$BMC_PASS" "https://$BMC/redfish/v1/UpdateService/Firmwar
       <ul>
         <li><b>One baseline per SKU,</b> chosen by the serial number or the route, not by the operator.</li>
         <li><b>Changes only through change control.</b> A new firmware release means an ECO, a new baseline version and a record of why.</li>
-        <li><b>Review the baseline with TE and the customer.</b> A wrong baseline passes every unit that is wrong in the same way.</li>
+        <li><b>Review the baseline with HPS and the customer.</b> A wrong baseline passes every unit that is wrong in the same way.</li>
         <li><b>Record what you found,</b> not only the verdict, so a later question can be answered from the data.</li>
         <li><b>Identity is separate.</b> Serial numbers and MACs differ per unit, so they are checked for format and uniqueness (example 12), not for equality.</li>
       </ul>
@@ -2555,7 +2558,7 @@ curl -sk -u "$BMC_USER:$BMC_PASS" "https://$BMC/redfish/v1/UpdateService/Firmwar
           <li>A checksum of the released package, checked by the station at start</li>
           <li>Release notes: changes, reason, known issues, how to roll back</li>
           <li>Verified on a station with golden and known-bad units</li>
-          <li>Approved by TE (and the customer where required)</li>
+          <li>Validated on the UUT with TE, and approved by the customer where required</li>
         </ul></div>
       </div>
       <div class="card">
@@ -2564,7 +2567,7 @@ curl -sk -u "$BMC_USER:$BMC_PASS" "https://$BMC/redfish/v1/UpdateService/Firmwar
           <li>Change request approved and linked</li>
           <li>Code reviewed and merged</li>
           <li>All unit tests pass</li>
-          <li>Limits file reviewed with TE</li>
+          <li>Limits file reviewed, and confirmed with TE on real UUTs</li>
           <li>Golden unit passes, known-bad unit fails at the right step</li>
           <li>Fault injection gives ERROR, never PASS</li>
           <li>Version and checksum recorded</li>

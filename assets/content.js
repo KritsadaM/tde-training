@@ -9,6 +9,7 @@ const sharedBuild = {
   body: `<p>The tester is fabricated and proven before the line depends on it.</p>
     <ul><li><b>TDE does:</b> make the fixture, interface board and harness, load the software, bring it up with <em>golden units</em> (known good) and <em>known-bad units</em>.</li>
     <li><b>Proves:</b> measurements are accurate and repeatable, the test catches the defects it should, and test time fits the line.</li>
+    <li><b>With:</b> TE, who validates the tester together with the UUT.</li>
     <li><b>Watch out:</b> long-lead parts (instruments, pogo-pin blocks). Order them at concept time.</li></ul>`,
 };
 const sharedDeliver = {
@@ -31,14 +32,14 @@ TDE.DIAGRAMS = {
       title: "CM: design review for test (DFT)",
       body: `<p>Look at the design through a tester's eyes while changes are still cheap.</p>
         <ul><li><b>Check:</b> test points and probe access, JTAG / programming headers, connectors, power-up sequence, board size and clearances for a fixture.</li>
-        <li><b>With:</b> TE and the customer's engineers.</li>
+        <li><b>With:</b> the customer's design engineers.</li>
         <li><b>Output:</b> a list of testability issues and requests, ranked by impact.</li></ul>`,
     },
     "cm-develop": {
       title: "CM: develop the test solution",
       body: `<p>Depends on the program: <b>software</b> on a platform that already exists, <b>hardware</b> (fixture, interface board), or both.</p>
         <ul><li><b>Output:</b> test specification, tester design, test software with a simulator so it can be developed and unit-tested without hardware.</li>
-        <li><b>Review with:</b> TE and MFG before fabrication.</li></ul>`,
+        <li><b>Review with:</b> the customer and MFG before fabrication.</li></ul>`,
     },
     "cm-build": sharedBuild,
     "cm-deliver": sharedDeliver,
@@ -50,7 +51,7 @@ TDE.DIAGRAMS = {
     },
     "jdm-proposal": {
       title: "JDM: proposal",
-      body: `<p>TDE, <b>HPS</b> (Hardware Platform Solution) and <b>TE</b> (Test Engineer) prepare a proposal for the customer.</p>
+      body: `<p>TDE and <b>HPS</b> (Hardware Platform Solution, the design team) prepare a proposal for the customer.</p>
         <ul><li><b>Show:</b> the technology we propose, our way of working, and what makes our capability special (reusable tester platforms, local fabrication, experience).</li>
         <li><b>Include:</b> scope, plan, cost, risks, assumptions, support model.</li>
         <li>See <em>Deep dive → Writing a JDM proposal</em>.</li></ul>`,
@@ -58,7 +59,7 @@ TDE.DIAGRAMS = {
     "jdm-design": {
       title: "JDM: joint design (platform + test)",
       body: `<p>Because we help design the product, testability is built in rather than reviewed afterwards.</p>
-        <ul><li><b>HPS</b> designs the hardware platform, <b>TE</b> defines test coverage, <b>TDE</b> designs the tester concept in parallel.</li>
+        <ul><li><b>HPS</b> designs the hardware platform and <b>TDE</b> designs the tester concept in parallel. They agree the test coverage together.</li>
         <li><b>Result:</b> test points, access and firmware hooks are in the first board spin.</li></ul>`,
     },
     "jdm-build": sharedBuild,
@@ -70,7 +71,7 @@ TDE.DIAGRAMS = {
       title: "Proposal (JDM)",
       body: `<p>Win the work. Describe how we will test the product and why our approach is the right one.</p>
         <ul><li><b>Output:</b> proposal with technology, capability, scope, plan, cost and risks.</li>
-        <li><b>With:</b> HPS, TE, customer.</li><li>CM programs usually start at the next phase.</li></ul>`,
+        <li><b>With:</b> HPS, customer.</li><li>CM programs usually start at the next phase.</li></ul>`,
     },
     concept: {
       title: "Concept and DFT",
@@ -83,7 +84,7 @@ TDE.DIAGRAMS = {
       body: `<p>Detailed design of the whole test solution.</p>
         <ul><li><b>Hardware:</b> fixture mechanics, interface board schematic and layout, harness, instrument selection, safety.</li>
         <li><b>Software:</b> architecture, drivers, sequence, limits file, logging and MES interface.</li>
-        <li><b>Review with:</b> TE, HPS, MFG.</li></ul>`,
+        <li><b>Review with:</b> HPS, MFG.</li></ul>`,
     },
     fabricate: {
       title: "Fabricate",
@@ -96,7 +97,7 @@ TDE.DIAGRAMS = {
       body: `<p>Prove the tester before trusting it.</p>
         <ul><li>Run golden units and known-bad units. Check accuracy, repeatability and test time.</li>
         <li>Set test limits (with guardband) from real measurements, not only from the datasheet.</li>
-        <li><b>Exit criteria</b> are agreed in advance with TE and MFG.</li></ul>`,
+        <li><b>TE joins here</b> to validate the tester together with the UUT. Exit criteria are agreed in advance with TE and MFG.</li></ul>`,
     },
     npi: {
       title: "NPI / pilot builds",
@@ -444,7 +445,7 @@ TDE.DIAGRAMS = {
       title: "Design package",
       body: `<p>Everything the build needs, released and reviewed <em>before</em> parts are ordered.</p>
         <ul><li><b>Contains:</b> system block diagram, schematics, wire list, cable and harness drawings, general arrangement (where each item sits in the rack), BOM, power budget.</li>
-        <li><b>Reviewed with:</b> TE (does it prove what must be proven?), EHS (is it safe?), the technician who will build it (can it be built?).</li>
+        <li><b>Reviewed with:</b> HPS (does it fit the product and cover what must be tested?), EHS (is it safe?), the technician who will build it (can it be built?).</li>
         <li><b>Output:</b> a released revision. The build uses that revision and no other.</li></ul>`,
     },
     kitting: {
@@ -513,7 +514,7 @@ TDE.DIAGRAMS = {
     concept: {
       title: "Concept and estimate",
       body: `<p>Design just enough of the tester to price it honestly.</p>
-        <ul><li><b>TDE does:</b> test strategy with TE, block diagram, instrument list, fixture type, station count from the takt time, software platform. Effort per work package, material from vendor quotes.</li>
+        <ul><li><b>TDE does:</b> test strategy and coverage with HPS, block diagram, instrument list, fixture type, station count from the takt time, software platform. Effort per work package, material from vendor quotes.</li>
         <li><b>Output:</b> concept, BOM with prices and lead times, hours per work package, schedule from PO to SAT.</li>
         <li><b>Watch out:</b> debug time, spares, on-site support and long-lead parts are the usual misses.</li></ul>`,
     },
@@ -5256,8 +5257,8 @@ TDE.GLOSSARY = [
     intro: "Who is who in a program.",
     items: [
       ["TDE", "Test Development Engineer", "Designs, builds and delivers the production test solution (hardware and software), then helps sustain it."],
-      ["TE", "Test Engineer", "Defines test requirements and coverage and supports testing. The TDE's closest partner."],
-      ["HPS", "Hardware Platform Solution", "The team that works on the hardware platform in JDM programs. Co-writes proposals with the TDE."],
+      ["TE", "Test Engineer", "Joins in NPI when the tester and the UUT are validated together: golden units, correlation, repeatability, acceptance before MFG."],
+      ["HPS", "Hardware Platform Solution", "The hardware design team. The TDE's main partner during NPI: design reviews, DFT and test coverage. Co-writes proposals with the TDE in JDM."],
       ["MFG", "Manufacturing", "The line and the people who run the tester every day. The TDE's \"customer\" after handover."],
       ["QA / QE", "Quality Assurance / Quality Engineer", "Owns quality systems, audits and customer quality issues."],
       ["ME / PE", "Manufacturing Engineer / Process Engineer", "Owns the line process, such as SMT settings, throughput and yield improvement."],
