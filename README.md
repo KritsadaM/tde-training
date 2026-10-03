@@ -1,13 +1,12 @@
 # TDE Training
 
-Interactive training site for **Test Development Engineers (TDE)** in electronics manufacturing at Celestica Thailand. It covers:
+Interactive training site for **Test Development Engineers (TDE)** in electronics manufacturing at Celestica Thailand. It is organised in five sessions:
 
-* the role, and who a TDE works with (customer, HPS, TE, MFG)
-* the two program types: **CM** (Contract Manufacturing) and **JDM** (Joint Development Manufacturing)
-* the life of a tester: proposal, concept, design, fabricate, debug, **NPI**, handover to MFG, **sustaining**
-* interactive diagrams: engagement flows, phases, test stages on the line, anatomy of a tester
-* deep dives: test strategy and coverage, tester hardware, test software, measurement quality, yield, writing a JDM proposal, handover and sustaining
-* nine Python examples and eight graded exercises that run in the browser
+* **Overview:** the role and who a TDE works with (customer, HPS, TE, MFG), **CM** vs **JDM** programs, the life of a tester (proposal, concept, design, fabricate, debug, **NPI**, handover, **sustaining**), and where test sits on the line
+* **1 · Project management:** RFQ to purchase order, the design proposal, capacity and cost, the **quotation** (with a quote builder), running the project (schedule, RACI, gates, status, risks, change control, FAT and SAT), handover and sustaining
+* **2 · Hardware:** test strategy and DFT, tester hardware and fixtures, measurement, yield and line debug, rack fabrication, OCP racks, cooling and node test
+* **3 · Software:** test software architecture (data and MES, releases), the test sequencer, a Python guide with examples and practice
+* **4 · Practice and reference:** test-engineering examples and graded exercises that run in the browser, and a glossary
 
 It is a plain static site (HTML, CSS, JS). There is no build step and nothing to install.
 
@@ -78,24 +77,25 @@ Python practice (Software section): `with_item` / `copy_grid` / `merge_limits` (
 
 ## Navigation
 
-A collapsible **left sidebar** (a drawer on phones) groups the course as **category > page > sub-page** and has full-text search (press `/` to focus it). Everything is one HTML document routed by hash: `#page` or `#page/sub-page`, for example `#cooling/compare`, `#examples/cpk`, `#practice/leak-decay`, `#glossary/hardware`.
+A collapsible **left sidebar** (a drawer on phones) lists the sessions and their **main pages only**, and has full-text search (press `/` to focus it). Each page shows all of its content in one scroll: its parts get a numbered heading and an **On this page** list at the top, and **Previous / Next** at the bottom walk the pages in session order. Everything is one HTML document routed by hash: `#page` opens a page at the top, `#page/part` scrolls to a part, for example `#quotation/builder`, `#cooling/compare`, `#examples/cpk`, `#practice/leak-decay`, `#glossary/hardware`.
 
-* **Categories and page names:** edit `CATEGORIES` and `PAGE_LABELS` in `assets/app.js`.
-* **Sub-pages are created automatically:**
-  * a page that already contains `<div class="subpage" data-sub="id" data-title="Title">` blocks uses them;
-  * `<details>` accordions (Deep dive) become one sub-page each;
-  * any other page is split at each `<h3>`; content before the first `<h3>` becomes "Overview";
+* **Sessions and page names:** edit `CATEGORIES` and `PAGE_LABELS` in `assets/app.js`. The order there is the reading order, and the kicker above each page title ("Session 1 · Project management · page 2 of 6") is written from it.
+* **Old links** such as `#deep-dive`, `#tools/fixture` or `#lifecycle` are redirected by `ALIASES` in `assets/app.js`.
+* **Parts of a page are found automatically:**
+  * `<div class="subpage" data-sub="id" data-title="Title">` blocks that are direct children of the page's `.container` are parts (prefer this for new content);
+  * on a page without them, each `<h3>` starts a part;
+  * what comes before the first part is the page intro;
   * Examples, Practice and Glossary list their items from `assets/content.js`.
-* **Adding a page:** add a `<section class="block view" id="my-page">` in `index.html` (keep the order in the file the same as the order in `CATEGORIES`), then add its id and label to `CATEGORIES` / `PAGE_LABELS`.
-* Do not use the CSS class `sub` for anything new: the hero subtitle already uses it. Sub-pages use `subpage`.
+* **Adding a page:** add a `<section class="block view" id="my-page">` in `index.html` (keep the file in the same order as `CATEGORIES`), then add its id to a session in `CATEGORIES`, a label to `PAGE_LABELS`, and a link on the Home page's session card.
+* Do not use the CSS class `sub` for anything new: the hero subtitle already uses it. Parts use `subpage`.
 
 ## Sections, examples and practice sets
 
-The sidebar groups pages into categories (`CATEGORIES` in `assets/app.js`). The **Software** category holds the Python guide, Python examples, Python practice and the Test sequencer. New software documents (for example ISS3 or Robot Framework) belong there too:
+The sidebar groups pages into sessions (`CATEGORIES` in `assets/app.js`). The **Software** session (`id: "sw"`) holds the test software architecture, the Test sequencer, the Python guide, Python examples and Python practice. New software documents (for example ISS3 or Robot Framework) belong there too:
 
-1. Add a `<section class="block view" id="my-page">` to `index.html`, in the same position as in `CATEGORIES`. The order of the sections in the file must match the order in `CATEGORIES`.
-2. Add the id to `CATEGORIES.software.pages` and a label to `PAGE_LABELS` in `assets/app.js`.
-3. Renumber the `kicker` labels and the course map on the Home page if you want them in order.
+1. Add a `<section class="block view" id="my-page">` to `index.html`, in the same position as in `CATEGORIES`.
+2. Add the id to the `sw` session's `pages` in `CATEGORIES` and a label to `PAGE_LABELS` in `assets/app.js`.
+3. Add it to the Software card in the Home page's session list. The kickers number themselves.
 
 **Examples and practice are separate pages and separate data sets.** Test-engineering ones are `TDE.EXAMPLES` and `TDE.EXERCISES`, Python ones are `TDE.PY_EXAMPLES` and `TDE.PY_EXERCISES` (all in `assets/content.js`). To add another set (say for Robot Framework):
 

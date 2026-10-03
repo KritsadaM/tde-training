@@ -701,6 +701,46 @@
     paint();
   }
 
+  /* ------------------------------------------------------------ quotation: quote builder */
+  function buildQuote() {
+    if (!$("#q-calc")) return;
+    const num = (id) => parseFloat($(`#${id}`).value);
+    const set = (id, text) => { $(`#${id}`).textContent = text; };
+    const fmt = (n, d = 0) => n.toLocaleString("en-US", { maximumFractionDigits: d, minimumFractionDigits: d });
+    const IN = ["hw", "sw", "mech", "debug", "pm", "rate", "travel", "n", "mat", "build", "tech", "lic", "cont", "margin", "pay1", "pay2"];
+    const BIG = ["price", "nre", "rec", "cost", "profit", "extra", "inv1", "inv2", "inv3"];
+    const SMALL = ["per", "hours", "rec1", "contv", "markup", "inv1p", "inv2p", "inv3p"];
+
+    function quote() {
+      const v = Object.fromEntries(IN.map((k) => [k, num(`q-${k}`)]));
+      const m = v.margin / 100, c = v.cont / 100, p1 = v.pay1 / 100, p2 = v.pay2 / 100;
+      if (!IN.every((k) => v[k] >= 0) || !Number.isInteger(v.n) || v.n < 1 || m >= 1 || p1 + p2 > 1) {
+        BIG.forEach((k) => set(`q-${k}`, "–")); SMALL.forEach((k) => set(`q-${k}`, ""));
+        set("q-check", "Check the inputs: a whole number of stations (1 or more), a margin below 100%, and payments at PO and FAT that add up to 100% or less.");
+        return;
+      }
+      const hours = v.hw + v.sw + v.mech + v.debug + v.pm;
+      const nre = hours * v.rate + v.travel;                       // one-time
+      const perStation = v.mat + v.build * v.tech + v.lic;         // repeats for every station
+      const rec = perStation * v.n;
+      const cost = (nre + rec) * (1 + c);
+      const price = cost / (1 - m);                                // margin is a share of the price
+      const profit = price - cost;
+      set("q-price", fmt(price)); set("q-per", `${fmt(price / v.n)} per station on average`);
+      set("q-nre", fmt(nre)); set("q-hours", `${fmt(hours)} engineering hours`);
+      set("q-rec", fmt(rec)); set("q-rec1", `${fmt(perStation)} per station`);
+      set("q-cost", fmt(cost)); set("q-contv", `includes ${fmt((nre + rec) * c)} contingency`);
+      set("q-profit", fmt(profit)); set("q-markup", cost > 0 ? `a markup of ${fmt((profit / cost) * 100, 1)}% on cost` : "");
+      set("q-extra", fmt((perStation * (1 + c)) / (1 - m)));
+      [p1, p2, 1 - p1 - p2].forEach((p, i) => {
+        set(`q-inv${i + 1}`, fmt(price * p)); set(`q-inv${i + 1}p`, `${fmt(p * 100)}% of the price`);
+      });
+      set("q-check", "");
+    }
+    IN.forEach((k) => $(`#q-${k}`).addEventListener("input", quote));
+    quote();
+  }
+
   /* ------------------------------------------------------------ theme + nav */
   function setupTheme() {
     const root = document.documentElement;
@@ -717,21 +757,33 @@
   }
 
   /* ------------------------------------------------------------ navigation
-     Left sidebar: category > page > sub-page, with full-text search.
-     Every top-level <section class="view"> is a page. Long pages are split
-     into sub-pages (#page/sub). One document, so the Python runtime stays
-     loaded when you move around. */
+     Left sidebar: session > page, with full-text search. Every top-level
+     <section class="view"> is a page that shows all of its content in one
+     scroll. Its parts (".subpage" blocks, or groups that start at an <h3>)
+     get a numbered heading and an "On this page" list, and can be linked as
+     #page/part. Previous / Next at the bottom walk the pages in session
+     order. One document, so the Python runtime stays loaded when you move. */
   const CATEGORIES = [
-    { id: "start", title: "Start", pages: ["top"] },
-    { id: "job", title: "The job", pages: ["role", "models", "lifecycle"] },
-    { id: "systems", title: "Test systems", pages: ["diagrams", "deep-dive", "planning", "tools"] },
-    { id: "build", title: "Build and fabricate", pages: ["fabrication"] },
-    { id: "ocp", title: "OCP rack and cooling", pages: ["ocp", "cooling", "servertest"] },
-    { id: "software", title: "Software", pages: ["py-guide", "py-examples", "py-practice", "sequencer"] },
-    { id: "practice", title: "TDE examples and practice", pages: ["examples", "practice"] },
-    { id: "ref", title: "Reference", pages: ["glossary"] },
+    { id: "overview", title: "Overview", pages: ["top", "role", "models", "diagrams"] },
+    { id: "pm", num: 1, title: "Project management", pages: ["rfq", "proposal", "planning", "quotation", "execution", "handover"] },
+    { id: "hw", num: 2, title: "Hardware", pages: ["strategy", "tester-hw", "measurement", "fabrication", "ocp", "cooling", "servertest"] },
+    { id: "sw", num: 3, title: "Software", pages: ["test-sw", "sequencer", "py-guide", "py-examples", "py-practice"] },
+    { id: "practice", num: 4, title: "Practice and reference", pages: ["examples", "practice", "glossary"] },
   ];
-  const PAGE_LABELS = { top: "Home", role: "The role", models: "CM vs JDM", lifecycle: "NPI to sustaining", diagrams: "Diagrams", "deep-dive": "Deep dive", ocp: "OCP rack", cooling: "Cooling", sequencer: "Test sequencer", planning: "Capacity and cost", tools: "Strategy tools", fabrication: "Fabricate a rack", servertest: "Node test", examples: "Examples", practice: "Practice", "py-guide": "Python guide", "py-examples": "Python examples", "py-practice": "Python practice", glossary: "Glossary" };
+  const PAGE_LABELS = {
+    top: "Course overview", role: "The TDE role", models: "CM, JDM and lifecycle", diagrams: "Line and tester",
+    rfq: "RFQ to purchase order", proposal: "Design proposal", planning: "Capacity and cost", quotation: "Quotation", execution: "Run the project", handover: "Handover and sustaining",
+    strategy: "Test strategy and DFT", "tester-hw": "Tester hardware and fixtures", measurement: "Measurement, yield and line debug", fabrication: "Fabricate a rack", ocp: "OCP rack", cooling: "Cooling", servertest: "Node test",
+    "test-sw": "Test software architecture", sequencer: "Test sequencer", "py-guide": "Python guide", "py-examples": "Python examples", "py-practice": "Python practice",
+    examples: "TDE examples", practice: "TDE practice", glossary: "Glossary",
+  };
+  /* links from before the sessions keep working */
+  const ALIASES = {
+    lifecycle: "models/lifecycle", "deep-dive": "strategy", tools: "strategy/coverage",
+    "tools/coverage": "strategy/coverage", "tools/burnin": "strategy/burnin", "tools/guardband": "measurement/guardband", "tools/fixture": "tester-hw/fixture-force",
+  };
+  const catOf = (pid) => CATEGORIES.find((c) => c.pages.includes(pid));
+  const sessionName = (cat) => (cat.num ? `Session ${cat.num} · ${cat.title}` : cat.title);
 
   function setupNavigation() {
     const html = document.documentElement;
@@ -756,54 +808,51 @@
       used.add(slug);
       return slug;
     };
+    const hrefOf = (pid, sub) => `#${pid}${sub ? `/${sub}` : ""}`;
 
-    /* ---- 1. work out the sub-pages of every page */
+    /* ---- 1. the parts of every page, its "On this page" list and its kicker */
     const subsOf = {};
+    const INTRO = ".kicker, h2, .lead, p.tag, .runtime-note";
     views.forEach((v) => {
       const container = v.querySelector(".container");
-      if (!container || v.id === "top") return;
-      let subs = $$(".subpage[data-sub]", v).map((s) => ({ id: s.dataset.sub, title: s.dataset.title, el: s }));
+      const cat = catOf(v.id);
+      const kicker = container && container.querySelector(":scope > .kicker");
+      if (kicker && cat) kicker.textContent = `${sessionName(cat)} · page ${cat.pages.indexOf(v.id) + 1} of ${cat.pages.length}`;
+      if (!container || v.id === "top" || DATA_PAGES[v.id] || v.id === "glossary") return;
 
-      if (!subs.length) {
-        const used = new Set();
-        const kids = [...container.children];
-        const detailsList = kids.filter((k) => k.tagName === "DETAILS");
-        if (detailsList.length) {
-          // each accordion topic becomes its own sub-page
-          subs = detailsList.map((d) => {
-            const summary = d.querySelector("summary");
-            const small = summary.querySelector("small");
-            const hint = small ? small.textContent.trim() : "";
-            const clone = summary.cloneNode(true);
-            const sm = clone.querySelector("small"); if (sm) sm.remove();
-            const title = clone.textContent.trim().replace(/^\d+\s*·\s*/, "");
-            const wrap = el("div", { class: "subpage", "data-sub": slugOf(title, used), "data-title": title },
-              el("h3", {}, title), hint ? el("p", { class: "tag" }, hint) : null, [...d.querySelector(".dd").childNodes]);
-            d.replaceWith(wrap);
-            return { id: wrap.dataset.sub, title, el: wrap };
-          });
-        } else if (!DATA_PAGES[v.id] && v.id !== "glossary") {
-          // split at <h3>: an "Overview" for what comes before the first one
-          let i = 0;
-          while (i < kids.length && kids[i].matches(".kicker, h2, .lead")) i++;
-          const groups = [];
-          let cur = null;
-          kids.slice(i).forEach((k) => {
-            if (k.tagName === "H3") { cur = { title: plain(k.innerHTML), nodes: [k] }; groups.push(cur); }
-            else if (cur) cur.nodes.push(k);
-            else { if (!groups.length || groups[0].title !== "Overview") groups.unshift({ title: "Overview", nodes: [] }); groups[0].nodes.push(k); }
-          });
-          if (groups.length >= 2) {
-            subs = groups.map((g) => {
-              const wrap = el("div", { class: "subpage", "data-sub": slugOf(g.title, used), "data-title": g.title });
-              g.nodes[0].before(wrap);
-              g.nodes.forEach((n) => wrap.append(n));
-              return { id: wrap.dataset.sub, title: g.title, el: wrap };
-            });
-          }
-        }
+      const kids = [...container.children];
+      let i = 0;
+      while (i < kids.length && kids[i].matches(INTRO)) i++;
+      const used = new Set($$(":scope > .subpage[data-sub]", container).map((s) => s.dataset.sub));
+      const parts = [];
+      let cur = null;
+      kids.slice(i).forEach((k) => {
+        if (k.matches(".subpage[data-sub]")) {
+          cur = null;
+          parts.push({ id: k.dataset.sub, title: k.dataset.title, head: esc(k.dataset.title), el: k });
+        } else if (k.tagName === "H3") {
+          // a page without .subpage blocks: each <h3> starts a part, and becomes its heading
+          const title = plain(k.innerHTML);
+          cur = { id: slugOf(title, used), title, head: k.innerHTML };
+          cur.el = el("div", { class: "subpage", "data-sub": cur.id, "data-title": title });
+          k.replaceWith(cur.el);
+          parts.push(cur);
+        } else if (cur) cur.el.append(k);
+      });
+      if (!parts.length) return;
+
+      parts.forEach((p, n) => {
+        p.h = el("h2", { class: "part-title", html: `<span class="pn" aria-hidden="true">${n + 1}</span><span class="pt">${p.head}</span>` });
+        p.h.append(el("a", { class: "part-top", href: hrefOf(v.id), "aria-label": "Back to the top of the page" }, "↑"));
+        p.el.prepend(p.h);
+      });
+      if (parts.length > 1) {
+        const toc = el("nav", { class: "toc", "aria-label": "On this page" },
+          el("span", { class: "toc-label" }, "On this page"),
+          el("ol", {}, parts.map((p, n) => el("li", {}, el("a", { href: hrefOf(v.id, p.id) }, el("span", { "aria-hidden": "true" }, String(n + 1)), p.title)))));
+        if (i > 0) kids[i - 1].after(toc); else container.prepend(toc);
       }
-      if (subs.length) subsOf[v.id] = subs.map((s) => ({ ...s, dom: true, raw: plain(s.el.innerHTML) }));
+      subsOf[v.id] = parts.map((p) => ({ id: p.id, title: p.title, el: p.el, h: p.h, dom: true, raw: plain(p.el.innerHTML) }));
     });
 
     Object.entries(DATA_PAGES).forEach(([pid, [kind, list]]) => {
@@ -815,59 +864,39 @@
     subsOf.glossary = TDE.GLOSSARY.map((g) => ({ id: g.id, title: g.title, raw: `${g.intro} ${g.items.map((it) => plain(it.join(" "))).join(" ")}` }));
     Object.values(subsOf).forEach((list) => list.forEach((s) => (s.text = `${s.title} ${s.raw}`.toLowerCase())));
 
-    /* ---- 2. flat reading order for the Previous / Next buttons */
-    const flat = [];
-    ids.forEach((pid) => {
-      const subs = subsOf[pid];
-      if (subs && subs[0].dom) subs.forEach((s) => flat.push({ pid, sub: s.id, title: s.title }));
-      else flat.push({ pid, sub: undefined, title: PAGE_LABELS[pid] });
-    });
-    const hrefOf = (pid, sub) => `#${pid}${sub ? `/${sub}` : ""}`;
+    /* ---- 2. reading order for Previous / Next: page by page, session by session */
+    const flat = CATEGORIES.flatMap((cat) => cat.pages.filter((pid) => ids.includes(pid)).map((pid) => ({ pid, cat })));
+    views.forEach((v) => (v.querySelector(".container") || v).append(el("nav", { class: "pager", "aria-label": "Previous and next page" })));
 
-    views.forEach((v) => {
-      const container = v.querySelector(".container") || v;
-      container.append(el("nav", { class: "pager", "aria-label": "Previous and next" }));
-      // from the second sub-page on, the heading names the sub-page instead of repeating the page intro
-      if (subsOf[v.id] && subsOf[v.id][0].dom) {
-        const kicker = container.querySelector(".kicker");
-        const h = el("h2", { class: "subhead" });
-        if (kicker) kicker.after(h); else container.prepend(h);
-      }
-    });
-
-    function updatePager(view, pid, sub) {
-      const idx = flat.findIndex((f) => f.pid === pid && f.sub === sub);
-      const item = (f, cls, label) => f && el("a", { class: cls, href: hrefOf(f.pid, f.sub) },
-        el("small", {}, label), el("b", {}, f.title), f.sub ? el("small", { class: "where" }, PAGE_LABELS[f.pid]) : null);
+    function updatePager(view, pid) {
+      const idx = flat.findIndex((f) => f.pid === pid);
+      const here = flat[idx];
+      const item = (f, cls, label) => f && el("a", { class: cls, href: hrefOf(f.pid) },
+        el("small", {}, f.cat !== here.cat ? label.replace(/(Previous|Next)/, "$1 session") : label), el("b", {}, PAGE_LABELS[f.pid]), el("small", { class: "where" }, sessionName(f.cat)));
       $(".pager", view).replaceChildren(...[item(flat[idx - 1], "prev", "← Previous"), item(flat[idx + 1], "next", "Next →")].filter(Boolean));
     }
 
-    /* ---- 3. sidebar tree */
+    /* ---- 3. sidebar tree: sessions and their main pages only */
     let state = { id: "top", sub: undefined };
     const collapsed = new Set(store.get("tde.navCollapsed", []));
+    const solved = (pid) => {
+      const list = DATA_PAGES[pid] && DATA_PAGES[pid][0] === "exercise" ? DATA_PAGES[pid][1] : null;
+      return list && list.length ? el("em", { title: "Exercises solved" }, `${list.filter((e) => progress.done[e.id]).length}/${list.length}`) : null;
+    };
 
     function renderTree() {
-      const subsFor = (pid) => subsOf[pid] || [];
       tree.replaceChildren(...CATEGORIES.map((cat) => {
         const isClosed = collapsed.has(cat.id) && !cat.pages.includes(state.id);
-        const btn = el("button", { type: "button", class: "nav-cat-btn", "aria-expanded": String(!isClosed) }, el("span", {}, cat.title), el("i", { class: "chev", "aria-hidden": "true" }));
+        const btn = el("button", { type: "button", class: "nav-cat-btn", "aria-expanded": String(!isClosed) },
+          el("span", {}, cat.num ? el("b", { class: "nav-num" }, String(cat.num)) : null, cat.title), el("i", { class: "chev", "aria-hidden": "true" }));
         btn.addEventListener("click", () => {
           if (collapsed.has(cat.id)) collapsed.delete(cat.id); else collapsed.add(cat.id);
           store.set("tde.navCollapsed", [...collapsed]);
           renderTree();
         });
-        const list = el("ul", { class: "nav-pages", hidden: isClosed }, cat.pages.map((pid) => {
-          const here = pid === state.id, subs = subsFor(pid);
-          const pageActive = here && (!subs.length || !state.sub);
-          const li = el("li", {}, el("a", { class: "nav-page", href: `#${pid}`, "aria-current": pageActive ? "page" : false }, el("span", {}, PAGE_LABELS[pid]), subs.length ? el("em", {}, String(subs.length)) : null));
-          if (here && subs.length) {
-            li.append(el("ul", { class: "nav-subs" }, subs.map((s) => el("li", {}, el("a", {
-              href: hrefOf(pid, s.id), class: `${s.exercise && progress.done[s.id] ? "done" : ""}`, "aria-current": state.sub === s.id ? "page" : false,
-            }, el("span", {}, s.title), s.exercise && progress.done[s.id] ? el("i", { "aria-label": "solved" }, "✓") : null)))));
-          }
-          return li;
-        }));
-        return el("section", { class: "nav-cat" }, btn, list);
+        const list = el("ul", { class: "nav-pages", hidden: isClosed }, cat.pages.map((pid) => el("li", {},
+          el("a", { class: "nav-page", href: `#${pid}`, "aria-current": pid === state.id ? "page" : false }, el("span", {}, PAGE_LABELS[pid]), solved(pid)))));
+        return el("section", { class: `nav-cat${cat.pages.includes(state.id) ? " here" : ""}` }, btn, list);
       }));
       const cur = $('#nav-tree [aria-current="page"]');
       if (cur) cur.scrollIntoView({ block: "nearest" });
@@ -887,19 +916,22 @@
     toggleBtn.addEventListener("click", () => setOpen(!open));
     backdrop.addEventListener("click", () => setOpen(false, false));
     wide.addEventListener("change", () => setOpen(wide.matches ? store.get("tde.sidebar", true) : false, false));
+    // no slide-in on first load: the content must have its final width before a #page/part link scrolls
+    html.classList.add("sb-init");
     setOpen(open, false);
+    requestAnimationFrame(() => requestAnimationFrame(() => html.classList.remove("sb-init")));
 
-    /* ---- 5. full-text search */
+    /* ---- 5. full-text search: pages and the parts inside them */
     const entries = [];
     CATEGORIES.forEach((cat) => cat.pages.forEach((pid) => {
-      const trail = `${cat.title} › ${PAGE_LABELS[pid]}`;
-      const subs = subsOf[pid];
-      if (subs) subs.forEach((s) => entries.push({ pid, sub: s.id, title: s.title, trail, raw: s.raw, text: s.text }));
-      else {
-        const v = $(`#${pid}`);
-        const raw = plain(v.innerHTML);
-        entries.push({ pid, sub: undefined, title: PAGE_LABELS[pid], trail, raw, text: `${PAGE_LABELS[pid]} ${raw}`.toLowerCase() });
-      }
+      const v = $(`#${pid}`);
+      if (!v) return;
+      const trail = `${sessionName(cat)} › ${PAGE_LABELS[pid]}`;
+      const container = v.querySelector(".container") || v;
+      const intro = [...container.children].filter((k) => !k.matches(".subpage, .toc, .pager, [id$='-root'], .practice-grid, .gl-layout"));
+      const raw = plain(intro.map((k) => k.innerHTML).join(" "));
+      entries.push({ pid, sub: undefined, title: PAGE_LABELS[pid], trail, raw, text: `${PAGE_LABELS[pid]} ${raw}`.toLowerCase() });
+      (subsOf[pid] || []).forEach((s) => entries.push({ pid, sub: s.id, title: s.title, trail, raw: s.raw, text: s.text }));
     }));
 
     function runSearch() {
@@ -945,7 +977,7 @@
       } else if (ev.key === "Escape" && !wide.matches && open && document.activeElement !== input) setOpen(false, false);
     });
 
-    /* ---- 6. routing */
+    /* ---- 6. routing: #page shows a page from the top, #page/part scrolls to a part */
     const titleOf = (id, sub) => {
       if (id === "top") return "TDE Training – Test Development Engineer";
       const s = (subsOf[id] || []).find((x) => x.id === sub);
@@ -954,41 +986,39 @@
     let current = null;
 
     function show() {
-      const [rawId, rawSub] = decodeURIComponent(location.hash.slice(1)).split("/");
+      let raw = decodeURIComponent(location.hash.slice(1));
+      const alias = ALIASES[raw] || ALIASES[raw.split("/")[0]];
+      if (alias) { raw = alias; history.replaceState(null, "", `#${alias}`); }
+      const [rawId, rawSub] = raw.split("/");
       const id = ids.includes(rawId) ? rawId : "top";
       const view = $(`#${id}`);
-      const subs = subsOf[id] || [];
-      let sub;
-      if (subs.length) {
-        const found = subs.find((s) => s.id === rawSub);
-        sub = found ? found.id : (subs[0].dom ? subs[0].id : undefined);
-      }
+      const found = (subsOf[id] || []).find((s) => s.id === rawSub);
+      const sub = found && found.id;
       // tidy links such as #top/undefined or #cooling/bogus
       if (rawSub !== undefined && sub !== rawSub) history.replaceState(null, "", hrefOf(id, sub));
 
       const first = current === null, viewChanged = id !== current;
       current = id;
       state = { id, sub };
-      if (viewChanged) views.forEach((v) => v.classList.toggle("active", v.id === id));
-      if (subs.length && subs[0].dom) {
-        subs.forEach((s) => s.el.classList.toggle("active", s.id === sub));
-        const n = subs.findIndex((s) => s.id === sub);
-        view.dataset.subIndex = n;
-        $(".subhead", view).textContent = subs[n].title;
+      if (viewChanged) {
+        views.forEach((v) => v.classList.toggle("active", v.id === id));
+        updatePager(view, id);
       }
-      else if (sub) {
-        const open = TDEUI.openers[id];
-        if (open) open(sub);
-      }
+      if (found && !found.dom && TDEUI.openers[id]) TDEUI.openers[id](sub);
       document.title = titleOf(id, sub);
       renderTree();
-      updatePager(view, id, subs.length && !subs[0].dom ? undefined : sub);
       if (!wide.matches) setOpen(false, false);
-      window.scrollTo({ top: 0, behavior: "instant" });
-      if (!first) {
-        const h = $$("h1, h2", view).find((x) => x.offsetParent !== null);
-        if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
+
+      const behavior = viewChanged ? "instant" : "smooth";
+      let target;
+      if (found && found.dom) {
+        target = found.h;
+        target.scrollIntoView({ behavior, block: "start" });
+      } else {
+        if (viewChanged || !found) window.scrollTo({ top: 0, behavior });
+        target = $$("h1, h2", view).find((x) => x.offsetParent !== null);
       }
+      if (!first && target) { target.setAttribute("tabindex", "-1"); target.focus({ preventScroll: true }); }
     }
 
     // the example, exercise and glossary UIs call this when the user picks an item
@@ -998,6 +1028,12 @@
       document.title = titleOf(id, sub);
       renderTree();
     };
+    // a link to where you already are (e.g. "↑" or a part you scrolled away from) still moves you
+    document.addEventListener("click", (ev) => {
+      const a = ev.target.closest('a[href^="#"]');
+      if (!a || ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey) return;
+      if (a.getAttribute("href") === location.hash && location.hash.length > 1) { ev.preventDefault(); show(); }
+    });
     window.addEventListener("hashchange", show);
     show();
   }
@@ -1023,6 +1059,7 @@
     bindDiagram("svg-nodeflow", "panel-nodeflow", TDE.DIAGRAMS.nodeflow, "firmware");
     bindDiagram("svg-fab", "panel-fab", TDE.DIAGRAMS.fab, "instructions");
     bindDiagram("svg-loop", "panel-loop", TDE.DIAGRAMS.loop, "cdu");
+    bindDiagram("svg-pmflow", "panel-pmflow", TDE.DIAGRAMS.pmflow, "concept");
     buildExamples(TDE.EXAMPLES, "examples-root", "examples");
     buildExamples(TDE.PY_EXAMPLES, "py-examples-root", "py-examples");
     buildExercises(TDE.EXERCISES, "practice-root", "practice");
@@ -1032,6 +1069,7 @@
     buildPlanning();
     buildTools();
     buildFabrication();
+    buildQuote();
     progress.paint();
     setupNavigation();
   });
