@@ -494,6 +494,75 @@ TDE.DIAGRAMS = {
         <li>Sign-off by MFG and TE. After that, the rack is in sustaining.</li></ul>`,
     },
   },
+
+  pmflow: {
+    rfq: {
+      title: "RFQ received",
+      body: `<p>The customer sends a Request for Quotation: what they need tested, how many units, by when, and the due date for our offer.</p>
+        <ul><li><b>TDE does:</b> reads the package twice, the second time against the capture list on this page. Collects the design files, the test specification and the schedule.</li>
+        <li><b>Output:</b> an internal kickoff note: who estimates what, by when, and where the files live.</li>
+        <li><b>Watch out:</b> the due date. Work backwards from it and leave time for review and approval.</li></ul>`,
+    },
+    clarify: {
+      title: "Clarify and check feasibility",
+      body: `<p>Turn every gap in the RFQ into a question or a written assumption.</p>
+        <ul><li><b>TDE does:</b> sends one numbered question list, keeps the question log, and writes a one-page feasibility note for the go / no-go decision.</li>
+        <li><b>Output:</b> answers or assumptions for volume, access, cycle time, customer-supplied items and schedule.</li>
+        <li><b>Watch out:</b> silent guesses. They become promises nobody agreed to.</li></ul>`,
+    },
+    concept: {
+      title: "Concept and estimate",
+      body: `<p>Design just enough of the tester to price it honestly.</p>
+        <ul><li><b>TDE does:</b> test strategy with TE, block diagram, instrument list, fixture type, station count from the takt time, software platform. Effort per work package, material from vendor quotes.</li>
+        <li><b>Output:</b> concept, BOM with prices and lead times, hours per work package, schedule from PO to SAT.</li>
+        <li><b>Watch out:</b> debug time, spares, on-site support and long-lead parts are the usual misses.</li></ul>`,
+    },
+    offer: {
+      title: "Design proposal + quotation",
+      body: `<p>The offer has two halves that point at each other.</p>
+        <ul><li><b>Design proposal (technical):</b> understanding, compliance matrix, strategy, architecture, throughput, deliverables, schedule, acceptance criteria, assumptions, risks.</li>
+        <li><b>Quotation (commercial):</b> price lines with NRE separate, options, lead time, payment and delivery terms, warranty, validity.</li>
+        <li><b>Watch out:</b> numbers and assumptions must be identical in both. Review, approve, send as PDF.</li></ul>`,
+    },
+    negotiate: {
+      title: "Review, negotiate, purchase order",
+      body: `<p>Walk the customer through the proposal, answer questions, revise if needed, and receive the PO.</p>
+        <ul><li><b>TDE does:</b> presents the solution, answers technical questions, re-estimates when the scope changes.</li>
+        <li><b>Output:</b> a PO that quotes the right quotation number and revision.</li>
+        <li><b>Watch out:</b> trade scope, not quality. Check the PO against the quote before it is acknowledged.</li></ul>`,
+    },
+    kickoff: {
+      title: "Kickoff and plan",
+      body: `<p>Everyone leaves with the same picture of the scope, the dates and the roles.</p>
+        <ul><li><b>TDE does:</b> presents scope and acceptance criteria, confirms customer-supplied items and dates, releases long-lead orders.</li>
+        <li><b>Output:</b> minutes with actions, baseline schedule, RACI, first risk register.</li></ul>`,
+    },
+    execute: {
+      title: "Design, build and report",
+      body: `<p>The longest part: design reviews, fabrication, software, integration and debug.</p>
+        <ul><li><b>TDE does:</b> passes the design gates (CDR before fabrication), works with technicians on the build, sends a weekly one-page status.</li>
+        <li><b>Output:</b> a verified tester, ready for FAT.</li>
+        <li><b>Watch out:</b> scope changes. Every one goes through a written change request, with cost and date, before the work.</li></ul>`,
+    },
+    fat: {
+      title: "FAT: Factory Acceptance Test",
+      body: `<p>Prove the tester meets the specification at our site, before it ships.</p>
+        <ul><li><b>TDE does:</b> writes and rehearses the FAT procedure, runs golden and known-bad units, repeatability, cycle time and safety checks with the customer.</li>
+        <li><b>Output:</b> signed FAT report, punch list, permission to ship (and usually an invoice milestone).</li></ul>`,
+    },
+    sat: {
+      title: "Install and SAT: Site Acceptance Test",
+      body: `<p>Prove it still works on the real line, with the line's power, network and MES.</p>
+        <ul><li><b>TDE does:</b> installs, re-runs the key FAT tests, runs at rate on real units, trains operators and technicians.</li>
+        <li><b>Output:</b> signed SAT report. The warranty usually starts here.</li></ul>`,
+    },
+    handover: {
+      title: "Handover and close",
+      body: `<p>Manufacturing owns the tester. The project closes, the sustaining phase starts.</p>
+        <ul><li><b>TDE does:</b> delivers the handover package, supports the NPI builds, compares actual hours with the quote, writes lessons learned.</li>
+        <li><b>Output:</b> MFG sign-off, a named sustaining owner, and a better estimate next time.</li></ul>`,
+    },
+  },
 };
 
 /* ------------------------------------------------------------------ examples */
